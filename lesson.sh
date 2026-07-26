@@ -38,6 +38,7 @@ fi
 mkdir -p "$out_dir/logs"
 out_dir="$(cd "$out_dir" && pwd)"
 summary="$out_dir/summary.md"
+failures=0
 
 find_tool() {
   env_name="$1"
@@ -69,7 +70,8 @@ find_tool() {
 run_step() {
   title="$1"
   log="$2"
-  shift 2
+  expected_rc="$3"
+  shift 3
 
   printf '==> %s\n' "$title"
   printf '$' > "$log"
@@ -83,8 +85,27 @@ run_step() {
   rc=$?
   set -e
 
-  printf '| %s | %s | [log](./logs/%s) |\n' "$([ "$rc" -eq 0 ] && printf PASS || printf "exit %s" "$rc")" "$title" "$(basename "$log")" >> "$summary"
-  return 0
+  if [ "$expected_rc" = "*" ] || [ "$rc" -eq "$expected_rc" ]; then
+    printf '| PASS | %s | [log](./logs/%s) |\n' "$title" "$(basename "$log")" >> "$summary"
+    return 0
+  fi
+
+  printf '| FAIL | %s expected exit %s, got %s | [log](./logs/%s) |\n' "$title" "$expected_rc" "$rc" "$(basename "$log")" >> "$summary"
+  return 1
+}
+
+assert_contains() {
+  title="$1"
+  file="$2"
+  pattern="$3"
+
+  if grep -Eq "$pattern" "$file"; then
+    printf '| PASS | %s | [%s](./%s) |\n' "$title" "$(basename "$file")" "${file#"$out_dir"/}" >> "$summary"
+    return 0
+  fi
+
+  printf '| FAIL | %s missing `%s` | [%s](./%s) |\n' "$title" "$pattern" "$(basename "$file")" "${file#"$out_dir"/}" >> "$summary"
+  return 1
 }
 
 playground="$(find_tool P101_TOOL_PLAYGROUND ./build-clang/p101-tool-playground ./build-clang-22/p101-tool-playground ./build-gcc-16/p101-tool-playground p101-tool-playground || true)"
@@ -114,7 +135,8 @@ do_wrappers() {
     printf '| SKIP | wrapper boundary | p101-wrapper-audit not found |\n' >> "$summary"
     return 0
   fi
-  run_step "wrapper boundary audit" "$out_dir/logs/wrappers.log" "$wrapper_audit" src include
+  run_step "wrapper boundary audit" "$out_dir/logs/wrappers.log" 0 "$wrapper_audit" src include || failures=1
+  assert_contains "wrapper audit produced a summary" "$out_dir/logs/wrappers.log" "p101-wrapper-audit summary" || failures=1
 }
 
 do_fd_leak() {
@@ -122,7 +144,8 @@ do_fd_leak() {
     printf '| SKIP | fd leak observation | runtime tools missing |\n' >> "$summary"
     return 0
   fi
-  run_step "fd leak observation" "$out_dir/logs/fd-leak.log" "$observe" -o "$out_dir/fd-leak" -r "$tracker" -t "$trace" -p "$report" -- "$playground" -s fd-leak -o "$out_dir/fd-leak-output.txt"
+  run_step "fd leak observation" "$out_dir/logs/fd-leak.log" 1 "$observe" -o "$out_dir/fd-leak" -r "$tracker" -t "$trace" -p "$report" -- "$playground" -s fd-leak -o "$out_dir/fd-leak-output.txt" || failures=1
+  assert_contains "fd leak is reported" "$out_dir/fd-leak/resource-report.txt" "leaked descriptor|descriptor leak|fd leak" || failures=1
 }
 
 do_error_path() {
@@ -131,7 +154,8 @@ do_error_path() {
     return 0
   fi
   mkdir -p "$out_dir/fault-walk"
-  run_step "error path walk" "$out_dir/logs/error-path.log" "$walker" -n 8 -l "$out_dir/fault-walk/case" -O "$observe" -r "$tracker" -t "$trace" -p "$report" -- "$playground" -s fault-lab -o "$out_dir/fault-output.txt"
+  run_step "error path walk" "$out_dir/logs/error-path.log" "*" "$walker" -n 8 -l "$out_dir/fault-walk/case" -O "$observe" -r "$tracker" -t "$trace" -p "$report" -- "$playground" -s fault-lab -o "$out_dir/fault-output.txt" || failures=1
+  assert_contains "fault walk produced evidence" "$out_dir/logs/error-path.log" "fault|case|finding|leak" || failures=1
 }
 
 do_module_split() {
@@ -139,7 +163,8 @@ do_module_split() {
     printf '| SKIP | module split map | p101-module-map not found |\n' >> "$summary"
     return 0
   fi
-  run_step "module split map" "$out_dir/logs/module-map.log" "$module_map" -o "$out_dir/module-map.md" src include
+  run_step "module split map" "$out_dir/logs/module-map.log" 0 "$module_map" -o "$out_dir/module-map.md" src include || failures=1
+  assert_contains "module map has structure" "$out_dir/module-map.md" "Modules|Teaching notes" || failures=1
 }
 
 case "$lesson" in
@@ -169,3 +194,8 @@ EOF
 
 echo "p101 playground lesson output: $out_dir"
 echo "Summary: $summary"
+
+if [ "$failures" -ne 0 ]; then
+  echo "p101 playground lesson failed self-checks" >&2
+  exit 1
+fi
