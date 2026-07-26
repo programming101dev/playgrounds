@@ -1,0 +1,171 @@
+#!/usr/bin/env bash
+# lesson.sh — small, teachable p101-tool-playground lessons.
+set -u
+set -o pipefail
+
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+
+lesson="${1:-all}"
+out_dir=""
+
+if [ "$#" -gt 0 ]; then
+  shift
+fi
+
+usage() {
+  cat <<'USAGE'
+Usage: ./lesson.sh [all|wrappers|fd-leak|error-path|module-split] [-o <dir>]
+
+Runs a focused teaching demo and writes a short summary. Tool paths may be
+overridden with P101_OBSERVE, P101_RESOURCE_TRACKER, P101_TRACE, P101_REPORT,
+P101_ERROR_PATH_WALK, P101_WRAPPER_AUDIT, P101_MODULE_MAP, and
+P101_TOOL_PLAYGROUND.
+USAGE
+}
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    -h|--help) usage; exit 0 ;;
+    -o) out_dir="${2:?}"; shift 2 ;;
+    *) echo "Unknown option: $1" >&2; usage; exit 2 ;;
+  esac
+done
+
+if [ -z "$out_dir" ]; then
+  out_dir="/tmp/p101-tool-playground-lesson-$(date +%Y%m%d-%H%M%S)-$$"
+fi
+
+mkdir -p "$out_dir/logs"
+out_dir="$(cd "$out_dir" && pwd)"
+summary="$out_dir/summary.md"
+
+find_tool() {
+  env_name="$1"
+  shift
+
+  eval "configured=\${$env_name:-}"
+  if [ -n "$configured" ]; then
+    if [ -x "$configured" ] || command -v "$configured" >/dev/null 2>&1; then
+      printf '%s\n' "$configured"
+      return 0
+    fi
+  fi
+
+  for candidate in "$@"; do
+    if [ -x "$candidate" ]; then
+      printf '%s\n' "$candidate"
+      return 0
+    fi
+
+    if command -v "$candidate" >/dev/null 2>&1; then
+      command -v "$candidate"
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+run_step() {
+  title="$1"
+  log="$2"
+  shift 2
+
+  printf '==> %s\n' "$title"
+  printf '$' > "$log"
+  for arg in "$@"; do
+    printf ' %s' "$arg" >> "$log"
+  done
+  printf '\n\n' >> "$log"
+
+  set +e
+  "$@" >> "$log" 2>&1
+  rc=$?
+  set -e
+
+  printf '| %s | %s | [log](./logs/%s) |\n' "$([ "$rc" -eq 0 ] && printf PASS || printf "exit %s" "$rc")" "$title" "$(basename "$log")" >> "$summary"
+  return 0
+}
+
+playground="$(find_tool P101_TOOL_PLAYGROUND ./build-clang/p101-tool-playground ./build-clang-22/p101-tool-playground ./build-gcc-16/p101-tool-playground p101-tool-playground || true)"
+observe="$(find_tool P101_OBSERVE ../p101-observe/build-clang/p101-observe ../p101-observe/build-clang-22/p101-observe ../p101-observe/build-gcc-16/p101-observe p101-observe || true)"
+tracker="$(find_tool P101_RESOURCE_TRACKER ../p101-resource-tracker/build-clang/p101-resource-tracker ../p101-resource-tracker/build-clang-22/p101-resource-tracker ../p101-resource-tracker/build-gcc-16/p101-resource-tracker p101-resource-tracker || true)"
+trace="$(find_tool P101_TRACE ../p101-trace/build-clang-22/p101-trace ../p101-trace/build-clang/p101-trace ../p101-trace/build-gcc-16/p101-trace p101-trace || true)"
+report="$(find_tool P101_REPORT ../p101-report/build-clang-22/p101-report ../p101-report/build-clang/p101-report ../p101-report/build-gcc-16/p101-report p101-report || true)"
+walker="$(find_tool P101_ERROR_PATH_WALK ../p101-error-path-walk/build-clang/p101-error-path-walk ../p101-error-path-walk/build-clang-22/p101-error-path-walk ../p101-error-path-walk/build-gcc-16/p101-error-path-walk p101-error-path-walk || true)"
+wrapper_audit="$(find_tool P101_WRAPPER_AUDIT ../p101-wrapper-audit/p101-wrapper-audit p101-wrapper-audit || true)"
+module_map="$(find_tool P101_MODULE_MAP ../p101-module-map/build-clang/p101-module-map ../p101-module-map/build-clang-22/p101-module-map ../p101-module-map/build-gcc-16/p101-module-map p101-module-map || true)"
+
+cat > "$summary" <<EOF
+# p101 playground lesson
+
+Lesson: \`${lesson}\`
+
+| Status | Step | Artifact |
+| --- | --- | --- |
+EOF
+
+need_runtime_tools() {
+  [ -n "$playground" ] && [ -n "$observe" ] && [ -n "$tracker" ] && [ -n "$trace" ] && [ -n "$report" ]
+}
+
+do_wrappers() {
+  if [ -z "$wrapper_audit" ]; then
+    printf '| SKIP | wrapper boundary | p101-wrapper-audit not found |\n' >> "$summary"
+    return 0
+  fi
+  run_step "wrapper boundary audit" "$out_dir/logs/wrappers.log" "$wrapper_audit" src include
+}
+
+do_fd_leak() {
+  if ! need_runtime_tools; then
+    printf '| SKIP | fd leak observation | runtime tools missing |\n' >> "$summary"
+    return 0
+  fi
+  run_step "fd leak observation" "$out_dir/logs/fd-leak.log" "$observe" -o "$out_dir/fd-leak" -r "$tracker" -t "$trace" -p "$report" -- "$playground" -s fd-leak -o "$out_dir/fd-leak-output.txt"
+}
+
+do_error_path() {
+  if ! need_runtime_tools || [ -z "$walker" ]; then
+    printf '| SKIP | error path walk | runtime tools missing |\n' >> "$summary"
+    return 0
+  fi
+  mkdir -p "$out_dir/fault-walk"
+  run_step "error path walk" "$out_dir/logs/error-path.log" "$walker" -n 8 -l "$out_dir/fault-walk/case" -O "$observe" -r "$tracker" -t "$trace" -p "$report" -- "$playground" -s fault-lab -o "$out_dir/fault-output.txt"
+}
+
+do_module_split() {
+  if [ -z "$module_map" ]; then
+    printf '| SKIP | module split map | p101-module-map not found |\n' >> "$summary"
+    return 0
+  fi
+  run_step "module split map" "$out_dir/logs/module-map.log" "$module_map" -o "$out_dir/module-map.md" src include
+}
+
+case "$lesson" in
+  all)
+    do_wrappers
+    do_fd_leak
+    do_error_path
+    do_module_split
+    ;;
+  wrappers) do_wrappers ;;
+  fd-leak) do_fd_leak ;;
+  error-path) do_error_path ;;
+  module-split) do_module_split ;;
+  *) echo "Unknown lesson: $lesson" >&2; usage; exit 2 ;;
+esac
+
+cat >> "$summary" <<EOF
+
+## Suggested read order
+
+1. Open this summary.
+2. Open the linked log for the selected lesson.
+3. For runtime lessons, open the generated observe directory and compare
+   \`summary.txt\`, \`resource-report.txt\`, \`trace-summary.txt\`, and
+   \`resource-lifetimes.md\`.
+EOF
+
+echo "p101 playground lesson output: $out_dir"
+echo "Summary: $summary"

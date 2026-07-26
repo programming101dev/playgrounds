@@ -68,6 +68,15 @@ and a fault-injected error-path walk. For quick runtime-only demos:
 ./tour.sh --skip-quality --skip-coverage -n 5
 ```
 
+For shorter classroom slices, use the lesson script:
+
+```sh
+./lesson.sh wrappers
+./lesson.sh fd-leak
+./lesson.sh error-path
+./lesson.sh module-split
+```
+
 Build the playground:
 
 ```sh
