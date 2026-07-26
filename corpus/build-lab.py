@@ -27,6 +27,9 @@ class LabCase:
     lesson: str
     expected_findings: list[str]
     expects_error_path_findings: bool
+    logic_issue_id: str
+    expected_output_size: int | None
+    fixed_output_size: int | None
     fix_goal: str
     fix_steps: list[str]
     case_dir: Path
@@ -98,6 +101,8 @@ def load_cases(root: Path, runs_dir: Path, selected: set[str] | None) -> list[La
         lesson = read_text(case_dir / "lesson.md", str(expected.get("lesson", ""))).strip()
         expected_findings = [str(item) for item in expected.get("expected_findings", [])]
         fix_steps = [str(item) for item in expected.get("fix_steps", [])]
+        expected_output_size = expected.get("expected_output_size")
+        fixed_output_size = expected.get("fixed_output_size")
         cases.append(
             LabCase(
                 name=name,
@@ -111,6 +116,9 @@ def load_cases(root: Path, runs_dir: Path, selected: set[str] | None) -> list[La
                 lesson=lesson,
                 expected_findings=expected_findings,
                 expects_error_path_findings=bool(expected.get("expected_error_path_findings", False)),
+                logic_issue_id=str(expected.get("logic_issue_id", "")),
+                expected_output_size=int(expected_output_size) if expected_output_size is not None else None,
+                fixed_output_size=int(fixed_output_size) if fixed_output_size is not None else None,
                 fix_goal=str(expected.get("fix_goal", "")),
                 fix_steps=fix_steps,
                 case_dir=case_dir,
@@ -212,19 +220,25 @@ def expected_issue_is_present(case: LabCase) -> bool:
         return True
     if case.expects_error_path_findings and fault_findings:
         return True
+    if case.expected_output_size is not None:
+        output_path = case.report_dir / "playground-output.txt"
+        try:
+            return output_path.stat().st_size == case.expected_output_size
+        except OSError:
+            return False
     return False
 
 
 def lab_progress(case: LabCase) -> str:
     if not case.report_dir.exists():
         return "MISSING"
-    if not case.expected_findings and not case.expects_error_path_findings:
+    if not case.expected_findings and not case.expects_error_path_findings and case.expected_output_size is None:
         return "REFERENCE"
     return "OPEN" if expected_issue_is_present(case) else "FIXED"
 
 
 def progress_counts(cases: list[LabCase]) -> tuple[int, int, int]:
-    issue_cases = [case for case in cases if case.expected_findings or case.expects_error_path_findings]
+    issue_cases = [case for case in cases if case.expected_findings or case.expects_error_path_findings or case.expected_output_size is not None]
     fixed = sum(1 for case in issue_cases if lab_progress(case) == "FIXED")
     open_count = sum(1 for case in issue_cases if lab_progress(case) == "OPEN")
     return fixed, open_count, len(issue_cases)
@@ -251,6 +265,8 @@ def render_markdown(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
         signal = ", ".join(case.expected_findings)
         if case.expects_error_path_findings:
             signal = (signal + ", " if signal else "") + "error-path findings"
+        if case.logic_issue_id:
+            signal = (signal + ", " if signal else "") + case.logic_issue_id
         if not signal:
             signal = "clean reference"
         lines.append(f"| {case.order} | `{lab_progress(case)}` | {case.issue_id}: {case.title} | `{case.scenario}` | {signal} |")
@@ -324,6 +340,12 @@ def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
         expected = " ".join(f"<code>{html.escape(item)}</code>" for item in case.expected_findings)
         if case.expects_error_path_findings:
             expected = (expected + " " if expected else "") + "<code>error-path findings</code>"
+        if case.logic_issue_id:
+            expected = (expected + " " if expected else "") + f"<code>{html.escape(case.logic_issue_id)}</code>"
+        if case.expected_output_size is not None:
+            expected = (expected + " " if expected else "") + f"<code>{case.expected_output_size} bytes</code>"
+        if case.fixed_output_size is not None:
+            expected = expected + f" <span class=\"muted\">fixed target: {case.fixed_output_size} bytes</span>"
         if not expected:
             expected = "<code>clean</code>"
 
@@ -392,7 +414,7 @@ def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
     dl { display: grid; grid-template-columns: 7rem 1fr; gap: .25rem .75rem; }
     dt { color: var(--muted); }
     dd { margin: 0; }
-    .links { color: var(--muted); }
+    .links, .muted { color: var(--muted); }
     .flow { display: grid; gap: .8rem; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); margin-top: 1rem; }
     .step { background: var(--card); border: 1px solid var(--line); border-radius: .85rem; padding: .9rem; }
     """

@@ -80,6 +80,21 @@ static void test_scenario_names_round_trip(void)
     TEST_ASSERT_EQUAL_INT(SCENARIO_REALLOC_LEAK, p101_tool_playground_scenario_from_name(env, "realloc-leak", &ok));
     TEST_ASSERT_TRUE(ok);
     TEST_ASSERT_EQUAL_STRING("realloc-leak", p101_tool_playground_scenario_name(SCENARIO_REALLOC_LEAK));
+    TEST_ASSERT_EQUAL_INT(SCENARIO_EXEC_INHERIT, p101_tool_playground_scenario_from_name(env, "exec-inherit", &ok));
+    TEST_ASSERT_TRUE(ok);
+    TEST_ASSERT_EQUAL_STRING("exec-inherit", p101_tool_playground_scenario_name(SCENARIO_EXEC_INHERIT));
+    TEST_ASSERT_EQUAL_INT(SCENARIO_DOUBLE_FREE, p101_tool_playground_scenario_from_name(env, "double-free", &ok));
+    TEST_ASSERT_TRUE(ok);
+    TEST_ASSERT_EQUAL_STRING("double-free", p101_tool_playground_scenario_name(SCENARIO_DOUBLE_FREE));
+    TEST_ASSERT_EQUAL_INT(SCENARIO_STRAY_FREE, p101_tool_playground_scenario_from_name(env, "stray-free", &ok));
+    TEST_ASSERT_TRUE(ok);
+    TEST_ASSERT_EQUAL_STRING("stray-free", p101_tool_playground_scenario_name(SCENARIO_STRAY_FREE));
+    TEST_ASSERT_EQUAL_INT(SCENARIO_SIZEOF_POINTER, p101_tool_playground_scenario_from_name(env, "sizeof-pointer", &ok));
+    TEST_ASSERT_TRUE(ok);
+    TEST_ASSERT_EQUAL_STRING("sizeof-pointer", p101_tool_playground_scenario_name(SCENARIO_SIZEOF_POINTER));
+    TEST_ASSERT_EQUAL_INT(SCENARIO_IGNORE_READ_COUNT, p101_tool_playground_scenario_from_name(env, "ignore-read-count", &ok));
+    TEST_ASSERT_TRUE(ok);
+    TEST_ASSERT_EQUAL_STRING("ignore-read-count", p101_tool_playground_scenario_name(SCENARIO_IGNORE_READ_COUNT));
 }
 
 static void test_rejects_unknown_scenario(void)

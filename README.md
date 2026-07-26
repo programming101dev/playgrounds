@@ -52,6 +52,11 @@ Options:
 | `early-return-alloc-leak` | Return before allocation cleanup | allocation leak |
 | `partial-cleanup` | Acquire several resources and release only some | descriptor + allocation leaks |
 | `realloc-leak` | Grow an allocation and forget to free the result | allocation leak |
+| `exec-inherit` | Reach exec with a descriptor lacking `FD_CLOEXEC` | exec inheritance |
+| `double-free` | Free one allocation twice | double free |
+| `stray-free` | Free an interior pointer | free of unknown pointer |
+| `sizeof-pointer` | Use `sizeof(pointer)` as though it were buffer length | logic/output-size bug |
+| `ignore-read-count` | Write a whole buffer instead of bytes actually read | stale-data output bug |
 
 The bug scenarios are intentionally broken. They are not regressions; they are
 teaching targets.

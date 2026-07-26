@@ -162,6 +162,7 @@ def run_case(root: Path, p101: Path, playground: Path, out_dir: Path, case: dict
     fault_count = int(case.get("fault_count", 1))
     expected_findings = {str(item) for item in case.get("expected_findings", [])}
     expected_error_path_findings = bool(case.get("expected_error_path_findings", False))
+    expected_output_size = case.get("expected_output_size")
 
     command = [
         str(p101),
@@ -197,6 +198,15 @@ def run_case(root: Path, p101: Path, playground: Path, out_dir: Path, case: dict
 
     if expected_error_path_findings and doctor_fault_walk_status(case_out) != 1 and not fault_walk_has_findings(case_out):
         problems.append("expected error-path findings, but fault walk looked clean")
+
+    if expected_output_size is not None:
+        try:
+            actual_output_size = output_file.stat().st_size
+        except OSError:
+            problems.append(f"expected output size {expected_output_size}, but output file was missing")
+        else:
+            if actual_output_size != int(expected_output_size):
+                problems.append(f"expected output size {expected_output_size}, got {actual_output_size}")
 
     if problems:
         return CaseResult(name, "FAIL", expected_exit, completed.returncode, case_out, "; ".join(problems))

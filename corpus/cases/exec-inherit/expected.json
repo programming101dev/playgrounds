@@ -1,0 +1,21 @@
+{
+  "name": "exec-inherit",
+  "lab_order": 10,
+  "issue_id": "P101-LAB-210",
+  "title": "Descriptor inherited across exec",
+  "category": "security",
+  "scenario": "exec-inherit",
+  "expected_exit": 1,
+  "expected_status": "FINDINGS",
+  "expected_findings": ["P101-FD-004"],
+  "fault_count": 0,
+  "fix_goal": "Descriptors that should not cross an exec boundary must be closed or marked FD_CLOEXEC before exec.",
+  "fix_steps": [
+    "Find the descriptor opened before p101_execv.",
+    "Decide whether the child should inherit it.",
+    "If not, call p101_fcntl with F_SETFD and FD_CLOEXEC after opening it.",
+    "Alternatively, close the descriptor before p101_execv.",
+    "Re-run ./lab.sh and confirm the exec inheritance lab is fixed."
+  ],
+  "lesson": "An exec boundary is a security boundary; open descriptors without FD_CLOEXEC can leak capabilities into another program."
+}

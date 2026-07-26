@@ -68,6 +68,26 @@ enum playground_scenario p101_tool_playground_scenario_from_name(const struct p1
     {
         scenario = SCENARIO_REALLOC_LEAK;
     }
+    else if(p101_strcmp(env, name, "exec-inherit") == 0)
+    {
+        scenario = SCENARIO_EXEC_INHERIT;
+    }
+    else if(p101_strcmp(env, name, "double-free") == 0)
+    {
+        scenario = SCENARIO_DOUBLE_FREE;
+    }
+    else if(p101_strcmp(env, name, "stray-free") == 0)
+    {
+        scenario = SCENARIO_STRAY_FREE;
+    }
+    else if(p101_strcmp(env, name, "sizeof-pointer") == 0)
+    {
+        scenario = SCENARIO_SIZEOF_POINTER;
+    }
+    else if(p101_strcmp(env, name, "ignore-read-count") == 0)
+    {
+        scenario = SCENARIO_IGNORE_READ_COUNT;
+    }
     else
     {
         *ok = false;
@@ -156,6 +176,31 @@ const char *p101_tool_playground_scenario_name(enum playground_scenario scenario
             name = "realloc-leak";
             break;
         }
+        case SCENARIO_EXEC_INHERIT:
+        {
+            name = "exec-inherit";
+            break;
+        }
+        case SCENARIO_DOUBLE_FREE:
+        {
+            name = "double-free";
+            break;
+        }
+        case SCENARIO_STRAY_FREE:
+        {
+            name = "stray-free";
+            break;
+        }
+        case SCENARIO_SIZEOF_POINTER:
+        {
+            name = "sizeof-pointer";
+            break;
+        }
+        case SCENARIO_IGNORE_READ_COUNT:
+        {
+            name = "ignore-read-count";
+            break;
+        }
         default:
         {
             name = "unknown";
@@ -186,4 +231,9 @@ void p101_tool_playground_print_scenarios(const struct p101_env *env, struct p10
     p101_fputs(env, err, "  early-return-alloc-leak  Return before allocation cleanup\n", stream);
     p101_fputs(env, err, "  partial-cleanup          Acquire several resources and clean up only some\n", stream);
     p101_fputs(env, err, "  realloc-leak             Grow an allocation and forget to free the result\n", stream);
+    p101_fputs(env, err, "  exec-inherit             Leave a descriptor open across an exec boundary\n", stream);
+    p101_fputs(env, err, "  double-free              Free the same allocation twice\n", stream);
+    p101_fputs(env, err, "  stray-free               Free a pointer this function does not own\n", stream);
+    p101_fputs(env, err, "  sizeof-pointer           Use sizeof(pointer) where the data size was needed\n", stream);
+    p101_fputs(env, err, "  ignore-read-count        Write a whole buffer instead of the bytes read\n", stream);
 }

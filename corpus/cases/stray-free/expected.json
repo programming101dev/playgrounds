@@ -1,0 +1,21 @@
+{
+  "name": "stray-free",
+  "lab_order": 12,
+  "issue_id": "P101-LAB-212",
+  "title": "Free of unknown pointer",
+  "category": "security",
+  "scenario": "stray-free",
+  "expected_exit": 1,
+  "expected_status": "FINDINGS",
+  "expected_findings": ["P101-ALLOC-003"],
+  "fault_count": 0,
+  "fix_goal": "Only pass the exact pointer returned by the allocator to p101_free, and only while this scope owns it.",
+  "fix_steps": [
+    "Find the pointer passed to p101_free.",
+    "Compare it to the exact pointer returned by p101_malloc.",
+    "Do not free interior pointers, stack pointers, string literals, or borrowed pointers.",
+    "Free the original owning pointer exactly once.",
+    "Re-run ./lab.sh and confirm the stray-free lab is fixed."
+  ],
+  "lesson": "Freeing a pointer that was not returned by the allocator corrupts the ownership model and can corrupt the heap."
+}

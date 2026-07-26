@@ -25,6 +25,11 @@ static int   run_early_return_fd_leak_demo(const struct p101_env *env, struct p1
 static int   run_early_return_alloc_leak_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
 static int   run_partial_cleanup_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
 static int   run_realloc_leak_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_exec_inherit_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_double_free_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_stray_free_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_sizeof_pointer_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_ignore_read_count_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
 static int   write_demo_file(const struct p101_env *env, struct p101_error *err, const struct arguments *args, const char *label, bool leak_fd, bool leak_alloc);
 static char *make_buffer(const struct p101_env *env, struct p101_error *err, size_t bytes, char fill);
 
@@ -121,6 +126,31 @@ int p101_tool_playground_run(const struct p101_env *env, struct p101_error *err,
         case SCENARIO_REALLOC_LEAK:
         {
             ret_val = run_realloc_leak_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_EXEC_INHERIT:
+        {
+            ret_val = run_exec_inherit_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_DOUBLE_FREE:
+        {
+            ret_val = run_double_free_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_STRAY_FREE:
+        {
+            ret_val = run_stray_free_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_SIZEOF_POINTER:
+        {
+            ret_val = run_sizeof_pointer_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_IGNORE_READ_COUNT:
+        {
+            ret_val = run_ignore_read_count_demo(env, err, args);
             break;
         }
         default:
@@ -551,6 +581,180 @@ static int run_realloc_leak_demo(const struct p101_env *env, struct p101_error *
 
 done:
     p101_free(env, buffer);
+    return ret_val;
+}
+
+static int run_exec_inherit_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    char        exec_path[]  = "/p101/no/such/program";
+    char *const child_argv[] = {exec_path, NULL};
+    int         fd;
+    int         ret_val;
+
+    P101_TRACE(env);
+    ret_val = EXIT_FAILURE;
+    p101_printf(env, err, "exec-inherit: opens a descriptor without FD_CLOEXEC and reaches exec\n");
+
+    fd = p101_open(env, err, args->output_path, O_WRONLY | O_CREAT | O_TRUNC, REPORT_FILE_MODE);
+    if(p101_error_has_error(err))
+    {
+        goto done;
+    }
+
+    (void)p101_execv(env, err, child_argv[0], child_argv);
+
+done:
+    if(fd != -1)
+    {
+        p101_close(env, err, fd);
+    }
+
+    return ret_val;
+}
+
+static int run_double_free_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    char *buffer;
+
+    P101_TRACE(env);
+    p101_printf(env, err, "double-free: intentionally releases one allocation twice\n");
+
+    buffer = make_buffer(env, err, args->bytes, 'd');
+    if(buffer == NULL || p101_error_has_error(err))
+    {
+        return EXIT_FAILURE;
+    }
+
+    p101_free(env, buffer);
+    p101_free(env, buffer);
+
+    return EXIT_SUCCESS;
+}
+
+static int run_stray_free_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    char *buffer;
+    char *interior;
+
+    P101_TRACE(env);
+    p101_printf(env, err, "stray-free: intentionally frees an interior pointer\n");
+
+    buffer = make_buffer(env, err, args->bytes, 's');
+    if(buffer == NULL || p101_error_has_error(err))
+    {
+        return EXIT_FAILURE;
+    }
+
+    interior = buffer + 1;
+    p101_free(env, interior);
+
+    return EXIT_SUCCESS;
+}
+
+static int run_sizeof_pointer_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    int   fd;
+    char *buffer;
+    int   ret_val;
+
+    P101_TRACE(env);
+    buffer  = NULL;
+    ret_val = EXIT_FAILURE;
+    p101_printf(env, err, "sizeof-pointer: writes sizeof(buffer) bytes instead of the requested byte count\n");
+
+    fd = p101_open(env, err, args->output_path, O_WRONLY | O_CREAT | O_TRUNC, REPORT_FILE_MODE);
+    if(p101_error_has_error(err))
+    {
+        goto done;
+    }
+
+    buffer = make_buffer(env, err, args->bytes, 'z');
+    if(buffer == NULL || p101_error_has_error(err))
+    {
+        goto done;
+    }
+
+    p101_write(env, err, fd, buffer, sizeof(buffer));
+    if(p101_error_has_no_error(err))
+    {
+        ret_val = EXIT_SUCCESS;
+    }
+
+done:
+    if(fd != -1)
+    {
+        p101_close(env, err, fd);
+    }
+
+    p101_free(env, buffer);
+    return ret_val;
+}
+
+static int run_ignore_read_count_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    int        out_fd;
+    int        pipe_fds[2];
+    ssize_t    bytes_read;
+    const char message[] = "secret";
+    char       buffer[READ_BUF_LEN];
+    bool       has_output_fd;
+    int        ret_val;
+
+    P101_TRACE(env);
+    pipe_fds[0]   = -1;
+    pipe_fds[1]   = -1;
+    has_output_fd = false;
+    ret_val       = EXIT_FAILURE;
+    p101_memset(env, buffer, 'x', sizeof(buffer));
+    p101_printf(env, err, "ignore-read-count: writes the whole buffer instead of the bytes read\n");
+
+    out_fd = p101_open(env, err, args->output_path, O_WRONLY | O_CREAT | O_TRUNC, REPORT_FILE_MODE);
+    if(p101_error_has_error(err))
+    {
+        goto done;
+    }
+    has_output_fd = true;
+
+    p101_pipe(env, err, pipe_fds);
+    if(p101_error_has_error(err))
+    {
+        goto done;
+    }
+
+    p101_write(env, err, pipe_fds[1], message, sizeof(message));
+    if(p101_error_has_error(err))
+    {
+        goto done;
+    }
+
+    bytes_read = p101_read(env, err, pipe_fds[0], buffer, sizeof(buffer));
+    if(bytes_read < 0 || p101_error_has_error(err))
+    {
+        goto done;
+    }
+
+    p101_write(env, err, out_fd, buffer, sizeof(buffer));
+    if(p101_error_has_no_error(err))
+    {
+        ret_val = EXIT_SUCCESS;
+    }
+
+done:
+    if(pipe_fds[0] != -1)
+    {
+        p101_close(env, err, pipe_fds[0]);
+    }
+
+    if(pipe_fds[1] != -1)
+    {
+        p101_close(env, err, pipe_fds[1]);
+    }
+
+    if(has_output_fd)
+    {
+        p101_close(env, err, out_fd);
+    }
+
     return ret_val;
 }
 
