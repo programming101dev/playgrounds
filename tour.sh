@@ -204,8 +204,8 @@ append_summary_footer() {
 ## Runtime report directories
 EOF
 
-  if [ -d "$out_dir/observed-clean-file" ]; then
-    printf '\n- Clean baseline: [observed-clean-file](./observed-clean-file/)\n' >> "$summary"
+  if [ -d "$out_dir/observed-tour" ]; then
+    printf '\n- Full clean tour: [observed-tour](./observed-tour/)\n' >> "$summary"
   fi
 
   if [ -d "$out_dir/observed-fd-leak" ]; then
@@ -233,8 +233,8 @@ EOF
 ## Handy next reads
 EOF
 
-  if [ -f "$out_dir/observed-clean-file/summary.txt" ]; then
-    printf '\n- [observed-clean-file/summary.txt](./observed-clean-file/summary.txt)\n' >> "$summary"
+  if [ -f "$out_dir/observed-tour/summary.txt" ]; then
+    printf '\n- [observed-tour/summary.txt](./observed-tour/summary.txt)\n' >> "$summary"
   fi
 
   if [ -f "$out_dir/observed-fd-leak/resource-report.txt" ]; then
@@ -294,7 +294,7 @@ if [ -z "$playground" ]; then
 elif [ -z "$observe" ] || [ -z "$tracker" ] || [ -z "$trace" ] || [ -z "$report" ]; then
   record "SKIP" "observed runtime demos" "missing: $(missing_tools p101-observe "$observe" p101-resource-tracker "$tracker" p101-trace "$trace" p101-report "$report")"
 else
-  run_logged "observe clean baseline" "$log_dir/observe-clean-file.log" "0" "$observe" -o "$out_dir/observed-clean-file" -r "$tracker" -t "$trace" -p "$report" -- "$playground" -s clean-file -o "$out_dir/clean-file-output.txt" || true
+  run_logged "observe full clean tour" "$log_dir/observe-tour.log" "0" "$observe" -o "$out_dir/observed-tour" -r "$tracker" -t "$trace" -p "$report" -- "$playground" -s tour -o "$out_dir/tour-output.txt" || true
   run_logged "observe fd leak" "$log_dir/observe-fd-leak.log" "0 1" "$observe" -o "$out_dir/observed-fd-leak" -r "$tracker" -t "$trace" -p "$report" -- "$playground" -s fd-leak -o "$out_dir/fd-leak-output.txt" || true
   run_logged "observe allocation leak" "$log_dir/observe-alloc-leak.log" "0 1" "$observe" -o "$out_dir/observed-alloc-leak" -r "$tracker" -t "$trace" -p "$report" -- "$playground" -s alloc-leak -o "$out_dir/alloc-leak-output.txt" || true
   run_logged "observe double close" "$log_dir/observe-double-close.log" "0 1" "$observe" -o "$out_dir/observed-double-close" -r "$tracker" -t "$trace" -p "$report" -- "$playground" -s double-close -o "$out_dir/double-close-output.txt" || true
