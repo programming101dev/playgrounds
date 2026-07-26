@@ -1,6 +1,6 @@
 {
   "name": "unsafe-log-secret",
-  "lab_order": 15,
+  "lab_order": 32,
   "issue_id": "P101-LAB-300",
   "title": "Do not log secrets",
   "category": "good-practice/security/logging",

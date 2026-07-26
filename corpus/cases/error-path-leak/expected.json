@@ -1,6 +1,6 @@
 {
   "name": "error-path-leak",
-  "lab_order": 8,
+  "lab_order": 14,
   "issue_id": "P101-LAB-108",
   "title": "Error-path leak",
   "category": "fault injection",

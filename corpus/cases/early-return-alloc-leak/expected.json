@@ -1,6 +1,6 @@
 {
   "name": "early-return-alloc-leak",
-  "lab_order": 6,
+  "lab_order": 12,
   "issue_id": "P101-LAB-106",
   "title": "Early return leaks an allocation",
   "category": "control flow",

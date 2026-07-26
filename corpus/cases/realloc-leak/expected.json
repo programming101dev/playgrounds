@@ -1,6 +1,6 @@
 {
   "name": "realloc-leak",
-  "lab_order": 9,
+  "lab_order": 8,
   "issue_id": "P101-LAB-109",
   "title": "Realloc result remains owned",
   "category": "resource ownership",

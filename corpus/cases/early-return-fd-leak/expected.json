@@ -1,6 +1,6 @@
 {
   "name": "early-return-fd-leak",
-  "lab_order": 5,
+  "lab_order": 11,
   "issue_id": "P101-LAB-105",
   "title": "Early return leaks a descriptor",
   "category": "control flow",

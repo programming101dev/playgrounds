@@ -1,6 +1,6 @@
 {
   "name": "partial-cleanup",
-  "lab_order": 7,
+  "lab_order": 13,
   "issue_id": "P101-LAB-107",
   "title": "Partial cleanup after multiple acquisitions",
   "category": "resource ownership",

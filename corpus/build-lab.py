@@ -138,7 +138,24 @@ def load_cases(root: Path, runs_dir: Path, selected: set[str] | None) -> list[La
             )
         )
     cases.sort(key=lambda item: (item.order, item.name))
+    validate_case_identity(cases)
     return cases
+
+
+def validate_case_identity(cases: list[LabCase]) -> None:
+    orders: dict[int, str] = {}
+    issue_ids: dict[str, str] = {}
+
+    for case in cases:
+        previous_order = orders.get(case.order)
+        if previous_order is not None:
+            raise ValueError(f"duplicate lab_order {case.order}: {previous_order} and {case.name}")
+        orders[case.order] = case.name
+
+        previous_issue = issue_ids.get(case.issue_id)
+        if previous_issue is not None:
+            raise ValueError(f"duplicate issue_id {case.issue_id}: {previous_issue} and {case.name}")
+        issue_ids[case.issue_id] = case.name
 
 
 def rel(from_dir: Path, path: Path) -> str:
@@ -299,17 +316,20 @@ def render_markdown(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
     lines.extend(
         [
             "",
-        "## Classroom arc",
-        "",
-        "1. Start with the clean tour and inspect what a healthy resource lifetime looks like.",
-        "2. Introduce one broken ownership rule at a time: leaked descriptors, leaked heap blocks, double close, and stray close.",
-            "3. Fix early-return cleanup so control-flow convenience does not skip ownership release.",
-            "4. Fix multi-resource cleanup by treating cleanup as a ledger.",
-            "5. Run the fault lab to show the uncomfortable truth: the happy path can be clean while the error path is vulnerable.",
-            "6. Use the linked reports to connect each finding back to source and call history.",
-        "",
-        "## Lessons",
-        "",
+            "## Classroom arc",
+            "",
+            "1. Start with the clean tour and inspect what healthy ownership looks like.",
+            "2. Introduce normal-path resource mistakes: leaked descriptors, leaked heap blocks, double close, and stray close.",
+            "3. Move into memory lifetime: double free, stray free, use-after-free, and realloc ownership.",
+            "4. Fix error-path cleanup: early returns, partial cleanup, and fault-injected failures.",
+            "5. Check program state before use: NULL results and uninitialized values.",
+            "6. Practice bounds, byte counts, strings, and integer-size traps.",
+            "7. Treat input as adversarial: path traversal, command construction, format strings, temporary files, and resource limits.",
+            "8. Make behavior observable without leaking secrets: structured logs, neutralized fields, and safe logging.",
+            "9. Finish with concurrency hazards and parser fuzzing.",
+            "",
+            "## Lessons",
+            "",
         ]
     )
     for case in cases:
@@ -480,9 +500,12 @@ def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
   <h2>Classroom arc</h2>
   <section class="flow">
     <div class="step"><strong>1. Observe clean code.</strong><br>Start with the clean tour and inspect the trace/resource model.</div>
-    <div class="step"><strong>2. Break one ownership rule.</strong><br>Compare fd leaks, heap leaks, double close, and stray close.</div>
-    <div class="step"><strong>3. Fix control flow.</strong><br>Early returns are fine only if cleanup still runs.</div>
-    <div class="step"><strong>4. Inject failure.</strong><br>Use the fault lab to make cold error paths execute.</div>
+    <div class="step"><strong>2. Own resources deliberately.</strong><br>Compare descriptor leaks, heap leaks, double release, stale ownership, and realloc handling.</div>
+    <div class="step"><strong>3. Make error paths honest.</strong><br>Early returns and injected failures must still release every owned resource.</div>
+    <div class="step"><strong>4. Check before use.</strong><br>Handle NULL, initialization, bounds, byte counts, strings, and integer sizes before touching memory.</div>
+    <div class="step"><strong>5. Assume adversarial input.</strong><br>Reject traversal, command construction, format-string misuse, predictable temp files, and unbounded requests.</div>
+    <div class="step"><strong>6. Log safely.</strong><br>Use structured logs, neutralize untrusted text, and never emit secrets.</div>
+    <div class="step"><strong>7. Finish with concurrency and verification.</strong><br>Study TOCTOU/data races, then add fuzzing around parser boundaries.</div>
   </section>
 
   <h2>Lessons</h2>

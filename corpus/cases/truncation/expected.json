@@ -1,6 +1,6 @@
 {
   "name": "truncation",
-  "lab_order": 22,
+  "lab_order": 24,
   "issue_id": "P101-LAB-307",
   "title": "Do not silently truncate large values",
   "category": "c-trap/integer",

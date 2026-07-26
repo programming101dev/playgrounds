@@ -1,6 +1,6 @@
 {
   "name": "predictable-temp-file",
-  "lab_order": 20,
+  "lab_order": 29,
   "issue_id": "P101-LAB-305",
   "title": "Avoid predictable temporary files",
   "category": "security/filesystem",

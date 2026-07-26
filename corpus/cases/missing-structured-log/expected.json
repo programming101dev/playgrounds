@@ -1,6 +1,6 @@
 {
   "name": "missing-structured-log",
-  "lab_order": 17,
+  "lab_order": 34,
   "issue_id": "P101-LAB-302",
   "title": "Use structured log fields",
   "category": "good-practice/logging",

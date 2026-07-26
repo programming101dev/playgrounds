@@ -1,6 +1,6 @@
 {
   "name": "stray-free",
-  "lab_order": 12,
+  "lab_order": 6,
   "issue_id": "P101-LAB-212",
   "title": "Free of unknown pointer",
   "category": "security",

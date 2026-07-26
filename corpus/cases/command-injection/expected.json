@@ -1,6 +1,6 @@
 {
   "name": "command-injection",
-  "lab_order": 19,
+  "lab_order": 27,
   "issue_id": "P101-LAB-304",
   "title": "Do not build shell commands from untrusted text",
   "category": "security/injection",

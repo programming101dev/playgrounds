@@ -1,6 +1,6 @@
 {
   "name": "log-injection",
-  "lab_order": 16,
+  "lab_order": 33,
   "issue_id": "P101-LAB-301",
   "title": "Neutralize log injection",
   "category": "good-practice/security/logging",

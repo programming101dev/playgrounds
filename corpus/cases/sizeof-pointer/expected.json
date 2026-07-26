@@ -1,6 +1,6 @@
 {
   "name": "sizeof-pointer",
-  "lab_order": 13,
+  "lab_order": 17,
   "issue_id": "P101-LAB-313",
   "title": "sizeof(pointer) is not buffer length",
   "category": "common C trap",

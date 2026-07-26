@@ -84,6 +84,21 @@ Options:
 The bug scenarios are intentionally broken. They are not regressions; they are
 teaching targets.
 
+## Lab progression
+
+The lab book orders cases as a progression for students who already know basic C
+syntax but have not yet practiced defensive systems programming:
+
+1. baseline and resource ownership;
+2. normal cleanup mistakes;
+3. memory lifetime mistakes;
+4. error-path cleanup;
+5. checked results, initialization, bounds, and integer traps;
+6. adversarial input and security mistakes;
+7. logging and observability practice;
+8. concurrency/race hazards;
+9. parser fuzzing and verification practice.
+
 ## Full toolchain tour
 
 Run the one-command tour:

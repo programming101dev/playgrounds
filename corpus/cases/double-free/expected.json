@@ -1,6 +1,6 @@
 {
   "name": "double-free",
-  "lab_order": 11,
+  "lab_order": 5,
   "issue_id": "P101-LAB-211",
   "title": "Double free",
   "category": "security",
