@@ -50,6 +50,9 @@ set(main_LINK_LIBRARIES
         p101_env
         p101_c
         p101_posix
+        p101_posix_optional
+        p101_posix_xsi
+        p101_unix
         p101_convert
         m
 )

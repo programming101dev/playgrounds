@@ -228,6 +228,10 @@ enum playground_scenario p101_tool_playground_scenario_from_name(const struct p1
     {
         scenario = SCENARIO_PARSER_FUZZ;
     }
+    else if(p101_strcmp(env, name, "c-memory-runtime") == 0)
+    {
+        scenario = SCENARIO_C_MEMORY_RUNTIME;
+    }
     else
     {
         *ok = false;
@@ -516,6 +520,11 @@ const char *p101_tool_playground_scenario_name(enum playground_scenario scenario
             name = "parser-fuzz";
             break;
         }
+        case SCENARIO_C_MEMORY_RUNTIME:
+        {
+            name = "c-memory-runtime";
+            break;
+        }
         default:
         {
             name = "unknown";
@@ -586,4 +595,5 @@ void p101_tool_playground_print_scenarios(const struct p101_env *env, struct p10
     p101_fputs(env, err, "  short-read               Treat a short read as a complete object\n", stream);
     p101_fputs(env, err, "  read-eof-handling        Confuse EOF with an I/O error\n", stream);
     p101_fputs(env, err, "  parser-fuzz              Parse boundary-heavy input without a fuzz target\n", stream);
+    p101_fputs(env, err, "  c-memory-runtime         Clean smoke test for all c-memory-runtime wrappers\n", stream);
 }

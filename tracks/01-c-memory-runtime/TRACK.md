@@ -28,14 +28,15 @@ The runner writes its report to `/tmp/p101-track-c-memory-runtime` by default.
 | Step | Case | Scenario | Purpose |
 | ---: | --- | --- | --- |
 | 0 | `clean` | `tour` | Valid baseline: env/error setup, owned pointers, descriptors, common cleanup, and clean fault injection. |
-| 1 | `alloc-leak` | `alloc-leak` | Every successful allocation needs a visible owner and release path. |
-| 2 | `early-return-alloc-leak` | `early-return-alloc-leak` | Early returns after acquisition should still pass through cleanup. |
-| 3 | `realloc-leak` | `realloc-leak` | A successful realloc returns the still-owned final pointer. |
-| 4 | `realloc-failure` | `realloc-failure` | Store realloc in a temporary so failure does not lose the original allocation. |
-| 5 | `double-free` | `double-free` | A resource should have one release path; clear or transfer ownership explicitly. |
-| 6 | `stray-free` | `stray-free` | Only free the exact pointer returned by the allocator. |
-| 7 | `use-after-free` | `use-after-free` | Do not keep using a pointer after ownership has been released. |
-| 8 | `resource-exhaustion` | `resource-exhaustion` | Bound resource requests before allocation or loops. |
+| 1 | `c-memory-runtime` | `c-memory-runtime` | Clean smoke test that exercises all 55 wrappers assigned to this track. |
+| 2 | `alloc-leak` | `alloc-leak` | Every successful allocation needs a visible owner and release path. |
+| 3 | `early-return-alloc-leak` | `early-return-alloc-leak` | Early returns after acquisition should still pass through cleanup. |
+| 4 | `realloc-leak` | `realloc-leak` | A successful realloc returns the still-owned final pointer. |
+| 5 | `realloc-failure` | `realloc-failure` | Store realloc in a temporary so failure does not lose the original allocation. |
+| 6 | `double-free` | `double-free` | A resource should have one release path; clear or transfer ownership explicitly. |
+| 7 | `stray-free` | `stray-free` | Only free the exact pointer returned by the allocator. |
+| 8 | `use-after-free` | `use-after-free` | Do not keep using a pointer after ownership has been released. |
+| 9 | `resource-exhaustion` | `resource-exhaustion` | Bound resource requests before allocation or loops. |
 
 ## Valid shape to copy
 
@@ -80,4 +81,3 @@ This track is centered on the `c-memory-runtime` wrapper family:
 - process/runtime: `p101_exit`, `p101_exit_immediately`, `p101_abort`,
   `p101_atexit`, `p101_getenv`, `p101_system`;
 - conversion/runtime helpers from `stdlib` and common extensions.
-

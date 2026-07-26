@@ -1,0 +1,26 @@
+{
+  "name": "c-memory-runtime",
+  "lab_order": 1,
+  "issue_id": "P101-LAB-001",
+  "title": "Track smoke: C memory runtime wrappers",
+  "category": "wrapper smoke",
+  "tracks": [
+    "c"
+  ],
+  "scenario": "c-memory-runtime",
+  "expected_exit": 0,
+  "expected_status": "PASS",
+  "expected_findings": [],
+  "fault_count": 0,
+  "expected_output_contains": [
+    "c-memory-runtime: exercised 55 wrappers"
+  ],
+  "fix_goal": "Keep every c-memory-runtime wrapper compiling, linking, running, and visible to p101 observation.",
+  "fix_steps": [
+    "Run ./tracks/01-c-memory-runtime/run.sh.",
+    "Confirm the c-memory-runtime smoke case passes.",
+    "If it fails, identify the wrapper family named by the scenario output or compiler diagnostic.",
+    "Fix the wrapper use or portability guard without removing the wrapper from the track inventory."
+  ],
+  "lesson": "The first track has 55 wrappers; this smoke scenario exists to prove the whole wrapper family is usable before students work the broken ownership labs."
+}

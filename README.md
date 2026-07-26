@@ -61,6 +61,7 @@ Options:
 | Scenario | Purpose | Expected resource result |
 | --- | --- | --- |
 | `tour` | Clean file, realloc, pipe, and fork path | clean |
+| `c-memory-runtime` | Clean smoke test for all 55 Track 01 wrappers | clean |
 | `clean-file` | Open/write/close/free | clean |
 | `realloc` | Allocate, grow, and free | clean |
 | `pipe` | Create/read/write/close pipe fds | clean |

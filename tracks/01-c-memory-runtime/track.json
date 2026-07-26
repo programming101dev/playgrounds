@@ -12,48 +12,54 @@
     },
     {
       "step": 1,
+      "case": "c-memory-runtime",
+      "scenario": "c-memory-runtime",
+      "role": "all-wrapper-smoke"
+    },
+    {
+      "step": 2,
       "case": "alloc-leak",
       "scenario": "alloc-leak",
       "role": "owned-allocation-release"
     },
     {
-      "step": 2,
+      "step": 3,
       "case": "early-return-alloc-leak",
       "scenario": "early-return-alloc-leak",
       "role": "cleanup-on-all-exits"
     },
     {
-      "step": 3,
+      "step": 4,
       "case": "realloc-leak",
       "scenario": "realloc-leak",
       "role": "successful-realloc-ownership"
     },
     {
-      "step": 4,
+      "step": 5,
       "case": "realloc-failure",
       "scenario": "realloc-failure",
       "role": "preserve-original-on-realloc-failure"
     },
     {
-      "step": 5,
+      "step": 6,
       "case": "double-free",
       "scenario": "double-free",
       "role": "release-once"
     },
     {
-      "step": 6,
+      "step": 7,
       "case": "stray-free",
       "scenario": "stray-free",
       "role": "free-only-owning-pointer"
     },
     {
-      "step": 7,
+      "step": 8,
       "case": "use-after-free",
       "scenario": "use-after-free",
       "role": "no-use-after-release"
     },
     {
-      "step": 8,
+      "step": 9,
       "case": "resource-exhaustion",
       "scenario": "resource-exhaustion",
       "role": "bound-resource-requests"

@@ -34,6 +34,7 @@ exec ./corpus.sh \
     --keep-going \
     "${skip_flags[@]}" \
     --case clean \
+    --case c-memory-runtime \
     --case alloc-leak \
     --case early-return-alloc-leak \
     --case realloc-leak \
