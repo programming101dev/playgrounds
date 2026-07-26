@@ -294,12 +294,14 @@ if [ "$do_quality" -eq 1 ]; then
     record "SKIP" "fuzz smoke" "--skip-fuzz"
   fi
 
-  if [ "$do_coverage" -eq 1 ] && command -v gcovr >/dev/null 2>&1; then
+  if [ "$do_coverage" -eq 1 ] && [ -x ./coverage-report.sh ] && command -v gcovr >/dev/null 2>&1; then
     run_logged "configure coverage build" "$log_dir/configure-coverage.log" "0" ./change-compiler.sh -c clang --coverage || true
     run_logged "coverage build" "$log_dir/build-coverage.log" "0" ./build.sh -q || true
     run_logged "coverage tests" "$log_dir/tests-coverage.log" "0" ./test.sh --coverage || true
     run_logged "coverage report" "$log_dir/coverage.log" "0" ./coverage-report.sh --no-open --min 1 -- -s tour || true
     copy_coverage_report
+  elif [ "$do_coverage" -eq 1 ] && [ ! -x ./coverage-report.sh ]; then
+    record "SKIP" "coverage report" "coverage-report.sh not executable"
   elif [ "$do_coverage" -eq 1 ]; then
     record "SKIP" "coverage report" "gcovr not found"
   else
@@ -309,15 +311,15 @@ else
   record "SKIP" "quality pipeline" "--skip-quality"
 fi
 
-playground="$(find_tool P101_TOOL_PLAYGROUND ./build-clang/p101-tool-playground ./build-clang-22/p101-tool-playground ./build-gcc-16/p101-tool-playground p101-tool-playground)"
-observe="$(find_tool P101_OBSERVE ../p101-observe/build-clang/p101-observe ../p101-observe/build-clang-22/p101-observe ../p101-observe/build-gcc-16/p101-observe p101-observe)"
-tracker="$(find_tool P101_RESOURCE_TRACKER ../p101-resource-tracker/build-clang/p101-resource-tracker ../p101-resource-tracker/build-clang-22/p101-resource-tracker ../p101-resource-tracker/build-gcc-16/p101-resource-tracker ../p101-resource-tracker/build-clang/resource-tracker p101-resource-tracker resource-tracker)"
+playground="$(find_tool P101_TOOL_PLAYGROUND ./build-clang-22/p101-tool-playground ./build-clang/p101-tool-playground ./build-gcc-16/p101-tool-playground p101-tool-playground)"
+observe="$(find_tool P101_OBSERVE ../p101-observe/build-clang-22/p101-observe ../p101-observe/build-clang/p101-observe ../p101-observe/build-gcc-16/p101-observe p101-observe)"
+tracker="$(find_tool P101_RESOURCE_TRACKER ../p101-resource-tracker/build-clang-22/p101-resource-tracker ../p101-resource-tracker/build-clang/p101-resource-tracker ../p101-resource-tracker/build-gcc-16/p101-resource-tracker ../p101-resource-tracker/build-clang/resource-tracker p101-resource-tracker resource-tracker)"
 trace="$(find_tool P101_TRACE ../p101-trace/build-clang-22/p101-trace ../p101-trace/build-clang/p101-trace ../p101-trace/build-gcc-16/p101-trace p101-trace)"
 report="$(find_tool P101_REPORT ../p101-report/build-clang-22/p101-report ../p101-report/build-clang/p101-report ../p101-report/build-gcc-16/p101-report p101-report)"
-walker="$(find_tool P101_ERROR_PATH_WALK ../p101-error-path-walk/build-clang/p101-error-path-walk ../p101-error-path-walk/build-clang-22/p101-error-path-walk ../p101-error-path-walk/build-gcc-16/p101-error-path-walk ../p101-error-path-walk/build-clang/error-path-walk p101-error-path-walk error-path-walk)"
+walker="$(find_tool P101_ERROR_PATH_WALK ../p101-error-path-walk/build-clang-22/p101-error-path-walk ../p101-error-path-walk/build-clang/p101-error-path-walk ../p101-error-path-walk/build-gcc-16/p101-error-path-walk ../p101-error-path-walk/build-clang/error-path-walk p101-error-path-walk error-path-walk)"
 wrapper_audit="$(find_tool P101_WRAPPER_AUDIT ../p101-wrapper-audit/p101-wrapper-audit p101-wrapper-audit)"
-module_map="$(find_tool P101_MODULE_MAP ../p101-module-map/build-clang/p101-module-map ../p101-module-map/build-clang-22/p101-module-map ../p101-module-map/build-gcc-16/p101-module-map p101-module-map)"
-doctor="$(find_tool P101_DOCTOR ../p101-doctor/build-clang/p101-doctor ../p101-doctor/build-clang-22/p101-doctor ../p101-doctor/build-gcc-16/p101-doctor p101-doctor)"
+module_map="$(find_tool P101_MODULE_MAP ../p101-module-map/build-clang-22/p101-module-map ../p101-module-map/build-clang/p101-module-map ../p101-module-map/build-gcc-16/p101-module-map p101-module-map)"
+doctor="$(find_tool P101_DOCTOR ../p101-doctor/build-clang-22/p101-doctor ../p101-doctor/build-clang/p101-doctor ../p101-doctor/build-gcc-16/p101-doctor p101-doctor)"
 
 if [ -z "$playground" ]; then
   record "FAIL" "locate playground binary" "run ./build.sh first"

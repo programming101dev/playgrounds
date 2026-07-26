@@ -138,6 +138,7 @@ static int run_realloc_demo(const struct p101_env *env, struct p101_error *err, 
     if(grown == NULL || p101_error_has_error(err))
     {
         p101_free(env, buffer);
+        buffer = NULL;
         goto done;
     }
 
