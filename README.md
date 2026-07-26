@@ -148,6 +148,14 @@ The playground also demonstrates the project pipeline itself:
   execute.
 - `check.sh` ties format, strict build, tests, and fuzz smoke together.
 
+## Boundaries
+
+`p101-tool-playground` is a curated demonstration target. Its scenarios are
+designed to exercise the p101 tools clearly; they are not a substitute for
+running the tools on a student's actual project. Bug scenarios are intentionally
+broken teaching fixtures, and a clean playground tour only proves that this demo
+scenario stayed inside its expected resource model.
+
 ## Suggested classroom flow
 
 1. Run `tour` with `p101-observe` and inspect `summary.txt`.
