@@ -1,0 +1,9 @@
+#ifndef P101_TOOL_PLAYGROUND_ERRORS_H
+#define P101_TOOL_PLAYGROUND_ERRORS_H
+
+enum errors
+{
+    ERR_USAGE = 1
+};
+
+#endif    // P101_TOOL_PLAYGROUND_ERRORS_H
