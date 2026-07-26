@@ -99,6 +99,14 @@ verifies expected exit status and diagnostic IDs, and writes a linked
 `summary.md` plus the full per-case HTML reports. This makes the playground both
 a demo target and the checked answer key for the toolchain.
 
+New lessons should be mapped to the source-of-truth checklist in
+`corpus/CANONICAL-SOURCES.md`, which cross-references CERT C, CWE, ISO C secure
+coding rules, MISRA/JPL safer-C guidance, the classic comp.lang.c FAQ, OWASP
+logging guidance, and NIST secure-development practices. The checklist covers
+both broken-code traps and positive practices such as structured logging,
+consistent error handling, input validation, narrow module scope, testing,
+fuzzing, coverage, and reproducible bug bundles.
+
 For the student-facing lab series, run:
 
 ```sh
