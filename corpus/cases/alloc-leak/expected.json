@@ -1,9 +1,20 @@
 {
   "name": "alloc-leak",
+  "lab_order": 2,
+  "issue_id": "P101-LAB-102",
+  "title": "Allocation leak",
+  "category": "resource ownership",
   "scenario": "alloc-leak",
   "expected_exit": 1,
   "expected_status": "FINDINGS",
   "expected_findings": ["P101-ALLOC-001"],
   "fault_count": 0,
+  "fix_goal": "Every pointer returned by p101_malloc or p101_realloc remains owned until p101_free releases it.",
+  "fix_steps": [
+    "Find the allocation that survives to process exit.",
+    "Decide which scope owns the pointer.",
+    "Free it once in the common cleanup path.",
+    "Re-run ./lab.sh and confirm the allocation-leak lab is fixed."
+  ],
   "lesson": "A heap allocation returned by p101_malloc remains owned until it is passed to p101_free."
 }

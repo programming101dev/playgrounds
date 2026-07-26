@@ -21,6 +21,10 @@ static int   run_alloc_leak_demo(const struct p101_env *env, struct p101_error *
 static int   run_double_close_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
 static int   run_stray_close_demo(const struct p101_env *env, struct p101_error *err);
 static int   run_fault_lab(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_early_return_fd_leak_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_early_return_alloc_leak_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_partial_cleanup_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_realloc_leak_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
 static int   write_demo_file(const struct p101_env *env, struct p101_error *err, const struct arguments *args, const char *label, bool leak_fd, bool leak_alloc);
 static char *make_buffer(const struct p101_env *env, struct p101_error *err, size_t bytes, char fill);
 
@@ -97,6 +101,26 @@ int p101_tool_playground_run(const struct p101_env *env, struct p101_error *err,
         case SCENARIO_FAULT_LAB:
         {
             ret_val = run_fault_lab(env, err, args);
+            break;
+        }
+        case SCENARIO_EARLY_RETURN_FD_LEAK:
+        {
+            ret_val = run_early_return_fd_leak_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_EARLY_RETURN_ALLOC_LEAK:
+        {
+            ret_val = run_early_return_alloc_leak_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_PARTIAL_CLEANUP:
+        {
+            ret_val = run_partial_cleanup_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_REALLOC_LEAK:
+        {
+            ret_val = run_realloc_leak_demo(env, err, args);
             break;
         }
         default:
@@ -408,6 +432,125 @@ done:
         p101_free(env, buffer);
     }
 
+    return ret_val;
+}
+
+static int run_early_return_fd_leak_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    int   fd;
+    char *buffer;
+
+    P101_TRACE(env);
+    buffer = NULL;
+    p101_printf(env, err, "early-return-fd-leak: returns before descriptor cleanup\n");
+
+    fd = p101_open(env, err, args->output_path, O_WRONLY | O_CREAT | O_TRUNC, REPORT_FILE_MODE);
+    if(p101_error_has_error(err))
+    {
+        return EXIT_FAILURE;
+    }
+
+    buffer = make_buffer(env, err, args->bytes, 'e');
+    if(p101_error_has_error(err))
+    {
+        return EXIT_FAILURE;
+    }
+
+    p101_write(env, err, fd, buffer, args->bytes);
+    p101_free(env, buffer);
+
+    if(p101_error_has_error(err))
+    {
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
+}
+
+static int run_early_return_alloc_leak_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char *buffer;
+
+    P101_TRACE(env);
+    p101_printf(env, err, "early-return-alloc-leak: returns before allocation cleanup\n");
+
+    buffer = make_buffer(env, err, args->bytes, 'a');
+    if(buffer == NULL || p101_error_has_error(err))
+    {
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
+}
+
+static int run_partial_cleanup_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    int   file_fd;
+    int   pipe_fds[2];
+    char *buffer;
+
+    P101_TRACE(env);
+    buffer      = NULL;
+    pipe_fds[0] = -1;
+    pipe_fds[1] = -1;
+    p101_printf(env, err, "partial-cleanup: acquires several resources and releases only some\n");
+
+    file_fd = p101_open(env, err, args->output_path, O_WRONLY | O_CREAT | O_TRUNC, REPORT_FILE_MODE);
+    if(p101_error_has_error(err))
+    {
+        return EXIT_FAILURE;
+    }
+
+    buffer = make_buffer(env, err, args->bytes, 'p');
+    if(p101_error_has_error(err))
+    {
+        return EXIT_FAILURE;
+    }
+
+    p101_pipe(env, err, pipe_fds);
+    if(p101_error_has_error(err))
+    {
+        return EXIT_FAILURE;
+    }
+
+    p101_write(env, err, file_fd, buffer, args->bytes);
+    p101_close(env, err, pipe_fds[1]);
+
+    if(p101_error_has_error(err))
+    {
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
+}
+
+static int run_realloc_leak_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    char *buffer;
+    int   ret_val;
+
+    P101_TRACE(env);
+    ret_val = EXIT_FAILURE;
+    p101_printf(env, err, "realloc-leak: grows an allocation and intentionally forgets to free it\n");
+
+    buffer = make_buffer(env, err, args->bytes, 'g');
+    if(buffer == NULL || p101_error_has_error(err))
+    {
+        goto done;
+    }
+
+    buffer = (char *)p101_realloc(env, err, buffer, (size_t)args->bytes + (size_t)args->bytes);
+    if(buffer == NULL || p101_error_has_error(err))
+    {
+        goto done;
+    }
+
+    p101_memset(env, buffer + args->bytes, 'G', args->bytes);
+    buffer  = NULL;
+    ret_val = EXIT_SUCCESS;
+
+done:
+    p101_free(env, buffer);
     return ret_val;
 }
 

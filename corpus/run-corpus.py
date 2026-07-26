@@ -74,6 +74,7 @@ def load_cases(cases_dir: Path, selected: set[str] | None) -> list[dict[str, Any
         case["case_dir"] = str(expected_path.parent)
         if selected is None or str(case.get("name")) in selected:
             cases.append(case)
+    cases.sort(key=lambda item: (int(item.get("lab_order", 1000)), str(item.get("name", ""))))
     return cases
 
 

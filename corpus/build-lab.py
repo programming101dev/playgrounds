@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a self-contained lab book from the playground corpus."""
+"""Build a self-contained lab series from the playground corpus."""
 
 from __future__ import annotations
 
@@ -7,7 +7,6 @@ import argparse
 import html
 import json
 import os
-import shutil
 import subprocess
 import sys
 from dataclasses import dataclass
@@ -18,18 +17,24 @@ from typing import Any
 @dataclass(frozen=True)
 class LabCase:
     name: str
+    order: int
+    issue_id: str
+    title: str
+    category: str
     scenario: str
     expected_exit: int
     expected_status: str
     lesson: str
     expected_findings: list[str]
     expects_error_path_findings: bool
+    fix_goal: str
+    fix_steps: list[str]
     case_dir: Path
     report_dir: Path
 
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Build the p101-tool-playground lab book.")
+    parser = argparse.ArgumentParser(description="Build the p101-tool-playground lab series.")
     parser.add_argument("-o", "--output", type=Path, help="Output directory. Default: /tmp/p101-tool-playground-lab-<pid>")
     parser.add_argument("--case", action="append", dest="cases", help="Include only this case name; may be repeated.")
     parser.add_argument("--quick", action="store_true", help="Use the short classroom set: clean and fd-leak.")
@@ -38,6 +43,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--playground", type=Path, help="Path to the p101-tool-playground executable.")
     parser.add_argument("--skip-html", action="store_true", help="Skip per-case p101 check HTML generation.")
     parser.add_argument("--skip-bundle", action="store_true", help="Skip per-case bug bundles.")
+    parser.add_argument("--strict-corpus", action="store_true", help="Exit nonzero if the committed issue corpus no longer matches its oracle.")
     return parser.parse_args(argv)
 
 
@@ -91,19 +97,27 @@ def load_cases(root: Path, runs_dir: Path, selected: set[str] | None) -> list[La
         case_dir = Path(expected["case_dir"])
         lesson = read_text(case_dir / "lesson.md", str(expected.get("lesson", ""))).strip()
         expected_findings = [str(item) for item in expected.get("expected_findings", [])]
+        fix_steps = [str(item) for item in expected.get("fix_steps", [])]
         cases.append(
             LabCase(
                 name=name,
+                order=int(expected.get("lab_order", 1000)),
+                issue_id=str(expected.get("issue_id", name)),
+                title=str(expected.get("title", name)),
+                category=str(expected.get("category", "")),
                 scenario=str(expected["scenario"]),
                 expected_exit=int(expected["expected_exit"]),
                 expected_status=str(expected.get("expected_status", "")),
                 lesson=lesson,
                 expected_findings=expected_findings,
                 expects_error_path_findings=bool(expected.get("expected_error_path_findings", False)),
+                fix_goal=str(expected.get("fix_goal", "")),
+                fix_steps=fix_steps,
                 case_dir=case_dir,
                 report_dir=runs_dir / name,
             )
         )
+    cases.sort(key=lambda item: (item.order, item.name))
     return cases
 
 
@@ -191,36 +205,89 @@ def case_status(case: LabCase) -> str:
     return "clean"
 
 
+def expected_issue_is_present(case: LabCase) -> bool:
+    ordinary_ids = {str(finding.get("id", "")) for finding in collect_correlated_findings(case.report_dir)}
+    fault_findings = collect_fault_findings(case.report_dir) if case.expects_error_path_findings else []
+    if case.expected_findings and any(finding_id in ordinary_ids for finding_id in case.expected_findings):
+        return True
+    if case.expects_error_path_findings and fault_findings:
+        return True
+    return False
+
+
+def lab_progress(case: LabCase) -> str:
+    if not case.report_dir.exists():
+        return "MISSING"
+    if not case.expected_findings and not case.expects_error_path_findings:
+        return "REFERENCE"
+    return "OPEN" if expected_issue_is_present(case) else "FIXED"
+
+
+def progress_counts(cases: list[LabCase]) -> tuple[int, int, int]:
+    issue_cases = [case for case in cases if case.expected_findings or case.expects_error_path_findings]
+    fixed = sum(1 for case in issue_cases if lab_progress(case) == "FIXED")
+    open_count = sum(1 for case in issue_cases if lab_progress(case) == "OPEN")
+    return fixed, open_count, len(issue_cases)
+
+
 def render_markdown(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
+    fixed, open_count, total = progress_counts(cases)
     lines = [
-        "# p101 tool playground lab",
+        "# p101 tool playground lab series",
         "",
-        "This lab book is generated from the checked playground corpus. Each section links to the exact reports produced by `p101 check`, so the lesson, evidence, and regression oracle travel together.",
+        "This is a series of small, intentionally broken p101 programs inside the playground. Fix one issue, re-run the lab, and watch that lab move from OPEN to FIXED.",
         "",
-        f"- Corpus status: {'PASS' if corpus_rc == 0 else 'FAIL'}",
+        f"- Progress: {fixed}/{total} issue labs fixed, {open_count} still open",
+        f"- Instructor corpus oracle: {'PASS' if corpus_rc == 0 else 'CHANGED'}",
         f"- Corpus summary: [runs/summary.md](./runs/summary.md)",
         f"- HTML lab book: [index.html](./index.html)",
         "",
+        "## Progress board",
+        "",
+        "| Lab | Status | Issue | Scenario | Expected signal |",
+        "| ---: | --- | --- | --- | --- |",
+    ]
+    for case in cases:
+        signal = ", ".join(case.expected_findings)
+        if case.expects_error_path_findings:
+            signal = (signal + ", " if signal else "") + "error-path findings"
+        if not signal:
+            signal = "clean reference"
+        lines.append(f"| {case.order} | `{lab_progress(case)}` | {case.issue_id}: {case.title} | `{case.scenario}` | {signal} |")
+    lines.extend(
+        [
+            "",
         "## Classroom arc",
         "",
         "1. Start with the clean tour and inspect what a healthy resource lifetime looks like.",
         "2. Introduce one broken ownership rule at a time: leaked descriptors, leaked heap blocks, double close, and stray close.",
-        "3. Run the fault lab to show the uncomfortable truth: the happy path can be clean while the error path is vulnerable.",
-        "4. Use the linked reports to connect each finding back to source and call history.",
+            "3. Fix early-return cleanup so control-flow convenience does not skip ownership release.",
+            "4. Fix multi-resource cleanup by treating cleanup as a ledger.",
+            "5. Run the fault lab to show the uncomfortable truth: the happy path can be clean while the error path is vulnerable.",
+            "6. Use the linked reports to connect each finding back to source and call history.",
         "",
         "## Lessons",
         "",
-    ]
+        ]
+    )
     for case in cases:
         lines.extend(
             [
-                f"### {case.name}",
+                f"### Lab {case.order}: {case.title}",
                 "",
+                f"- Issue ID: `{case.issue_id}`",
+                f"- Category: `{case.category}`",
                 f"- Scenario: `{case.scenario}`",
                 f"- Expected status: `{case.expected_status}`",
                 f"- Expected exit: `{case.expected_exit}`",
-                f"- Lab result: `{case_status(case)}`",
+                f"- Progress: `{lab_progress(case)}`",
                 f"- Report: [runs/{case.name}/index.html](./runs/{case.name}/index.html)",
+                "",
+                f"Goal: {case.fix_goal}",
+                "",
+                "Fix checklist:",
+                "",
+                *[f"- {step}" for step in case.fix_steps],
                 "",
                 shift_markdown_headings(case.lesson, 4),
                 "",
@@ -237,10 +304,12 @@ def render_markdown(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
 
 def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
     status = "PASS" if corpus_rc == 0 else "FAIL"
+    fixed, open_count, total = progress_counts(cases)
     cards: list[str] = []
     for case in cases:
         findings = collect_correlated_findings(case.report_dir)
         fault_findings = collect_fault_findings(case.report_dir) if case.expects_error_path_findings else []
+        progress = lab_progress(case)
         finding_items = "".join(format_finding(finding) for finding in findings[:8])
         fault_items = "".join(format_finding(finding) for finding in fault_findings[:8])
         if not finding_items:
@@ -258,6 +327,10 @@ def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
         if not expected:
             expected = "<code>clean</code>"
 
+        steps = "".join(f"<li>{html.escape(step)}</li>" for step in case.fix_steps)
+        if not steps:
+            steps = "<li>Use the linked report to identify the missing ownership step.</li>"
+
         links = [
             link_if_exists(out_dir, case.report_dir / "index.html", "case HTML report"),
             link_if_exists(out_dir, case.report_dir / "summary.md", "case summary"),
@@ -270,17 +343,20 @@ def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
 
         cards.append(
             f"""
-            <article class="card {html.escape(case_status(case))}">
+            <article class="card {html.escape(progress.lower())}">
               <div class="card-title">
-                <h3>{html.escape(case.name)}</h3>
-                <span>{html.escape(case_status(case))}</span>
+                <h3>Lab {case.order}: {html.escape(case.title)}</h3>
+                <span>{html.escape(progress)}</span>
               </div>
+              <p><code>{html.escape(case.issue_id)}</code> · {html.escape(case.category)} · scenario <code>{html.escape(case.scenario)}</code></p>
               <p class="lesson">{html.escape(lesson_excerpt(case.lesson))}</p>
               <dl>
-                <dt>Scenario</dt><dd><code>{html.escape(case.scenario)}</code></dd>
+                <dt>Goal</dt><dd>{html.escape(case.fix_goal)}</dd>
                 <dt>Expected</dt><dd>{expected}</dd>
                 <dt>Exit oracle</dt><dd><code>{case.expected_exit}</code> / <code>{html.escape(case.expected_status)}</code></dd>
               </dl>
+              <h4>Fix checklist</h4>
+              <ol>{steps}</ol>
               <h4>Ordinary run</h4>
               <ul>{finding_items}</ul>
               <h4>Injected error paths</h4>
@@ -291,7 +367,7 @@ def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
         )
 
     css = """
-    :root { color-scheme: light dark; --ok: #207044; --bad: #a73535; --ink: #1f2933; --muted: #65717f; --card: #ffffff; --line: #d9e2ec; --bg: #f5f7fa; }
+    :root { color-scheme: light dark; --ok: #207044; --bad: #a73535; --ref: #2868c7; --ink: #1f2933; --muted: #65717f; --card: #ffffff; --line: #d9e2ec; --bg: #f5f7fa; }
     @media (prefers-color-scheme: dark) { :root { --ink: #ecf2f8; --muted: #aab7c4; --card: #121820; --line: #27313d; --bg: #0b1016; } }
     body { background: var(--bg); color: var(--ink); font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; }
     main { max-width: 1120px; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
@@ -304,6 +380,9 @@ def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
     .grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); }
     .card { background: var(--card); border: 1px solid var(--line); border-radius: 1rem; padding: 1rem; box-shadow: 0 12px 30px rgba(15, 23, 42, .06); }
     .card.clean { border-top: .35rem solid var(--ok); }
+    .card.reference { border-top: .35rem solid var(--ref); }
+    .card.fixed { border-top: .35rem solid var(--ok); }
+    .card.open { border-top: .35rem solid var(--bad); }
     .card.findings { border-top: .35rem solid var(--bad); }
     .card.missing { border-top: .35rem solid #a15c00; }
     .card-title { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
@@ -323,24 +402,31 @@ def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>p101 tool playground lab</title>
+  <title>p101 tool playground lab series</title>
   <style>{css}</style>
 </head>
 <body>
 <main>
   <section class="hero">
-    <p class="pill">Generated lab book · corpus {html.escape(status)}</p>
-    <h1>p101 tool playground lab</h1>
-    <p>This is the 10x playground: one reproducible artifact that teaches the whole p101 toolchain, proves the regression corpus, and gives students clickable evidence for each ownership mistake.</p>
+    <p class="pill">Generated lab series · {fixed}/{total} fixed · corpus {html.escape(status)}</p>
+    <h1>p101 tool playground lab series</h1>
+    <p>This is the 10x playground: a sequence of intentionally broken, fixable labs. Students fix one issue at a time, re-run the lab, and see the progress board move from OPEN to FIXED.</p>
     <p><a href="runs/summary.md">Corpus summary</a> · <a href="lab.md">Markdown lab</a> · <a href="logs/corpus.log">Corpus command log</a></p>
+  </section>
+
+  <h2>Progress board</h2>
+  <section class="flow">
+    <div class="step"><strong>{fixed}/{total} fixed</strong><br>{open_count} issue labs still open.</div>
+    <div class="step"><strong>How to use it</strong><br>Fix one lab, rebuild if needed, run <code>./lab.sh</code>, and refresh this page.</div>
+    <div class="step"><strong>Instructor oracle</strong><br>{html.escape(status)} means the committed broken fixtures still demonstrate the expected issues.</div>
   </section>
 
   <h2>Classroom arc</h2>
   <section class="flow">
     <div class="step"><strong>1. Observe clean code.</strong><br>Start with the clean tour and inspect the trace/resource model.</div>
     <div class="step"><strong>2. Break one ownership rule.</strong><br>Compare fd leaks, heap leaks, double close, and stray close.</div>
-    <div class="step"><strong>3. Inject failure.</strong><br>Use the fault lab to make cold error paths execute.</div>
-    <div class="step"><strong>4. Read the evidence.</strong><br>Follow each report back to call history and source context.</div>
+    <div class="step"><strong>3. Fix control flow.</strong><br>Early returns are fine only if cleanup still runs.</div>
+    <div class="step"><strong>4. Inject failure.</strong><br>Use the fault lab to make cold error paths execute.</div>
   </section>
 
   <h2>Lessons</h2>
@@ -356,12 +442,11 @@ def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
 def run_corpus(root: Path, out_dir: Path, args: argparse.Namespace) -> int:
     runs_dir = out_dir / "runs"
     command = [sys.executable, str(root / "corpus" / "run-corpus.py"), "-o", str(runs_dir)]
+    command.append("--keep-going")
     if args.quick:
         command.append("--quick")
     for case_name in args.cases or []:
         command.extend(["--case", case_name])
-    if args.keep_going:
-        command.append("--keep-going")
     if args.p101 is not None:
         command.extend(["--p101", str(args.p101)])
     if args.playground is not None:
@@ -403,8 +488,8 @@ def main(argv: list[str]) -> int:
     print(f"HTML: {out_dir / 'index.html'}")
     print(f"Markdown: {out_dir / 'lab.md'}")
     if corpus_rc != 0:
-        print(f"Corpus run failed; see {out_dir / 'logs' / 'corpus.log'}", file=sys.stderr)
-    return corpus_rc
+        print(f"Corpus oracle changed; see {out_dir / 'logs' / 'corpus.log'}", file=sys.stderr)
+    return corpus_rc if args.strict_corpus else 0
 
 
 if __name__ == "__main__":

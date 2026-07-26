@@ -1,9 +1,20 @@
 {
   "name": "double-close",
+  "lab_order": 3,
+  "issue_id": "P101-LAB-103",
+  "title": "Double close",
+  "category": "resource ownership",
   "scenario": "double-close",
   "expected_exit": 1,
   "expected_status": "FINDINGS",
   "expected_findings": ["P101-FD-002"],
   "fault_count": 0,
+  "fix_goal": "A resource should have one owner and one release; after release, clear the ownership marker.",
+  "fix_steps": [
+    "Find the two p101_close calls that release the same descriptor.",
+    "Remove the second release or guard it behind fd != -1.",
+    "Assign fd = -1 immediately after the first successful close.",
+    "Re-run ./lab.sh and confirm the double-close lab is fixed."
+  ],
   "lesson": "Ownership should be cleared after close so cleanup code cannot close the same descriptor twice."
 }

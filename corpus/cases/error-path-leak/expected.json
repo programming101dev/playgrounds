@@ -1,10 +1,21 @@
 {
   "name": "error-path-leak",
+  "lab_order": 8,
+  "issue_id": "P101-LAB-108",
+  "title": "Error-path leak",
+  "category": "fault injection",
   "scenario": "fault-lab",
   "expected_exit": 1,
   "expected_status": "FINDINGS",
   "expected_findings": [],
   "expected_error_path_findings": true,
   "fault_count": 8,
+  "fix_goal": "The same cleanup rules must hold when any p101 call fails, not only on the happy path.",
+  "fix_steps": [
+    "Run the lab and open the fault-walk artifacts for this case.",
+    "Find the first injected failure that leaks an already-acquired resource.",
+    "Move cleanup out of the success-only branch.",
+    "Re-run ./lab.sh and confirm the error-path lab is fixed."
+  ],
   "lesson": "The happy path can be clean while an injected setup failure leaks partially acquired resources."
 }

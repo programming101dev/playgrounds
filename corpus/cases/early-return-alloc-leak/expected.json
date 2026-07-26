@@ -1,0 +1,20 @@
+{
+  "name": "early-return-alloc-leak",
+  "lab_order": 6,
+  "issue_id": "P101-LAB-106",
+  "title": "Early return leaks an allocation",
+  "category": "control flow",
+  "scenario": "early-return-alloc-leak",
+  "expected_exit": 1,
+  "expected_status": "FINDINGS",
+  "expected_findings": ["P101-ALLOC-001"],
+  "fault_count": 0,
+  "fix_goal": "Make heap ownership explicit even when validation or short-circuit logic wants to return early.",
+  "fix_steps": [
+    "Find the p101_malloc-backed allocation in the scenario.",
+    "Find the return that exits while the pointer is still owned.",
+    "Move p101_free into a cleanup path that every return passes through.",
+    "Re-run ./lab.sh and confirm the early-return allocation lab is fixed."
+  ],
+  "lesson": "An early return after allocation is a leak unless the return path releases the owned pointer."
+}

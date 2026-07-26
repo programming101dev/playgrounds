@@ -74,6 +74,12 @@ static void test_scenario_names_round_trip(void)
     TEST_ASSERT_EQUAL_INT(SCENARIO_FAULT_LAB, p101_tool_playground_scenario_from_name(env, "fault-lab", &ok));
     TEST_ASSERT_TRUE(ok);
     TEST_ASSERT_EQUAL_STRING("fault-lab", p101_tool_playground_scenario_name(SCENARIO_FAULT_LAB));
+    TEST_ASSERT_EQUAL_INT(SCENARIO_EARLY_RETURN_FD_LEAK, p101_tool_playground_scenario_from_name(env, "early-return-fd-leak", &ok));
+    TEST_ASSERT_TRUE(ok);
+    TEST_ASSERT_EQUAL_STRING("early-return-fd-leak", p101_tool_playground_scenario_name(SCENARIO_EARLY_RETURN_FD_LEAK));
+    TEST_ASSERT_EQUAL_INT(SCENARIO_REALLOC_LEAK, p101_tool_playground_scenario_from_name(env, "realloc-leak", &ok));
+    TEST_ASSERT_TRUE(ok);
+    TEST_ASSERT_EQUAL_STRING("realloc-leak", p101_tool_playground_scenario_name(SCENARIO_REALLOC_LEAK));
 }
 
 static void test_rejects_unknown_scenario(void)

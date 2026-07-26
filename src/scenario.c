@@ -52,6 +52,22 @@ enum playground_scenario p101_tool_playground_scenario_from_name(const struct p1
     {
         scenario = SCENARIO_FAULT_LAB;
     }
+    else if(p101_strcmp(env, name, "early-return-fd-leak") == 0)
+    {
+        scenario = SCENARIO_EARLY_RETURN_FD_LEAK;
+    }
+    else if(p101_strcmp(env, name, "early-return-alloc-leak") == 0)
+    {
+        scenario = SCENARIO_EARLY_RETURN_ALLOC_LEAK;
+    }
+    else if(p101_strcmp(env, name, "partial-cleanup") == 0)
+    {
+        scenario = SCENARIO_PARTIAL_CLEANUP;
+    }
+    else if(p101_strcmp(env, name, "realloc-leak") == 0)
+    {
+        scenario = SCENARIO_REALLOC_LEAK;
+    }
     else
     {
         *ok = false;
@@ -120,6 +136,26 @@ const char *p101_tool_playground_scenario_name(enum playground_scenario scenario
             name = "fault-lab";
             break;
         }
+        case SCENARIO_EARLY_RETURN_FD_LEAK:
+        {
+            name = "early-return-fd-leak";
+            break;
+        }
+        case SCENARIO_EARLY_RETURN_ALLOC_LEAK:
+        {
+            name = "early-return-alloc-leak";
+            break;
+        }
+        case SCENARIO_PARTIAL_CLEANUP:
+        {
+            name = "partial-cleanup";
+            break;
+        }
+        case SCENARIO_REALLOC_LEAK:
+        {
+            name = "realloc-leak";
+            break;
+        }
         default:
         {
             name = "unknown";
@@ -144,6 +180,10 @@ void p101_tool_playground_print_scenarios(const struct p101_env *env, struct p10
     p101_fputs(env, err, "  fd-leak       Intentionally leak one descriptor\n", stream);
     p101_fputs(env, err, "  alloc-leak    Intentionally leak one allocation\n", stream);
     p101_fputs(env, err, "  double-close  Intentionally close one descriptor twice\n", stream);
-    p101_fputs(env, err, "  stray-close   Intentionally close descriptor -1\n", stream);
-    p101_fputs(env, err, "  fault-lab     Clean normally, leaky under injected p101 failures\n", stream);
+    p101_fputs(env, err, "  stray-close              Intentionally close an unopened positive descriptor\n", stream);
+    p101_fputs(env, err, "  fault-lab                Clean normally, leaky under injected p101 failures\n", stream);
+    p101_fputs(env, err, "  early-return-fd-leak     Return before descriptor cleanup\n", stream);
+    p101_fputs(env, err, "  early-return-alloc-leak  Return before allocation cleanup\n", stream);
+    p101_fputs(env, err, "  partial-cleanup          Acquire several resources and clean up only some\n", stream);
+    p101_fputs(env, err, "  realloc-leak             Grow an allocation and forget to free the result\n", stream);
 }

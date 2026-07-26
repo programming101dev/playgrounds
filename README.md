@@ -48,6 +48,10 @@ Options:
 | `double-close` | Close a descriptor twice | bad release |
 | `stray-close` | Close an unopened descriptor | bad release |
 | `fault-lab` | Clean normally, leaky when setup calls are fault-injected | error-path leaks |
+| `early-return-fd-leak` | Return before descriptor cleanup | descriptor leak |
+| `early-return-alloc-leak` | Return before allocation cleanup | allocation leak |
+| `partial-cleanup` | Acquire several resources and release only some | descriptor + allocation leaks |
+| `realloc-leak` | Grow an allocation and forget to free the result | allocation leak |
 
 The bug scenarios are intentionally broken. They are not regressions; they are
 teaching targets.
@@ -90,7 +94,7 @@ verifies expected exit status and diagnostic IDs, and writes a linked
 `summary.md` plus the full per-case HTML reports. This makes the playground both
 a demo target and the checked answer key for the toolchain.
 
-For the student-facing lab book, run:
+For the student-facing lab series, run:
 
 ```sh
 ./lab.sh --quick
@@ -98,11 +102,17 @@ For the student-facing lab book, run:
 ```
 
 The lab generator runs the same checked corpus and writes a self-contained
-`index.html` plus `lab.md`. Each lesson card links to the exact `p101 check`
-artifacts that produced it: resource findings, correlated reports, fault-walk
-outputs, and command logs. The goal is to make the playground usable as a
-classroom walkthrough, a take-home lab, and a regression receipt from the same
-source material.
+`index.html` plus `lab.md`. It is a series, not a single worksheet: each issue
+has an ordered lab ID, a dedicated `lesson.md`, a fix checklist, and a progress
+state. Students fix one issue, re-run `./lab.sh`, and watch that lab move from
+`OPEN` to `FIXED`.
+
+For instructor/CI checks that prove the committed broken fixtures still produce
+their expected diagnostics, add `--strict-corpus`:
+
+```sh
+./lab.sh --strict-corpus
+```
 
 Build the playground:
 

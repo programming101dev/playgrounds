@@ -1,0 +1,21 @@
+{
+  "name": "partial-cleanup",
+  "lab_order": 7,
+  "issue_id": "P101-LAB-107",
+  "title": "Partial cleanup after multiple acquisitions",
+  "category": "resource ownership",
+  "scenario": "partial-cleanup",
+  "expected_exit": 1,
+  "expected_status": "FINDINGS",
+  "expected_findings": ["P101-FD-001", "P101-ALLOC-001"],
+  "fault_count": 0,
+  "fix_goal": "When a function acquires several resources, cleanup must account for every resource independently.",
+  "fix_steps": [
+    "List each acquired resource: file descriptor, pipe read end, pipe write end, heap buffer.",
+    "Initialize each descriptor to -1 and each pointer to NULL.",
+    "Release each owned resource in one cleanup block.",
+    "Clear each ownership marker after release.",
+    "Re-run ./lab.sh and confirm both descriptor and allocation findings disappear."
+  ],
+  "lesson": "Functions that acquire several resources need a cleanup ledger, not a cleanup guess."
+}
