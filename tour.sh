@@ -3,7 +3,7 @@
 #
 # The playground is meant to show the whole p101 toolchain in one place:
 # strict build, tests, fuzzing, coverage, observation, resource tracking, call
-# tracing, correlated reports, and error-path walking.
+# tracing, correlated reports, error-path walking, and the p101-audit conductor.
 set -u
 set -o pipefail
 
@@ -34,7 +34,7 @@ Options:
 
 Tool paths may be overridden with:
   P101_OBSERVE, P101_RESOURCE_TRACKER, P101_TRACE, P101_REPORT,
-  P101_ERROR_PATH_WALK, P101_TOOL_PLAYGROUND
+  P101_ERROR_PATH_WALK, P101_AUDIT, P101_TOOL_PLAYGROUND
 USAGE
 }
 
@@ -197,7 +197,8 @@ Generated: ${timestamp}
 
 This directory is a one-command tour of the p101 tooling stack: strict checks,
 unit tests, fuzzing, coverage, runtime observation, resource tracking, call
-tracing, correlated reports, and fault-injected error-path walking.
+tracing, correlated reports, fault-injected error-path walking, and the
+p101-audit conductor.
 
 ## Results
 
@@ -238,6 +239,10 @@ EOF
     printf -- '- Fault walk: [fault-walk](./fault-walk/)\n' >> "$summary"
   fi
 
+  if [ -d "$out_dir/audit" ]; then
+    printf -- '- Audit: [audit](./audit/)\n' >> "$summary"
+  fi
+
   if [ -f "$out_dir/coverage/index.html" ]; then
     printf -- '- Coverage: [coverage/index.html](./coverage/index.html)\n' >> "$summary"
   fi
@@ -261,6 +266,14 @@ EOF
 
   if [ -f "$log_dir/fault-walk.log" ]; then
     printf -- '- [fault-walk output](./logs/fault-walk.log)\n' >> "$summary"
+  fi
+
+  if [ -f "$out_dir/audit/summary.md" ]; then
+    printf -- '- [audit/summary.md](./audit/summary.md)\n' >> "$summary"
+  fi
+
+  if [ -f "$out_dir/audit/audit.json" ]; then
+    printf -- '- [audit/audit.json](./audit/audit.json)\n' >> "$summary"
   fi
 }
 
@@ -302,6 +315,7 @@ tracker="$(find_tool P101_RESOURCE_TRACKER ../p101-resource-tracker/build-clang/
 trace="$(find_tool P101_TRACE ../p101-trace/build-clang/p101-trace p101-trace)"
 report="$(find_tool P101_REPORT ../p101-report/build-clang/p101-report p101-report)"
 walker="$(find_tool P101_ERROR_PATH_WALK ../p101-error-path-walk/build-clang/p101-error-path-walk ../p101-error-path-walk/build-clang/error-path-walk p101-error-path-walk error-path-walk)"
+audit="$(find_tool P101_AUDIT ../p101-audit/build-clang/p101-audit p101-audit)"
 
 if [ -z "$playground" ]; then
   record "FAIL" "locate playground binary" "run ./build.sh first"
@@ -324,6 +338,13 @@ else
   reset_child_dir "$out_dir/fault-walk"
   mkdir -p "$out_dir/fault-walk"
   run_logged "fault walk" "$log_dir/fault-walk.log" "0 1" "$walker" -n "$fault_count" -l "$out_dir/fault-walk/fault" -r "$tracker" -p "$report" -- "$playground" -s fault-lab -o "$out_dir/fault-lab-output.txt" || true
+fi
+
+if [ -z "$playground" ] || [ -z "$audit" ] || [ -z "$observe" ] || [ -z "$walker" ] || [ -z "$tracker" ] || [ -z "$trace" ] || [ -z "$report" ]; then
+  record "SKIP" "audit clean run" "missing: $(missing_tools p101-tool-playground "$playground" p101-audit "$audit" p101-observe "$observe" p101-error-path-walk "$walker" p101-resource-tracker "$tracker" p101-trace "$trace" p101-report "$report")"
+else
+  reset_child_dir "$out_dir/audit"
+  run_logged "audit clean run" "$log_dir/audit.log" "0" "$audit" -o "$out_dir/audit" -n "$fault_count" -O "$observe" -W "$walker" -r "$tracker" -t "$trace" -p "$report" -- "$playground" -s clean-file -o "$out_dir/audit-target-output.txt" || true
 fi
 
 append_summary_footer
