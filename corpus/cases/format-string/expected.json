@@ -1,6 +1,6 @@
 {
   "name": "format-string",
-  "lab_order": 28,
+  "lab_order": 35,
   "issue_id": "P101-LAB-317",
   "title": "Never use user text as a printf format",
   "category": "security/format",

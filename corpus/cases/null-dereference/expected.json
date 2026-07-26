@@ -1,6 +1,6 @@
 {
   "name": "null-dereference",
-  "lab_order": 15,
+  "lab_order": 16,
   "issue_id": "P101-LAB-323",
   "title": "Check NULL before dereferencing",
   "category": "state/checked-result",

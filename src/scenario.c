@@ -176,6 +176,46 @@ enum playground_scenario p101_tool_playground_scenario_from_name(const struct p1
     {
         scenario = SCENARIO_DATA_RACE;
     }
+    else if(p101_strcmp(env, name, "string-not-terminated") == 0)
+    {
+        scenario = SCENARIO_STRING_NOT_TERMINATED;
+    }
+    else if(p101_strcmp(env, name, "partial-write") == 0)
+    {
+        scenario = SCENARIO_PARTIAL_WRITE;
+    }
+    else if(p101_strcmp(env, name, "interrupted-syscall") == 0)
+    {
+        scenario = SCENARIO_INTERRUPTED_SYSCALL;
+    }
+    else if(p101_strcmp(env, name, "unsafe-file-mode") == 0)
+    {
+        scenario = SCENARIO_UNSAFE_FILE_MODE;
+    }
+    else if(p101_strcmp(env, name, "symlink-follow") == 0)
+    {
+        scenario = SCENARIO_SYMLINK_FOLLOW;
+    }
+    else if(p101_strcmp(env, name, "trusted-environment") == 0)
+    {
+        scenario = SCENARIO_TRUSTED_ENVIRONMENT;
+    }
+    else if(p101_strcmp(env, name, "unchecked-parse") == 0)
+    {
+        scenario = SCENARIO_UNCHECKED_PARSE;
+    }
+    else if(p101_strcmp(env, name, "missing-authorization") == 0)
+    {
+        scenario = SCENARIO_MISSING_AUTHORIZATION;
+    }
+    else if(p101_strcmp(env, name, "cleanup-order") == 0)
+    {
+        scenario = SCENARIO_CLEANUP_ORDER;
+    }
+    else if(p101_strcmp(env, name, "thread-argument-lifetime") == 0)
+    {
+        scenario = SCENARIO_THREAD_ARGUMENT_LIFETIME;
+    }
     else if(p101_strcmp(env, name, "parser-fuzz") == 0)
     {
         scenario = SCENARIO_PARSER_FUZZ;
@@ -403,6 +443,56 @@ const char *p101_tool_playground_scenario_name(enum playground_scenario scenario
             name = "data-race";
             break;
         }
+        case SCENARIO_STRING_NOT_TERMINATED:
+        {
+            name = "string-not-terminated";
+            break;
+        }
+        case SCENARIO_PARTIAL_WRITE:
+        {
+            name = "partial-write";
+            break;
+        }
+        case SCENARIO_INTERRUPTED_SYSCALL:
+        {
+            name = "interrupted-syscall";
+            break;
+        }
+        case SCENARIO_UNSAFE_FILE_MODE:
+        {
+            name = "unsafe-file-mode";
+            break;
+        }
+        case SCENARIO_SYMLINK_FOLLOW:
+        {
+            name = "symlink-follow";
+            break;
+        }
+        case SCENARIO_TRUSTED_ENVIRONMENT:
+        {
+            name = "trusted-environment";
+            break;
+        }
+        case SCENARIO_UNCHECKED_PARSE:
+        {
+            name = "unchecked-parse";
+            break;
+        }
+        case SCENARIO_MISSING_AUTHORIZATION:
+        {
+            name = "missing-authorization";
+            break;
+        }
+        case SCENARIO_CLEANUP_ORDER:
+        {
+            name = "cleanup-order";
+            break;
+        }
+        case SCENARIO_THREAD_ARGUMENT_LIFETIME:
+        {
+            name = "thread-argument-lifetime";
+            break;
+        }
         case SCENARIO_PARSER_FUZZ:
         {
             name = "parser-fuzz";
@@ -465,5 +555,15 @@ void p101_tool_playground_print_scenarios(const struct p101_env *env, struct p10
     p101_fputs(env, err, "  resource-exhaustion      Accept an unbounded resource request\n", stream);
     p101_fputs(env, err, "  toctou                   Separate a path check from the later use\n", stream);
     p101_fputs(env, err, "  data-race                Update shared state without synchronization\n", stream);
+    p101_fputs(env, err, "  string-not-terminated    Treat bytes without a NUL terminator as a C string\n", stream);
+    p101_fputs(env, err, "  partial-write            Ignore a short write result\n", stream);
+    p101_fputs(env, err, "  interrupted-syscall      Treat EINTR as a final failure\n", stream);
+    p101_fputs(env, err, "  unsafe-file-mode         Create a sensitive file with broad permissions\n", stream);
+    p101_fputs(env, err, "  symlink-follow           Follow a symlink for a sensitive file open\n", stream);
+    p101_fputs(env, err, "  trusted-environment      Trust environment variables for security decisions\n", stream);
+    p101_fputs(env, err, "  unchecked-parse          Accept trailing junk after a numeric parse\n", stream);
+    p101_fputs(env, err, "  missing-authorization    Authenticate a user but skip the permission check\n", stream);
+    p101_fputs(env, err, "  cleanup-order            Destroy parent state before owned child state\n", stream);
+    p101_fputs(env, err, "  thread-argument-lifetime Let a thread use an argument after its lifetime\n", stream);
     p101_fputs(env, err, "  parser-fuzz              Parse boundary-heavy input without a fuzz target\n", stream);
 }

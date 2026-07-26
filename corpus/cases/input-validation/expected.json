@@ -1,6 +1,6 @@
 {
   "name": "input-validation",
-  "lab_order": 25,
+  "lab_order": 30,
   "issue_id": "P101-LAB-303",
   "title": "Validate external input at the boundary",
   "category": "security/input-validation",

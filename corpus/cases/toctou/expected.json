@@ -1,6 +1,6 @@
 {
   "name": "toctou",
-  "lab_order": 35,
+  "lab_order": 44,
   "issue_id": "P101-LAB-320",
   "title": "Avoid check-then-use races on paths",
   "category": "security/race",

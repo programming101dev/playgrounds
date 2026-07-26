@@ -1,6 +1,6 @@
 {
   "name": "out-of-bounds-read",
-  "lab_order": 20,
+  "lab_order": 24,
   "issue_id": "P101-LAB-311",
   "title": "Reject reads past valid data",
   "category": "memory/bounds",

@@ -1,6 +1,6 @@
 {
   "name": "uninitialized-read",
-  "lab_order": 16,
+  "lab_order": 17,
   "issue_id": "P101-LAB-324",
   "title": "Initialize values before reading them",
   "category": "state/initialization",

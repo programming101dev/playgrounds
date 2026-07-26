@@ -1,0 +1,22 @@
+{
+  "name": "symlink-follow",
+  "lab_order": 38,
+  "issue_id": "P101-LAB-333",
+  "title": "Do not follow untrusted symlinks for sensitive opens",
+  "category": "security/files",
+  "scenario": "symlink-follow",
+  "expected_exit": 0,
+  "expected_status": "LOGIC",
+  "lesson": "A pathname can be a symlink to something the program did not intend to open.",
+  "logic_issue_id": "P101-FIO-006",
+  "expected_output_contains": ["path=/tmp/p101-link", "follows_symlink=true", "outcome=accepted"],
+  "fixed_output_not_contains": ["follows_symlink=true", "outcome=accepted"],
+  "fixed_output_contains": ["follows_symlink=false", "outcome=accepted"],
+  "fix_goal": "Use safe open patterns that do not follow untrusted symlinks for sensitive files.",
+  "fix_steps": [
+    "Find the symlink-follow scenario.",
+    "Identify the untrusted pathname.",
+    "Use platform-appropriate no-follow/open-then-verify patterns.",
+    "Re-run the lab and confirm symlink following is not accepted."
+  ]
+}

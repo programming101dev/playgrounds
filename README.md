@@ -67,18 +67,28 @@ Options:
 | `truncation` | Store a large value in a too-small type | truncation bug |
 | `use-after-free` | Continue using ownership after free | lifetime bug |
 | `realloc-failure` | Lose the original pointer when growth fails | cleanup/ownership bug |
+| `cleanup-order` | Destroy parent state before child resources | cleanup-order bug |
+| `partial-write` | Treat a short write as complete | I/O bug |
+| `interrupted-syscall` | Treat `EINTR` as a final failure | retry bug |
+| `string-not-terminated` | Treat bytes without a NUL terminator as a C string | string bug |
 | `out-of-bounds-write` | Accept a write past the buffer end | bounds bug |
 | `out-of-bounds-read` | Accept a read past valid data | bounds/information bug |
 | `buffer-overflow` | Copy more bytes than the destination holds | buffer overflow bug |
 | `uninitialized-read` | Use a value before initialization | state bug |
 | `null-dereference` | Continue after a NULL result | checked-result bug |
 | `integer-overflow` | Let a size calculation wrap | integer/allocation bug |
+| `unchecked-parse` | Accept trailing junk after a numeric parse | parsing bug |
 | `path-traversal` | Accept a path that escapes its root | path validation bug |
+| `trusted-environment` | Trust environment variables for sensitive behavior | environment bug |
+| `missing-authorization` | Authenticate a user but skip the permission check | authorization bug |
 | `format-string` | Treat user text as a format string | format-string bug |
+| `unsafe-file-mode` | Create a sensitive file with broad permissions | file-permission bug |
+| `symlink-follow` | Follow an untrusted symlink for a sensitive open | file/link bug |
 | `stale-secret` | Reuse a buffer without clearing old secret data | information exposure bug |
 | `resource-exhaustion` | Accept an unbounded resource request | resource-limit bug |
 | `toctou` | Check a path separately from the later use | race bug |
 | `data-race` | Update shared state without synchronization | concurrency bug |
+| `thread-argument-lifetime` | Let a thread outlive its argument storage | concurrency/lifetime bug |
 | `parser-fuzz` | Parse boundary-heavy input without fuzz coverage | testing practice bug |
 
 The bug scenarios are intentionally broken. They are not regressions; they are
@@ -93,8 +103,8 @@ syntax but have not yet practiced defensive systems programming:
 2. normal cleanup mistakes;
 3. memory lifetime mistakes;
 4. error-path cleanup;
-5. checked results, initialization, bounds, and integer traps;
-6. adversarial input and security mistakes;
+5. checked results, initialization, byte counts, strings, bounds, and integer traps;
+6. adversarial input, authorization, environment, and file-security mistakes;
 7. logging and observability practice;
 8. concurrency/race hazards;
 9. parser fuzzing and verification practice.
@@ -157,6 +167,24 @@ The lab generator runs the same checked corpus and writes a self-contained
 has an ordered lab ID, a dedicated `lesson.md`, a fix checklist, and a progress
 state. Students fix one issue, re-run `./lab.sh`, and watch that lab move from
 `OPEN` to `FIXED`.
+
+The intended student loop is:
+
+```sh
+./lab.sh
+# choose the first OPEN lab
+# edit the matching scenario in src/playground.c
+./build.sh
+./lab.sh
+```
+
+If an experiment goes sideways, preview the reset with `./reset-labs.sh --show`
+or restore the committed fixtures with `./reset-labs.sh --yes`. Before
+submission, run:
+
+```sh
+./submit-labs.sh
+```
 
 For instructor/CI checks that prove the committed broken fixtures still produce
 their expected diagnostics, add `--strict-corpus`:

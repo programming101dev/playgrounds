@@ -1,0 +1,22 @@
+{
+  "name": "unsafe-file-mode",
+  "lab_order": 37,
+  "issue_id": "P101-LAB-332",
+  "title": "Create sensitive files with restrictive permissions",
+  "category": "security/files",
+  "scenario": "unsafe-file-mode",
+  "expected_exit": 0,
+  "expected_status": "LOGIC",
+  "lesson": "A sensitive file created with broad permissions can expose its contents to other users.",
+  "logic_issue_id": "P101-FIO-005",
+  "expected_output_contains": ["event=file_create", "mode=0666", "contains_secret=true", "outcome=accepted"],
+  "fixed_output_not_contains": ["mode=0666", "outcome=accepted"],
+  "fixed_output_contains": ["mode=0600", "outcome=accepted"],
+  "fix_goal": "Use restrictive creation modes for files that may contain sensitive data.",
+  "fix_steps": [
+    "Find the unsafe-file-mode scenario.",
+    "Identify the mode used when creating the file.",
+    "Use a restrictive mode such as 0600 for sensitive files.",
+    "Re-run the lab and confirm broad permissions are gone."
+  ]
+}

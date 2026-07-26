@@ -47,28 +47,38 @@ The status column is intentionally simple:
 | Use after free | CWE-416, CERT MEM30-C | `covered`: `use-after-free` |
 | Realloc ownership loss | CWE-401, CERT MEM31-C | `covered`: `realloc-leak` |
 | Realloc failure handling | CERT MEM31-C/MEM35-C | `covered`: `realloc-failure` |
+| Cleanup dependency order | CERT MEM12-C, lifetime/ownership cleanup guidance | `covered`: `cleanup-order` |
 | Exec descriptor inheritance | CWE-403/CWE-200, POSIX close-on-exec practice | `covered`: `exec-inherit` |
 | Out-of-bounds write | CWE-787, CERT ARR30-C/STR31-C | `covered`: `out-of-bounds-write` |
 | Out-of-bounds read | CWE-125, CERT ARR30-C | `covered`: `out-of-bounds-read` |
 | Stack/heap buffer overflow | CWE-121/CWE-122/CWE-120 | `covered`: `buffer-overflow` |
+| Missing NUL terminator / treating bytes as strings | CWE-170, CERT STR rules | `covered`: `string-not-terminated` |
 | `sizeof(pointer)` used as array length | CWE-467, CERT ARR01-C | `covered`: `sizeof-pointer` |
 | Ignoring read/write byte counts | CWE-252/CWE-200, CERT FIO | `covered`: `ignore-read-count` |
+| Partial write handling | CWE-252, CERT FIO write-count guidance | `covered`: `partial-write` |
+| Interrupted syscall / EINTR handling | POSIX signal behavior, CERT ERR/FIO guidance | `covered`: `interrupted-syscall` |
 | Ignoring return values | CWE-252, JPL checked-return rule | `tool`: wrapper audit / static checks; add fixture if useful |
 | Uninitialized read | CWE-457, CERT EXP33-C | `covered`: `uninitialized-read` |
 | Null dereference | CWE-476, CERT EXP34-C | `covered`: `null-dereference` |
 | Integer overflow in size calculation | CWE-190/CWE-680, CERT INT30-C/INT32-C | `covered`: `integer-overflow` |
 | Signed/unsigned conversion mistake | CWE-195/CWE-681, CERT INT rules | `covered`: `signed-conversion` |
 | Truncation/narrowing | CWE-197, CERT INT rules | `covered`: `truncation` |
+| Unchecked numeric parse / trailing junk | CWE-20, CERT INT/ERR conversion guidance | `covered`: `unchecked-parse` |
 | Missing input validation | CWE-20, CERT API00-C | `covered`: `input-validation` |
 | Path traversal | CWE-22 | `covered`: `path-traversal` |
 | Command injection | CWE-78/CWE-77 | `covered`: `command-injection` |
+| Trusting environment variables / PATH search | CWE-426/CWE-427, CERT ENV guidance | `covered`: `trusted-environment` |
+| Missing authorization after authentication | CWE-862/CWE-863 | `covered`: `missing-authorization` |
 | Dangerous libc function | CWE-676, CERT STR/FIO rules | `tool`: wrapper audit / include doctor; use commented fixture |
 | Format string misuse | CWE-134, CERT FIO30-C/FIO47-C | `covered`: `format-string` |
 | Secret data left in reusable resource | CWE-226/CWE-200, CERT MEM03-C/MEM06-C | `covered`: `stale-secret` |
 | Predictable temporary file | CWE-377, CERT FIO21-C | `covered`: `predictable-temp-file` |
+| Unsafe file creation mode | CWE-732, CERT FIO guidance | `covered`: `unsafe-file-mode` |
+| Symlink/hardlink file attacks | CWE-59/CWE-61, CERT FIO guidance | `covered`: `symlink-follow` |
 | Resource exhaustion / missing limits | CWE-770, CERT MEM11-C | `covered`: `resource-exhaustion` |
 | Race / TOCTOU | CWE-367, CERT POS rules | `covered`: `toctou` |
 | Data race / unsynchronized shared state | CWE-362, CERT CON rules | `covered`: `data-race` |
+| Thread argument lifetime | CWE-416 shape, CERT CON/MEM lifetime guidance | `covered`: `thread-argument-lifetime` |
 | Public API too broad / missing `static` | JPL narrow-scope rule, MISRA analyzability | `tool`: `p101-module-map` |
 | Preprocessor misuse | CERT PRE, MISRA preprocessor rules | `tool`: include doctor / module map |
 | Portability assumptions | CERT MSC/POS, MISRA implementation-defined behavior | `tool`: portability checks |

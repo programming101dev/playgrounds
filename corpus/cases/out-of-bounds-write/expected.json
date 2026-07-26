@@ -1,6 +1,6 @@
 {
   "name": "out-of-bounds-write",
-  "lab_order": 19,
+  "lab_order": 23,
   "issue_id": "P101-LAB-310",
   "title": "Reject writes past the end of a buffer",
   "category": "memory/bounds",

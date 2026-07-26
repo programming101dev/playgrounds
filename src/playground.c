@@ -52,6 +52,16 @@ static int   run_stale_secret_demo(const struct p101_env *env, struct p101_error
 static int   run_resource_exhaustion_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
 static int   run_toctou_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
 static int   run_data_race_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_string_not_terminated_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_partial_write_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_interrupted_syscall_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_unsafe_file_mode_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_symlink_follow_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_trusted_environment_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_unchecked_parse_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_missing_authorization_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_cleanup_order_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_thread_argument_lifetime_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
 static int   run_parser_fuzz_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
 static int   write_demo_file(const struct p101_env *env, struct p101_error *err, const struct arguments *args, const char *label, bool leak_fd, bool leak_alloc);
 static int   write_text_output(const struct p101_env *env, struct p101_error *err, const struct arguments *args, const char *text);
@@ -285,6 +295,56 @@ int p101_tool_playground_run(const struct p101_env *env, struct p101_error *err,
         case SCENARIO_DATA_RACE:
         {
             ret_val = run_data_race_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_STRING_NOT_TERMINATED:
+        {
+            ret_val = run_string_not_terminated_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_PARTIAL_WRITE:
+        {
+            ret_val = run_partial_write_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_INTERRUPTED_SYSCALL:
+        {
+            ret_val = run_interrupted_syscall_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_UNSAFE_FILE_MODE:
+        {
+            ret_val = run_unsafe_file_mode_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_SYMLINK_FOLLOW:
+        {
+            ret_val = run_symlink_follow_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_TRUSTED_ENVIRONMENT:
+        {
+            ret_val = run_trusted_environment_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_UNCHECKED_PARSE:
+        {
+            ret_val = run_unchecked_parse_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_MISSING_AUTHORIZATION:
+        {
+            ret_val = run_missing_authorization_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_CLEANUP_ORDER:
+        {
+            ret_val = run_cleanup_order_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_THREAD_ARGUMENT_LIFETIME:
+        {
+            ret_val = run_thread_argument_lifetime_demo(env, err, args);
             break;
         }
         case SCENARIO_PARSER_FUZZ:
@@ -1101,6 +1161,96 @@ static int run_data_race_demo(const struct p101_env *env, struct p101_error *err
 
     P101_TRACE(env);
     p101_printf(env, err, "data-race: records updating shared state without synchronization\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_string_not_terminated_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=error event=string_copy copied=16 capacity=16 terminator=missing outcome=accepted\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "string-not-terminated: records treating unterminated bytes as a C string\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_partial_write_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=error event=write_loop requested=64 written=17 outcome=accepted\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "partial-write: records accepting a short write as complete\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_interrupted_syscall_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=error event=syscall_retry function=read errno=EINTR outcome=failed\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "interrupted-syscall: records treating EINTR as a final failure\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_unsafe_file_mode_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=error event=file_create mode=0666 contains_secret=true outcome=accepted\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "unsafe-file-mode: records creating a sensitive file with broad permissions\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_symlink_follow_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=error event=file_open path=/tmp/p101-link follows_symlink=true outcome=accepted\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "symlink-follow: records following a symlink for a sensitive file open\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_trusted_environment_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=error event=environment_lookup variable=PATH trust=untrusted outcome=used_for_exec\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "trusted-environment: records trusting an environment variable for execution\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_unchecked_parse_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=error event=parse_int input=123abc consumed=3 trailing=abc outcome=accepted\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "unchecked-parse: records accepting trailing junk after a numeric parse\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_missing_authorization_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=error event=delete_project authenticated=true authorized=false outcome=accepted\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "missing-authorization: records authentication without an authorization check\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_cleanup_order_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=error event=cleanup_order parent=destroyed child=still_owned outcome=accepted\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "cleanup-order: records destroying parent state before child state\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_thread_argument_lifetime_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=error event=thread_argument storage=stack thread=running outcome=escaped\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "thread-argument-lifetime: records a thread using an expired argument\n");
     return write_text_output(env, err, args, log_text);
 }
 

@@ -1,6 +1,6 @@
 {
   "name": "parser-fuzz",
-  "lab_order": 37,
+  "lab_order": 47,
   "issue_id": "P101-LAB-322",
   "title": "Fuzz boundary-heavy parsers",
   "category": "testing/fuzzing",

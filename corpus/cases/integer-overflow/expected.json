@@ -1,6 +1,6 @@
 {
   "name": "integer-overflow",
-  "lab_order": 22,
+  "lab_order": 26,
   "issue_id": "P101-LAB-315",
   "title": "Check size calculations before allocation",
   "category": "integer/allocation",

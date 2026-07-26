@@ -1,6 +1,6 @@
 {
   "name": "stale-secret",
-  "lab_order": 31,
+  "lab_order": 40,
   "issue_id": "P101-LAB-318",
   "title": "Clear secret data before reusing storage",
   "category": "security/information-exposure",

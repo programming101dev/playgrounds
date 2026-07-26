@@ -1,6 +1,6 @@
 {
   "name": "buffer-overflow",
-  "lab_order": 21,
+  "lab_order": 25,
   "issue_id": "P101-LAB-312",
   "title": "Do not copy more bytes than the destination holds",
   "category": "memory/bounds",

@@ -1,0 +1,22 @@
+{
+  "name": "trusted-environment",
+  "lab_order": 33,
+  "issue_id": "P101-LAB-330",
+  "title": "Do not trust environment variables for security decisions",
+  "category": "security/environment",
+  "scenario": "trusted-environment",
+  "expected_exit": 0,
+  "expected_status": "LOGIC",
+  "lesson": "Environment variables are process input; attackers or test harnesses can often choose them.",
+  "logic_issue_id": "P101-SEC-004",
+  "expected_output_contains": ["variable=PATH", "trust=untrusted", "outcome=used_for_exec"],
+  "fixed_output_not_contains": ["outcome=used_for_exec"],
+  "fixed_output_contains": ["trust=untrusted", "outcome=rejected"],
+  "fix_goal": "Treat environment values as untrusted input and avoid using PATH for sensitive execution.",
+  "fix_steps": [
+    "Find the trusted-environment scenario.",
+    "Identify which environment variable is being trusted.",
+    "Replace trusted PATH lookup with an explicit path or a validated configuration source.",
+    "Re-run the lab and confirm the environment value is rejected or neutralized."
+  ]
+}

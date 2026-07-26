@@ -1,6 +1,6 @@
 {
   "name": "signed-conversion",
-  "lab_order": 23,
+  "lab_order": 27,
   "issue_id": "P101-LAB-306",
   "title": "Do not convert negative counts to unsigned sizes",
   "category": "c-trap/integer",

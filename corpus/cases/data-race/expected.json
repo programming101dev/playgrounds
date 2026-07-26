@@ -1,6 +1,6 @@
 {
   "name": "data-race",
-  "lab_order": 36,
+  "lab_order": 45,
   "issue_id": "P101-LAB-321",
   "title": "Synchronize shared mutable state",
   "category": "concurrency",

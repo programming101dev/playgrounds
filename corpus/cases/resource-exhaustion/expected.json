@@ -1,6 +1,6 @@
 {
   "name": "resource-exhaustion",
-  "lab_order": 30,
+  "lab_order": 39,
   "issue_id": "P101-LAB-319",
   "title": "Put limits on resource requests",
   "category": "security/resource-limit",

@@ -283,6 +283,99 @@ def progress_counts(cases: list[LabCase]) -> tuple[int, int, int]:
     return fixed, open_count, len(issue_cases)
 
 
+def case_phase(case: LabCase) -> str:
+    if case.order == 0:
+        return "reference"
+    if case.order <= 4:
+        return "resource ownership"
+    if case.order <= 10:
+        return "memory lifetime"
+    if case.order <= 15:
+        return "error-path cleanup"
+    if case.order <= 28:
+        return "checked state, bounds, and integers"
+    if case.order <= 40:
+        return "adversarial input and file security"
+    if case.order <= 43:
+        return "logging and observability"
+    if case.order <= 46:
+        return "concurrency and races"
+    return "verification practice"
+
+
+def case_difficulty(case: LabCase) -> str:
+    if case.order == 0:
+        return "reference"
+    if case.order <= 12:
+        return "intro"
+    if case.order <= 34:
+        return "medium"
+    return "hard"
+
+
+def case_minutes(case: LabCase) -> int:
+    if case.order == 0:
+        return 5
+    if case_difficulty(case) == "intro":
+        return 10
+    if case_difficulty(case) == "medium":
+        return 15
+    return 25
+
+
+def case_hints(case: LabCase) -> list[str]:
+    hints = [
+        f"Start in the `{case.scenario}` branch of `src/playground.c`.",
+        f"The invariant is in the expected signal: `{case.logic_issue_id or ', '.join(case.expected_findings) or case.expected_status}`.",
+    ]
+    if case.fix_steps:
+        hints.append(case.fix_steps[-1])
+    else:
+        hints.append("Use the clean baseline as the model for the repair.")
+    return hints
+
+
+def case_answer_key(case: LabCase) -> str:
+    targets: list[str] = []
+    if case.fixed_output_contains:
+        targets.append("emit: " + ", ".join(f"`{item}`" for item in case.fixed_output_contains))
+    if case.fixed_output_not_contains:
+        targets.append("remove: " + ", ".join(f"`{item}`" for item in case.fixed_output_not_contains))
+    if case.fixed_output_size is not None:
+        targets.append(f"fixed output size: `{case.fixed_output_size}` bytes")
+    if not targets and case.expected_findings:
+        targets.append("remove finding IDs: " + ", ".join(f"`{item}`" for item in case.expected_findings))
+    if case.expects_error_path_findings:
+        targets.append("make the injected-failure walk clean")
+    if not targets:
+        targets.append("keep the reference run clean")
+    return "; ".join(targets)
+
+
+def phase_rows(cases: list[LabCase]) -> list[str]:
+    rows: list[str] = []
+    current_phase = ""
+    start = 0
+    end = 0
+    for case in cases:
+        phase = case_phase(case)
+        if current_phase == "":
+            current_phase = phase
+            start = case.order
+            end = case.order
+            continue
+        if phase == current_phase:
+            end = case.order
+            continue
+        rows.append(f"| {start}–{end} | {current_phase} |")
+        current_phase = phase
+        start = case.order
+        end = case.order
+    if current_phase:
+        rows.append(f"| {start}–{end} | {current_phase} |")
+    return rows
+
+
 def render_markdown(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
     fixed, open_count, total = progress_counts(cases)
     lines = [
@@ -295,10 +388,26 @@ def render_markdown(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
         f"- Corpus summary: [runs/summary.md](./runs/summary.md)",
         f"- HTML lab book: [index.html](./index.html)",
         "",
+        "## Student workflow",
+        "",
+        "1. Run `./lab.sh` and open the first `OPEN` lab.",
+        "2. Edit the matching scenario function in `src/playground.c`.",
+        "3. Build with `./build.sh` if you changed C code.",
+        "4. Re-run `./lab.sh` and watch that lab move from `OPEN` to `FIXED`.",
+        "5. Submit with `./submit-labs.sh` when your assigned labs are green.",
+        "",
+        "If you get lost, run `./reset-labs.sh --show` to preview the reset command, or `./reset-labs.sh --yes` to restore the committed lab fixtures.",
+        "",
+        "## Phase map",
+        "",
+        "| Labs | Phase |",
+        "| ---: | --- |",
+        *phase_rows(cases),
+        "",
         "## Progress board",
         "",
-        "| Lab | Status | Issue | Scenario | Expected signal |",
-        "| ---: | --- | --- | --- | --- |",
+        "| Lab | Status | Phase | Difficulty | Time | Issue | Scenario | Expected signal |",
+        "| ---: | --- | --- | --- | ---: | --- | --- | --- |",
     ]
     for case in cases:
         signal = ", ".join(case.expected_findings)
@@ -312,7 +421,7 @@ def render_markdown(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
             signal = (signal + ", " if signal else "") + "output missing " + "; ".join(case.expected_output_missing)
         if not signal:
             signal = "clean reference"
-        lines.append(f"| {case.order} | `{lab_progress(case)}` | {case.issue_id}: {case.title} | `{case.scenario}` | {signal} |")
+        lines.append(f"| {case.order} | `{lab_progress(case)}` | {case_phase(case)} | {case_difficulty(case)} | {case_minutes(case)} min | {case.issue_id}: {case.title} | `{case.scenario}` | {signal} |")
     lines.extend(
         [
             "",
@@ -339,6 +448,9 @@ def render_markdown(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
                 "",
                 f"- Issue ID: `{case.issue_id}`",
                 f"- Category: `{case.category}`",
+                f"- Phase: `{case_phase(case)}`",
+                f"- Difficulty: `{case_difficulty(case)}`",
+                f"- Estimated time: `{case_minutes(case)} minutes`",
                 f"- Scenario: `{case.scenario}`",
                 f"- Expected status: `{case.expected_status}`",
                 f"- Expected exit: `{case.expected_exit}`",
@@ -351,6 +463,14 @@ def render_markdown(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
                 "",
                 *[f"- {step}" for step in case.fix_steps],
                 "",
+                "Hints:",
+                "",
+                *[f"- {hint}" for hint in case_hints(case)],
+                "",
+                "Instructor answer key signal:",
+                "",
+                f"- {case_answer_key(case)}",
+                "",
                 shift_markdown_headings(case.lesson, 4),
                 "",
             ]
@@ -360,6 +480,8 @@ def render_markdown(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
     lines.append("- `runs/`: checked corpus output")
     lines.append("- `logs/corpus.log`: command transcript for the corpus run")
     lines.append("- `index.html`: self-contained instructor/student lab view")
+    lines.append("- `./reset-labs.sh`: restore committed fixtures after an experiment goes sideways")
+    lines.append("- `./submit-labs.sh`: run the student-facing build/test/lab checks")
     lines.append("")
     return "\n".join(lines)
 
@@ -424,15 +546,18 @@ def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
                 <h3>Lab {case.order}: {html.escape(case.title)}</h3>
                 <span>{html.escape(progress)}</span>
               </div>
-              <p><code>{html.escape(case.issue_id)}</code> · {html.escape(case.category)} · scenario <code>{html.escape(case.scenario)}</code></p>
+              <p><code>{html.escape(case.issue_id)}</code> · {html.escape(case_phase(case))} · {html.escape(case_difficulty(case))} · about {case_minutes(case)} min · scenario <code>{html.escape(case.scenario)}</code></p>
               <p class="lesson">{html.escape(lesson_excerpt(case.lesson))}</p>
               <dl>
                 <dt>Goal</dt><dd>{html.escape(case.fix_goal)}</dd>
                 <dt>Expected</dt><dd>{expected}</dd>
+                <dt>Answer signal</dt><dd>{html.escape(case_answer_key(case))}</dd>
                 <dt>Exit oracle</dt><dd><code>{case.expected_exit}</code> / <code>{html.escape(case.expected_status)}</code></dd>
               </dl>
               <h4>Fix checklist</h4>
               <ol>{steps}</ol>
+              <h4>Hints</h4>
+              <ul>{"".join(f"<li>{html.escape(hint)}</li>" for hint in case_hints(case))}</ul>
               <h4>Ordinary run</h4>
               <ul>{finding_items}</ul>
               <h4>Injected error paths</h4>
@@ -495,6 +620,8 @@ def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
     <div class="step"><strong>{fixed}/{total} fixed</strong><br>{open_count} issue labs still open.</div>
     <div class="step"><strong>How to use it</strong><br>Fix one lab, rebuild if needed, run <code>./lab.sh</code>, and refresh this page.</div>
     <div class="step"><strong>Instructor oracle</strong><br>{html.escape(status)} means the committed broken fixtures still demonstrate the expected issues.</div>
+    <div class="step"><strong>Recovery</strong><br>Run <code>./reset-labs.sh --show</code> to preview reset, or <code>./reset-labs.sh --yes</code> to restore fixtures.</div>
+    <div class="step"><strong>Submission</strong><br>Run <code>./submit-labs.sh</code> before handing in the lab.</div>
   </section>
 
   <h2>Classroom arc</h2>
