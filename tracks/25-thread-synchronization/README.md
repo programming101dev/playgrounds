@@ -6,6 +6,8 @@ Track number: `25`
 
 Wrapper count: `38`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 Mutexes, condition variables, read/write locks, and synchronization cleanup rules.

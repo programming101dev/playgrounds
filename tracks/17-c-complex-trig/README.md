@@ -6,6 +6,8 @@ Track number: `17`
 
 Wrapper count: `30`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 Complex trigonometric and hyperbolic function families.

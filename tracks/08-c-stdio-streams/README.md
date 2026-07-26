@@ -6,6 +6,8 @@ Track number: `08`
 
 Wrapper count: `30`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 Opening, closing, positioning, reading, writing, renaming, temporary files, and stream ownership.

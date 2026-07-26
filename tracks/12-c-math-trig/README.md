@@ -6,6 +6,8 @@ Track number: `12`
 
 Wrapper count: `39`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 Trigonometric and hyperbolic math families, including float/double/long double variants.

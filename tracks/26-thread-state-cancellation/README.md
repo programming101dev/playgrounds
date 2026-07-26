@@ -6,6 +6,8 @@ Track number: `26`
 
 Wrapper count: `9`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 Thread-local storage, once initialization, cancellation state, cancellation points, and cleanup hazards.

@@ -54,6 +54,8 @@ def track_readme(graph: dict[str, Any], track: dict[str, Any], index: int) -> st
         "",
         f"Wrapper count: `{track['function_count']}`",
         "",
+        "Curated lesson guide: [TRACK.md](./TRACK.md) if present.",
+        "",
         "## Purpose",
         "",
         track["purpose"],

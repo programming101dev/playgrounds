@@ -6,6 +6,8 @@ Track number: `37`
 
 Wrapper count: `10`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 Creating, configuring, labeling, duplicating, and destroying p101 environments.

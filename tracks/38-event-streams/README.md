@@ -6,6 +6,8 @@ Track number: `38`
 
 Wrapper count: `49`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 Resource events, call tracing, fault injection, event-log formatting, and observer configuration.

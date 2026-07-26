@@ -6,6 +6,8 @@ Track number: `15`
 
 Wrapper count: `47`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 Floating-point environment, NaN/nextafter/fma/min/max style helpers, and numerical edge cases.

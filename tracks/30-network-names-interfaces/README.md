@@ -6,6 +6,8 @@ Track number: `30`
 
 Wrapper count: `23`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 getaddrinfo/getnameinfo, protocol/service databases, interface enumeration, and Ethernet helpers.

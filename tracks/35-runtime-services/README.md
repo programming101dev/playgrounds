@@ -6,6 +6,8 @@ Track number: `35`
 
 Wrapper count: `36`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 Dynamic loading, regex, iconv, locale/message catalogs, legacy DBM, and libc search structures.

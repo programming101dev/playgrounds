@@ -6,6 +6,8 @@ Track number: `27`
 
 Wrapper count: `21`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 POSIX and XSI IPC: message queues, semaphores, shared memory, keys, readiness, cleanup, and permissions.

@@ -6,6 +6,8 @@ Track number: `14`
 
 Wrapper count: `54`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 Rounding, remainder, scaling, decomposition, and integer-result math APIs.

@@ -6,6 +6,8 @@ Track number: `19`
 
 Wrapper count: `34`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 Time, locale, atomics, setjmp/signal-style control flow, and their common extensions.

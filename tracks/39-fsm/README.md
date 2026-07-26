@@ -6,6 +6,8 @@ Track number: `39`
 
 Wrapper count: `17`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 Finite-state-machine structure, state transitions, callbacks, invalid transitions, and lifecycle ownership.

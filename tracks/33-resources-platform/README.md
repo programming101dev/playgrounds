@@ -6,6 +6,8 @@ Track number: `33`
 
 Wrapper count: `37`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 Resource limits, priorities, clocks/time, memory mapping/locking, sysctl, mounts, fstab, host/system configuration, and platform administration APIs.

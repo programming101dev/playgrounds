@@ -6,6 +6,8 @@ Track number: `16`
 
 Wrapper count: `18`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 Complex absolute value, phase, real/imaginary access, conjugation, and projection helpers.

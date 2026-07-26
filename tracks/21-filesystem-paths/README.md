@@ -6,6 +6,8 @@ Track number: `21`
 
 Wrapper count: `34`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 Paths, permissions, stat, links, directories-as-filesystem-objects, timestamps, and filesystem mutation.

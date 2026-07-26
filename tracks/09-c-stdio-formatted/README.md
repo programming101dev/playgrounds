@@ -6,6 +6,8 @@ Track number: `09`
 
 Wrapper count: `13`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 printf/scanf families, varargs wrappers, format checking, and formatted conversion hazards.

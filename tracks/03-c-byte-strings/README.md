@@ -6,6 +6,8 @@ Track number: `03`
 
 Wrapper count: `32`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 NUL-terminated byte strings, comparisons, searching, collation, and common string extensions.

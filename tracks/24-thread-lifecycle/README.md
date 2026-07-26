@@ -6,6 +6,8 @@ Track number: `24`
 
 Wrapper count: `30`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 Thread creation, joining, detaching, identity, scheduling hooks, and basic lifecycle ownership.

@@ -1,0 +1,62 @@
+{
+  "track": "c-memory-runtime",
+  "title": "C memory runtime",
+  "order": 1,
+  "purpose": "Teach ownership, allocation, cleanup, realloc, error paths, and bounded resource requests before moving to other resource families.",
+  "cases": [
+    {
+      "step": 0,
+      "case": "clean",
+      "scenario": "tour",
+      "role": "valid-baseline"
+    },
+    {
+      "step": 1,
+      "case": "alloc-leak",
+      "scenario": "alloc-leak",
+      "role": "owned-allocation-release"
+    },
+    {
+      "step": 2,
+      "case": "early-return-alloc-leak",
+      "scenario": "early-return-alloc-leak",
+      "role": "cleanup-on-all-exits"
+    },
+    {
+      "step": 3,
+      "case": "realloc-leak",
+      "scenario": "realloc-leak",
+      "role": "successful-realloc-ownership"
+    },
+    {
+      "step": 4,
+      "case": "realloc-failure",
+      "scenario": "realloc-failure",
+      "role": "preserve-original-on-realloc-failure"
+    },
+    {
+      "step": 5,
+      "case": "double-free",
+      "scenario": "double-free",
+      "role": "release-once"
+    },
+    {
+      "step": 6,
+      "case": "stray-free",
+      "scenario": "stray-free",
+      "role": "free-only-owning-pointer"
+    },
+    {
+      "step": 7,
+      "case": "use-after-free",
+      "scenario": "use-after-free",
+      "role": "no-use-after-release"
+    },
+    {
+      "step": 8,
+      "case": "resource-exhaustion",
+      "scenario": "resource-exhaustion",
+      "role": "bound-resource-requests"
+    }
+  ]
+}

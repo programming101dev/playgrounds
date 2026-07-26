@@ -6,6 +6,8 @@ Track number: `01`
 
 Wrapper count: `55`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 Allocation, process termination, environment variables, sorting/searching helpers, and common stdlib extensions.

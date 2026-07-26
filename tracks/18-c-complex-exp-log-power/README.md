@@ -6,6 +6,8 @@ Track number: `18`
 
 Wrapper count: `12`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 Complex exponentials, logarithms, powers, and square roots.

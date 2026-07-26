@@ -6,6 +6,8 @@ Track number: `34`
 
 Wrapper count: `12`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 syslog, err/warn-style diagnostics, formatted messages, and teachable logging/error-reporting practice.

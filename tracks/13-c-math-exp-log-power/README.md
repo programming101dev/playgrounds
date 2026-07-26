@@ -6,6 +6,8 @@ Track number: `13`
 
 Wrapper count: `48`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 Exponentials, logarithms, roots, powers, and gamma/error-function families.

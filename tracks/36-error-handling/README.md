@@ -6,6 +6,8 @@ Track number: `36`
 
 Wrapper count: `47`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 Error objects, errno mapping, assertions/check helpers, reporting, and failure-aware control flow.

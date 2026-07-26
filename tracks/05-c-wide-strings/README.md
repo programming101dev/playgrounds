@@ -6,6 +6,8 @@ Track number: `05`
 
 Wrapper count: `34`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 Wide string copying, comparison, searching, transformation, and wide-memory operations.

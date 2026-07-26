@@ -6,6 +6,8 @@ Track number: `29`
 
 Wrapper count: `21`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 send/recv families, byte order, inet conversion, and network address helper functions.

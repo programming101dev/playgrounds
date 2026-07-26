@@ -6,6 +6,8 @@ Track number: `02`
 
 Wrapper count: `7`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 Raw byte memory operations and the difference between object bytes and strings.

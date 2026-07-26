@@ -6,6 +6,8 @@ Track number: `31`
 
 Wrapper count: `33`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 Resolver state, DNS message parsing/packing, compressed names, and resolver validation helpers.

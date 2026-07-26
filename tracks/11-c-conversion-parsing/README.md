@@ -6,6 +6,8 @@ Track number: `11`
 
 Wrapper count: `41`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 Integer parsing, inttypes helpers, option parsing, and defensive conversion practice.

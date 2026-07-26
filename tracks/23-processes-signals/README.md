@@ -6,6 +6,8 @@ Track number: `23`
 
 Wrapper count: `51`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 fork, exec, wait, spawn, signals, inherited resources, CLOEXEC, and process failure paths.

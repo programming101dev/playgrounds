@@ -6,6 +6,8 @@ Track number: `04`
 
 Wrapper count: `28`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 Character classification, case mapping, locale-sensitive predicates, and signed-char pitfalls.

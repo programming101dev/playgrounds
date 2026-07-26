@@ -6,6 +6,8 @@ Track number: `06`
 
 Wrapper count: `33`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 Wide-character I/O, multibyte conversion state, numeric conversion, and locale-sensitive text boundaries.

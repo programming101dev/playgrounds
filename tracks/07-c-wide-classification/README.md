@@ -6,6 +6,8 @@ Track number: `07`
 
 Wrapper count: `36`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 Wide character classification, mapping, and locale-aware wide-character predicates.

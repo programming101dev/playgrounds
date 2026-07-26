@@ -6,6 +6,8 @@ Track number: `40`
 
 Wrapper count: `4`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 C facts, small analyzers, support utilities, and writing tools that reason about p101 projects.

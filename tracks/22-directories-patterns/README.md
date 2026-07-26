@@ -6,6 +6,8 @@ Track number: `22`
 
 Wrapper count: `19`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 Directory traversal, glob/fnmatch/wordexp, path decomposition, and tree walking.

@@ -6,6 +6,8 @@ Track number: `10`
 
 Wrapper count: `19`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 Character/line I/O, pushback, EOF/error state, flushing, and buffering mode.

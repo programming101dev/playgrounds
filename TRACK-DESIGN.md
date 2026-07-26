@@ -13,6 +13,12 @@ The better shape is a single repo with explicit internal tracks:
 
 The generated source of truth is [tracks/README.md](./tracks/README.md).
 
+The first fully curated track is
+[tracks/01-c-memory-runtime/TRACK.md](./tracks/01-c-memory-runtime/TRACK.md).
+Use it as the pattern for later tracks: generated inventory in `README.md`,
+curated lesson sequence in `TRACK.md`, machine-readable case map in
+`track.json`, and a local `run.sh` for the focused smoke run.
+
 ## Rules
 
 1. Every wrapper gets one primary track home.
@@ -30,4 +36,3 @@ The track map comes from the library function graph:
 ../../scripts/analyze-lib-function-graph.py
 ./sync-track-map.py
 ```
-

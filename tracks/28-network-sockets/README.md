@@ -6,6 +6,8 @@ Track number: `28`
 
 Wrapper count: `12`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 socket, bind, listen, accept, connect, socketpair, shutdown, socket options, and socket metadata.

@@ -6,6 +6,8 @@ Track number: `32`
 
 Wrapper count: `46`
 
+Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+
 ## Purpose
 
 Terminal control, user/group lookup, identity APIs, tty databases, utmpx records, and interactive program boundaries.
