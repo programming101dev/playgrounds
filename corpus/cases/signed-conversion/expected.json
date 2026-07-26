@@ -1,0 +1,22 @@
+{
+  "name": "signed-conversion",
+  "lab_order": 21,
+  "issue_id": "P101-LAB-306",
+  "title": "Do not convert negative counts to unsigned sizes",
+  "category": "c-trap/integer",
+  "scenario": "signed-conversion",
+  "expected_exit": 0,
+  "expected_status": "LOGIC",
+  "lesson": "A negative count can become a huge size when converted to size_t.",
+  "logic_issue_id": "P101-INT-001",
+  "expected_output_contains": ["parsed=-1", "outcome=accepted"],
+  "fixed_output_not_contains": ["outcome=accepted"],
+  "fixed_output_contains": ["outcome=rejected"],
+  "fix_goal": "Check signed values before converting them to unsigned sizes.",
+  "fix_steps": [
+    "Find the signed-conversion scenario.",
+    "Validate that the parsed count is nonnegative before converting it.",
+    "Reject the negative value instead of logging it as accepted.",
+    "Keep the diagnostic structured and searchable."
+  ]
+}

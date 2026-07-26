@@ -88,6 +88,38 @@ enum playground_scenario p101_tool_playground_scenario_from_name(const struct p1
     {
         scenario = SCENARIO_IGNORE_READ_COUNT;
     }
+    else if(p101_strcmp(env, name, "unsafe-log-secret") == 0)
+    {
+        scenario = SCENARIO_UNSAFE_LOG_SECRET;
+    }
+    else if(p101_strcmp(env, name, "log-injection") == 0)
+    {
+        scenario = SCENARIO_LOG_INJECTION;
+    }
+    else if(p101_strcmp(env, name, "missing-structured-log") == 0)
+    {
+        scenario = SCENARIO_MISSING_STRUCTURED_LOG;
+    }
+    else if(p101_strcmp(env, name, "input-validation") == 0)
+    {
+        scenario = SCENARIO_INPUT_VALIDATION;
+    }
+    else if(p101_strcmp(env, name, "command-injection") == 0)
+    {
+        scenario = SCENARIO_COMMAND_INJECTION;
+    }
+    else if(p101_strcmp(env, name, "predictable-temp-file") == 0)
+    {
+        scenario = SCENARIO_PREDICTABLE_TEMP_FILE;
+    }
+    else if(p101_strcmp(env, name, "signed-conversion") == 0)
+    {
+        scenario = SCENARIO_SIGNED_CONVERSION;
+    }
+    else if(p101_strcmp(env, name, "truncation") == 0)
+    {
+        scenario = SCENARIO_TRUNCATION;
+    }
     else
     {
         *ok = false;
@@ -201,6 +233,46 @@ const char *p101_tool_playground_scenario_name(enum playground_scenario scenario
             name = "ignore-read-count";
             break;
         }
+        case SCENARIO_UNSAFE_LOG_SECRET:
+        {
+            name = "unsafe-log-secret";
+            break;
+        }
+        case SCENARIO_LOG_INJECTION:
+        {
+            name = "log-injection";
+            break;
+        }
+        case SCENARIO_MISSING_STRUCTURED_LOG:
+        {
+            name = "missing-structured-log";
+            break;
+        }
+        case SCENARIO_INPUT_VALIDATION:
+        {
+            name = "input-validation";
+            break;
+        }
+        case SCENARIO_COMMAND_INJECTION:
+        {
+            name = "command-injection";
+            break;
+        }
+        case SCENARIO_PREDICTABLE_TEMP_FILE:
+        {
+            name = "predictable-temp-file";
+            break;
+        }
+        case SCENARIO_SIGNED_CONVERSION:
+        {
+            name = "signed-conversion";
+            break;
+        }
+        case SCENARIO_TRUNCATION:
+        {
+            name = "truncation";
+            break;
+        }
         default:
         {
             name = "unknown";
@@ -236,4 +308,12 @@ void p101_tool_playground_print_scenarios(const struct p101_env *env, struct p10
     p101_fputs(env, err, "  stray-free               Free a pointer this function does not own\n", stream);
     p101_fputs(env, err, "  sizeof-pointer           Use sizeof(pointer) where the data size was needed\n", stream);
     p101_fputs(env, err, "  ignore-read-count        Write a whole buffer instead of the bytes read\n", stream);
+    p101_fputs(env, err, "  unsafe-log-secret        Write a secret directly into an application log\n", stream);
+    p101_fputs(env, err, "  log-injection            Allow untrusted text to forge a second log record\n", stream);
+    p101_fputs(env, err, "  missing-structured-log   Emit vague text instead of structured event fields\n", stream);
+    p101_fputs(env, err, "  input-validation         Accept an unsafe path-shaped input value\n", stream);
+    p101_fputs(env, err, "  command-injection        Build a shell command from untrusted text\n", stream);
+    p101_fputs(env, err, "  predictable-temp-file    Use a predictable filename in /tmp\n", stream);
+    p101_fputs(env, err, "  signed-conversion        Convert a negative count to an unsigned size\n", stream);
+    p101_fputs(env, err, "  truncation               Store a large value in a too-small integer type\n", stream);
 }

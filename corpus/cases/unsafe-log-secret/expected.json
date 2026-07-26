@@ -1,0 +1,22 @@
+{
+  "name": "unsafe-log-secret",
+  "lab_order": 15,
+  "issue_id": "P101-LAB-300",
+  "title": "Do not log secrets",
+  "category": "good-practice/security/logging",
+  "scenario": "unsafe-log-secret",
+  "expected_exit": 0,
+  "expected_status": "LOGIC",
+  "lesson": "Logs are durable, shared, and searchable. A password in a log is a password leak.",
+  "logic_issue_id": "P101-LOG-001",
+  "expected_output_contains": ["password=hunter2"],
+  "fixed_output_not_contains": ["password=hunter2"],
+  "fixed_output_contains": ["password=<redacted>"],
+  "fix_goal": "Keep the event useful while redacting the secret value.",
+  "fix_steps": [
+    "Find the unsafe-log-secret scenario.",
+    "Keep useful fields such as severity, event, user, and outcome.",
+    "Replace the raw password with a fixed redaction marker.",
+    "Re-run ./lab.sh and verify this lab moves to FIXED."
+  ]
+}

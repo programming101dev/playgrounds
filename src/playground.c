@@ -30,7 +30,16 @@ static int   run_double_free_demo(const struct p101_env *env, struct p101_error 
 static int   run_stray_free_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
 static int   run_sizeof_pointer_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
 static int   run_ignore_read_count_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_unsafe_log_secret_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_log_injection_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_missing_structured_log_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_input_validation_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_command_injection_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_predictable_temp_file_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_signed_conversion_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_truncation_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
 static int   write_demo_file(const struct p101_env *env, struct p101_error *err, const struct arguments *args, const char *label, bool leak_fd, bool leak_alloc);
+static int   write_text_output(const struct p101_env *env, struct p101_error *err, const struct arguments *args, const char *text);
 static char *make_buffer(const struct p101_env *env, struct p101_error *err, size_t bytes, char fill);
 
 int p101_tool_playground_run(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
@@ -151,6 +160,46 @@ int p101_tool_playground_run(const struct p101_env *env, struct p101_error *err,
         case SCENARIO_IGNORE_READ_COUNT:
         {
             ret_val = run_ignore_read_count_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_UNSAFE_LOG_SECRET:
+        {
+            ret_val = run_unsafe_log_secret_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_LOG_INJECTION:
+        {
+            ret_val = run_log_injection_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_MISSING_STRUCTURED_LOG:
+        {
+            ret_val = run_missing_structured_log_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_INPUT_VALIDATION:
+        {
+            ret_val = run_input_validation_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_COMMAND_INJECTION:
+        {
+            ret_val = run_command_injection_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_PREDICTABLE_TEMP_FILE:
+        {
+            ret_val = run_predictable_temp_file_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_SIGNED_CONVERSION:
+        {
+            ret_val = run_signed_conversion_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_TRUNCATION:
+        {
+            ret_val = run_truncation_demo(env, err, args);
             break;
         }
         default:
@@ -758,6 +807,87 @@ done:
     return ret_val;
 }
 
+static int run_unsafe_log_secret_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=warning event=login_failed user=student password=hunter2 outcome=denied\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "unsafe-log-secret: writes a secret directly into a log record\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_log_injection_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=warning event=login_failed user=mallory\nseverity=info event=admin_login outcome=success user=root\n outcome=denied\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "log-injection: untrusted text forges an extra log record\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_missing_structured_log_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "bad password\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "missing-structured-log: emits vague text without event, severity, or outcome fields\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_input_validation_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=info event=file_export path=../../etc/passwd outcome=accepted\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "input-validation: accepts a path-shaped value that should be rejected at the boundary\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_command_injection_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=warning event=command_preview command=\"tar -cf backup.tar playground; rm -rf /\" outcome=prepared\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "command-injection: builds a shell command by concatenating untrusted text\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_predictable_temp_file_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=info event=tempfile_create path=/tmp/p101-tool-playground.tmp outcome=created\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "predictable-temp-file: uses a predictable temporary filename\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_signed_conversion_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    char         log_text[READ_BUF_LEN];
+    const int    parsed_count    = -1;
+    const size_t converted_count = (size_t)parsed_count;
+
+    P101_TRACE(env);
+    p101_snprintf(env, err, log_text, sizeof(log_text), "severity=error event=count_parse parsed=%d converted=%zu outcome=accepted\n", parsed_count, converted_count);
+    p101_printf(env, err, "signed-conversion: turns a negative count into a huge unsigned size\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_truncation_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    char               log_text[READ_BUF_LEN];
+    const unsigned int requested_count = 70000U;
+    unsigned int       stored_count;
+    unsigned short     narrow_count;
+
+    P101_TRACE(env);
+    narrow_count = (unsigned short)requested_count;
+    stored_count = narrow_count;
+    p101_snprintf(env, err, log_text, sizeof(log_text), "severity=error event=count_store requested=%u stored=%u outcome=accepted\n", requested_count, stored_count);
+    p101_printf(env, err, "truncation: stores a large count in a too-small integer type\n");
+    return write_text_output(env, err, args, log_text);
+}
+
 static int write_demo_file(const struct p101_env *env, struct p101_error *err, const struct arguments *args, const char *label, bool leak_fd, bool leak_alloc)
 {
     int   fd;
@@ -799,6 +929,36 @@ done:
     if(!leak_alloc)
     {
         p101_free(env, buffer);
+    }
+
+    return ret_val;
+}
+
+static int write_text_output(const struct p101_env *env, struct p101_error *err, const struct arguments *args, const char *text)
+{
+    int    fd;
+    size_t length;
+    int    ret_val;
+
+    P101_TRACE(env);
+    ret_val = EXIT_FAILURE;
+    fd      = p101_open(env, err, args->output_path, O_WRONLY | O_CREAT | O_TRUNC, REPORT_FILE_MODE);
+    if(p101_error_has_error(err))
+    {
+        goto done;
+    }
+
+    length = p101_strlen(env, text);
+    p101_write(env, err, fd, text, length);
+    if(p101_error_has_no_error(err))
+    {
+        ret_val = EXIT_SUCCESS;
+    }
+
+done:
+    if(fd != -1)
+    {
+        p101_close(env, err, fd);
     }
 
     return ret_val;

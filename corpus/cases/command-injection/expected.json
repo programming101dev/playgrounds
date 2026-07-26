@@ -1,0 +1,22 @@
+{
+  "name": "command-injection",
+  "lab_order": 19,
+  "issue_id": "P101-LAB-304",
+  "title": "Do not build shell commands from untrusted text",
+  "category": "security/injection",
+  "scenario": "command-injection",
+  "expected_exit": 0,
+  "expected_status": "LOGIC",
+  "lesson": "Shell metacharacters change data into syntax.",
+  "logic_issue_id": "P101-SEC-002",
+  "expected_output_contains": ["; rm -rf /"],
+  "fixed_output_not_contains": ["; rm -rf /"],
+  "fixed_output_contains": ["argv="],
+  "fix_goal": "Represent commands as argv arrays or reject shell metacharacters.",
+  "fix_steps": [
+    "Find the command-injection scenario.",
+    "Do not concatenate untrusted text into a shell string.",
+    "Replace the shell command preview with an argv-style representation.",
+    "Ensure the injected semicolon payload is no longer present."
+  ]
+}

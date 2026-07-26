@@ -163,6 +163,8 @@ def run_case(root: Path, p101: Path, playground: Path, out_dir: Path, case: dict
     expected_findings = {str(item) for item in case.get("expected_findings", [])}
     expected_error_path_findings = bool(case.get("expected_error_path_findings", False))
     expected_output_size = case.get("expected_output_size")
+    expected_output_contains = [str(item) for item in case.get("expected_output_contains", [])]
+    expected_output_missing = [str(item) for item in case.get("expected_output_missing", [])]
 
     command = [
         str(p101),
@@ -207,6 +209,19 @@ def run_case(root: Path, p101: Path, playground: Path, out_dir: Path, case: dict
         else:
             if actual_output_size != int(expected_output_size):
                 problems.append(f"expected output size {expected_output_size}, got {actual_output_size}")
+
+    if expected_output_contains or expected_output_missing:
+        try:
+            output_text = output_file.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            problems.append("expected output content, but output file was missing")
+        else:
+            missing_output = [item for item in expected_output_contains if item not in output_text]
+            if missing_output:
+                problems.append("missing output text: " + ", ".join(missing_output))
+            present_output = [item for item in expected_output_missing if item in output_text]
+            if present_output:
+                problems.append("unexpected output text present: " + ", ".join(present_output))
 
     if problems:
         return CaseResult(name, "FAIL", expected_exit, completed.returncode, case_out, "; ".join(problems))

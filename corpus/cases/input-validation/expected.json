@@ -1,0 +1,22 @@
+{
+  "name": "input-validation",
+  "lab_order": 18,
+  "issue_id": "P101-LAB-303",
+  "title": "Validate external input at the boundary",
+  "category": "security/input-validation",
+  "scenario": "input-validation",
+  "expected_exit": 0,
+  "expected_status": "LOGIC",
+  "lesson": "Accepting a path-shaped value before validation lets unsafe meaning travel through the program.",
+  "logic_issue_id": "P101-SEC-001",
+  "expected_output_contains": ["path=../../etc/passwd", "outcome=accepted"],
+  "fixed_output_not_contains": ["outcome=accepted"],
+  "fixed_output_contains": ["outcome=rejected"],
+  "fix_goal": "Reject path traversal shaped input before it reaches business logic.",
+  "fix_steps": [
+    "Find the input-validation scenario.",
+    "Treat the path value as untrusted external input.",
+    "Reject values containing parent-directory traversal.",
+    "Log a structured rejected outcome instead of accepted."
+  ]
+}

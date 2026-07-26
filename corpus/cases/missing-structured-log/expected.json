@@ -1,0 +1,21 @@
+{
+  "name": "missing-structured-log",
+  "lab_order": 17,
+  "issue_id": "P101-LAB-302",
+  "title": "Use structured log fields",
+  "category": "good-practice/logging",
+  "scenario": "missing-structured-log",
+  "expected_exit": 0,
+  "expected_status": "LOGIC",
+  "lesson": "A vague string is hard to search, aggregate, test, or connect to a source location.",
+  "logic_issue_id": "P101-LOG-003",
+  "expected_output_missing": ["event=", "severity=", "outcome="],
+  "fixed_output_contains": ["event=login_failed", "severity=warning", "outcome=denied"],
+  "fix_goal": "Replace vague prose with stable event fields.",
+  "fix_steps": [
+    "Find the missing-structured-log scenario.",
+    "Replace the vague text with event, severity, and outcome fields.",
+    "Keep the message short and machine-readable.",
+    "Re-run the lab and confirm the expected fields are present."
+  ]
+}

@@ -95,6 +95,30 @@ static void test_scenario_names_round_trip(void)
     TEST_ASSERT_EQUAL_INT(SCENARIO_IGNORE_READ_COUNT, p101_tool_playground_scenario_from_name(env, "ignore-read-count", &ok));
     TEST_ASSERT_TRUE(ok);
     TEST_ASSERT_EQUAL_STRING("ignore-read-count", p101_tool_playground_scenario_name(SCENARIO_IGNORE_READ_COUNT));
+    TEST_ASSERT_EQUAL_INT(SCENARIO_UNSAFE_LOG_SECRET, p101_tool_playground_scenario_from_name(env, "unsafe-log-secret", &ok));
+    TEST_ASSERT_TRUE(ok);
+    TEST_ASSERT_EQUAL_STRING("unsafe-log-secret", p101_tool_playground_scenario_name(SCENARIO_UNSAFE_LOG_SECRET));
+    TEST_ASSERT_EQUAL_INT(SCENARIO_LOG_INJECTION, p101_tool_playground_scenario_from_name(env, "log-injection", &ok));
+    TEST_ASSERT_TRUE(ok);
+    TEST_ASSERT_EQUAL_STRING("log-injection", p101_tool_playground_scenario_name(SCENARIO_LOG_INJECTION));
+    TEST_ASSERT_EQUAL_INT(SCENARIO_MISSING_STRUCTURED_LOG, p101_tool_playground_scenario_from_name(env, "missing-structured-log", &ok));
+    TEST_ASSERT_TRUE(ok);
+    TEST_ASSERT_EQUAL_STRING("missing-structured-log", p101_tool_playground_scenario_name(SCENARIO_MISSING_STRUCTURED_LOG));
+    TEST_ASSERT_EQUAL_INT(SCENARIO_INPUT_VALIDATION, p101_tool_playground_scenario_from_name(env, "input-validation", &ok));
+    TEST_ASSERT_TRUE(ok);
+    TEST_ASSERT_EQUAL_STRING("input-validation", p101_tool_playground_scenario_name(SCENARIO_INPUT_VALIDATION));
+    TEST_ASSERT_EQUAL_INT(SCENARIO_COMMAND_INJECTION, p101_tool_playground_scenario_from_name(env, "command-injection", &ok));
+    TEST_ASSERT_TRUE(ok);
+    TEST_ASSERT_EQUAL_STRING("command-injection", p101_tool_playground_scenario_name(SCENARIO_COMMAND_INJECTION));
+    TEST_ASSERT_EQUAL_INT(SCENARIO_PREDICTABLE_TEMP_FILE, p101_tool_playground_scenario_from_name(env, "predictable-temp-file", &ok));
+    TEST_ASSERT_TRUE(ok);
+    TEST_ASSERT_EQUAL_STRING("predictable-temp-file", p101_tool_playground_scenario_name(SCENARIO_PREDICTABLE_TEMP_FILE));
+    TEST_ASSERT_EQUAL_INT(SCENARIO_SIGNED_CONVERSION, p101_tool_playground_scenario_from_name(env, "signed-conversion", &ok));
+    TEST_ASSERT_TRUE(ok);
+    TEST_ASSERT_EQUAL_STRING("signed-conversion", p101_tool_playground_scenario_name(SCENARIO_SIGNED_CONVERSION));
+    TEST_ASSERT_EQUAL_INT(SCENARIO_TRUNCATION, p101_tool_playground_scenario_from_name(env, "truncation", &ok));
+    TEST_ASSERT_TRUE(ok);
+    TEST_ASSERT_EQUAL_STRING("truncation", p101_tool_playground_scenario_name(SCENARIO_TRUNCATION));
 }
 
 static void test_rejects_unknown_scenario(void)

@@ -30,6 +30,10 @@ class LabCase:
     logic_issue_id: str
     expected_output_size: int | None
     fixed_output_size: int | None
+    expected_output_contains: list[str]
+    expected_output_missing: list[str]
+    fixed_output_contains: list[str]
+    fixed_output_not_contains: list[str]
     fix_goal: str
     fix_steps: list[str]
     case_dir: Path
@@ -103,6 +107,10 @@ def load_cases(root: Path, runs_dir: Path, selected: set[str] | None) -> list[La
         fix_steps = [str(item) for item in expected.get("fix_steps", [])]
         expected_output_size = expected.get("expected_output_size")
         fixed_output_size = expected.get("fixed_output_size")
+        expected_output_contains = [str(item) for item in expected.get("expected_output_contains", [])]
+        expected_output_missing = [str(item) for item in expected.get("expected_output_missing", [])]
+        fixed_output_contains = [str(item) for item in expected.get("fixed_output_contains", [])]
+        fixed_output_not_contains = [str(item) for item in expected.get("fixed_output_not_contains", [])]
         cases.append(
             LabCase(
                 name=name,
@@ -119,6 +127,10 @@ def load_cases(root: Path, runs_dir: Path, selected: set[str] | None) -> list[La
                 logic_issue_id=str(expected.get("logic_issue_id", "")),
                 expected_output_size=int(expected_output_size) if expected_output_size is not None else None,
                 fixed_output_size=int(fixed_output_size) if fixed_output_size is not None else None,
+                expected_output_contains=expected_output_contains,
+                expected_output_missing=expected_output_missing,
+                fixed_output_contains=fixed_output_contains,
+                fixed_output_not_contains=fixed_output_not_contains,
                 fix_goal=str(expected.get("fix_goal", "")),
                 fix_steps=fix_steps,
                 case_dir=case_dir,
@@ -226,19 +238,29 @@ def expected_issue_is_present(case: LabCase) -> bool:
             return output_path.stat().st_size == case.expected_output_size
         except OSError:
             return False
+    if case.expected_output_contains or case.expected_output_missing:
+        output_path = case.report_dir / "playground-output.txt"
+        try:
+            output_text = output_path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            return False
+        if case.expected_output_contains and all(item in output_text for item in case.expected_output_contains):
+            return True
+        if case.expected_output_missing and all(item not in output_text for item in case.expected_output_missing):
+            return True
     return False
 
 
 def lab_progress(case: LabCase) -> str:
     if not case.report_dir.exists():
         return "MISSING"
-    if not case.expected_findings and not case.expects_error_path_findings and case.expected_output_size is None:
+    if not case.expected_findings and not case.expects_error_path_findings and case.expected_output_size is None and not case.expected_output_contains and not case.expected_output_missing:
         return "REFERENCE"
     return "OPEN" if expected_issue_is_present(case) else "FIXED"
 
 
 def progress_counts(cases: list[LabCase]) -> tuple[int, int, int]:
-    issue_cases = [case for case in cases if case.expected_findings or case.expects_error_path_findings or case.expected_output_size is not None]
+    issue_cases = [case for case in cases if case.expected_findings or case.expects_error_path_findings or case.expected_output_size is not None or case.expected_output_contains or case.expected_output_missing]
     fixed = sum(1 for case in issue_cases if lab_progress(case) == "FIXED")
     open_count = sum(1 for case in issue_cases if lab_progress(case) == "OPEN")
     return fixed, open_count, len(issue_cases)
@@ -267,6 +289,10 @@ def render_markdown(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
             signal = (signal + ", " if signal else "") + "error-path findings"
         if case.logic_issue_id:
             signal = (signal + ", " if signal else "") + case.logic_issue_id
+        if case.expected_output_contains:
+            signal = (signal + ", " if signal else "") + "output contains " + "; ".join(case.expected_output_contains)
+        if case.expected_output_missing:
+            signal = (signal + ", " if signal else "") + "output missing " + "; ".join(case.expected_output_missing)
         if not signal:
             signal = "clean reference"
         lines.append(f"| {case.order} | `{lab_progress(case)}` | {case.issue_id}: {case.title} | `{case.scenario}` | {signal} |")
@@ -346,6 +372,14 @@ def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
             expected = (expected + " " if expected else "") + f"<code>{case.expected_output_size} bytes</code>"
         if case.fixed_output_size is not None:
             expected = expected + f" <span class=\"muted\">fixed target: {case.fixed_output_size} bytes</span>"
+        if case.expected_output_contains:
+            expected = (expected + " " if expected else "") + " ".join(f"<code>contains {html.escape(item)}</code>" for item in case.expected_output_contains)
+        if case.expected_output_missing:
+            expected = (expected + " " if expected else "") + " ".join(f"<code>missing {html.escape(item)}</code>" for item in case.expected_output_missing)
+        if case.fixed_output_contains:
+            expected = expected + " <span class=\"muted\">fixed contains: " + ", ".join(html.escape(item) for item in case.fixed_output_contains) + "</span>"
+        if case.fixed_output_not_contains:
+            expected = expected + " <span class=\"muted\">fixed excludes: " + ", ".join(html.escape(item) for item in case.fixed_output_not_contains) + "</span>"
         if not expected:
             expected = "<code>clean</code>"
 

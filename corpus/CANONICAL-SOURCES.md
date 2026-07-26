@@ -57,15 +57,15 @@ The status column is intentionally simple:
 | Uninitialized read | CWE-457, CERT EXP33-C | `candidate`: branch/output based on uninitialized stack data |
 | Null dereference | CWE-476, CERT EXP34-C | `candidate`: unchecked allocation/lookup result |
 | Integer overflow in size calculation | CWE-190/CWE-680, CERT INT30-C/INT32-C | `candidate`: allocation size wrap |
-| Signed/unsigned conversion mistake | CWE-195/CWE-681, CERT INT rules | `candidate`: negative length becomes large size |
-| Truncation/narrowing | CWE-197, CERT INT rules | `candidate`: `size_t` to `int` command length |
-| Missing input validation | CWE-20, CERT API00-C | `candidate`: unchecked option/range/path input |
+| Signed/unsigned conversion mistake | CWE-195/CWE-681, CERT INT rules | `covered`: `signed-conversion` |
+| Truncation/narrowing | CWE-197, CERT INT rules | `covered`: `truncation` |
+| Missing input validation | CWE-20, CERT API00-C | `covered`: `input-validation` |
 | Path traversal | CWE-22 | `candidate`: output file path escapes intended directory |
-| Command injection | CWE-78/CWE-77 | `candidate`: shell command built from user text; preferably commented/uncomment lab |
+| Command injection | CWE-78/CWE-77 | `covered`: `command-injection` |
 | Dangerous libc function | CWE-676, CERT STR/FIO rules | `tool`: wrapper audit / include doctor; use commented fixture |
 | Format string misuse | CWE-134, CERT FIO30-C/FIO47-C | `candidate`: user-controlled format; may need commented fixture |
 | Secret data left in reusable resource | CWE-226/CWE-200, CERT MEM03-C/MEM06-C | `candidate`: stale buffer or temp-file lesson |
-| Predictable temporary file | CWE-377, CERT FIO21-C | `candidate`: insecure temp path construction |
+| Predictable temporary file | CWE-377, CERT FIO21-C | `covered`: `predictable-temp-file` |
 | Resource exhaustion / missing limits | CWE-770, CERT MEM11-C | `candidate`: unbounded allocation/repeat count |
 | Race / TOCTOU | CWE-367, CERT POS rules | `candidate`: check-then-open path demo |
 | Data race / unsynchronized shared state | CWE-362, CERT CON rules | `candidate`: pthread counter fixture |
@@ -81,14 +81,14 @@ habits worth covering alongside the traps above.
 
 | Practice | Canonical anchors | Playground status |
 | --- | --- | --- |
-| Structured logging with severity, event name, location, and outcome | OWASP Logging Cheat Sheet, NIST SSDF PW/RV practices | `candidate`: small logger wrapper and report correlation lesson |
-| Security-event logging for validation failure, authz/authn-like decisions, unexpected control flow, and resource failures | OWASP Logging Cheat Sheet | `candidate`: validation-failure scenario with expected log event |
-| Do not log secrets, tokens, passwords, raw PII, or sensitive file contents | OWASP Logging Cheat Sheet, CWE-532 | `candidate`: secret-redaction lesson |
-| Neutralize untrusted data before writing it to logs | OWASP Logging Cheat Sheet, CWE-117 | `candidate`: log-injection lesson |
+| Structured logging with severity, event name, location, and outcome | OWASP Logging Cheat Sheet, NIST SSDF PW/RV practices | `covered`: `missing-structured-log` |
+| Security-event logging for validation failure, authz/authn-like decisions, unexpected control flow, and resource failures | OWASP Logging Cheat Sheet | `covered`: `missing-structured-log`, `input-validation` |
+| Do not log secrets, tokens, passwords, raw PII, or sensitive file contents | OWASP Logging Cheat Sheet, CWE-532 | `covered`: `unsafe-log-secret` |
+| Neutralize untrusted data before writing it to logs | OWASP Logging Cheat Sheet, CWE-117 | `covered`: `log-injection` |
 | Consistent error propagation using `p101_error` | CERT API04-C, ERR recommendations | `covered`: toolchain style, templates, wrapper examples |
 | Every resource has one owner and one cleanup path | CERT MEM12-C, JPL narrow-control-flow guidance | `covered`: clean fixtures and resource-leak fixes |
 | Prefer small functions with narrow scope and `static` internal helpers | MISRA analyzability, JPL narrow-scope guidance | `tool`: `p101-module-map` |
-| Validate all external input at the boundary | CERT API00-C, CWE-20 | `candidate`: command-line/config validation lesson |
+| Validate all external input at the boundary | CERT API00-C, CWE-20 | `covered`: `input-validation` |
 | Preserve the original value when acquisition/growth can fail | CERT MEM/realloc guidance | `candidate`: `realloc` failure lesson |
 | Check return values or explicitly document intentional discard | CWE-252, JPL checked-return guidance | `tool`: static/tooling rule with commented fixture |
 | Make tests cover both happy paths and failure paths | NIST SSDF, CERT conformance/testing guidance | `covered`: corpus, `p101-error-path-walk` |

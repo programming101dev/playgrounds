@@ -57,6 +57,14 @@ Options:
 | `stray-free` | Free an interior pointer | free of unknown pointer |
 | `sizeof-pointer` | Use `sizeof(pointer)` as though it were buffer length | logic/output-size bug |
 | `ignore-read-count` | Write a whole buffer instead of bytes actually read | stale-data output bug |
+| `unsafe-log-secret` | Log a secret directly | unsafe logging bug |
+| `log-injection` | Allow untrusted text to forge a log line | log-forgery bug |
+| `missing-structured-log` | Emit vague text instead of event fields | logging practice bug |
+| `input-validation` | Accept a path-shaped input value | validation bug |
+| `command-injection` | Build a shell command from untrusted text | command-construction bug |
+| `predictable-temp-file` | Use a predictable file in `/tmp` | temporary-file bug |
+| `signed-conversion` | Convert a negative count to an unsigned size | integer-conversion bug |
+| `truncation` | Store a large value in a too-small type | truncation bug |
 
 The bug scenarios are intentionally broken. They are not regressions; they are
 teaching targets.
