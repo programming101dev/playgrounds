@@ -198,4 +198,5 @@ coverage/
 coverage-*/
 profile/
 profile-*/
+__pycache__/
 # NOTE: fuzz/corpus/ is the committed seed corpus — keep it.

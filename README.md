@@ -90,6 +90,20 @@ verifies expected exit status and diagnostic IDs, and writes a linked
 `summary.md` plus the full per-case HTML reports. This makes the playground both
 a demo target and the checked answer key for the toolchain.
 
+For the student-facing lab book, run:
+
+```sh
+./lab.sh --quick
+./lab.sh
+```
+
+The lab generator runs the same checked corpus and writes a self-contained
+`index.html` plus `lab.md`. Each lesson card links to the exact `p101 check`
+artifacts that produced it: resource findings, correlated reports, fault-walk
+outputs, and command logs. The goal is to make the playground usable as a
+classroom walkthrough, a take-home lab, and a regression receipt from the same
+source material.
+
 Build the playground:
 
 ```sh
@@ -180,3 +194,6 @@ scenario stayed inside its expected resource model.
    failure that leaks.
 6. Run `./test.sh`, `./fuzz.sh`, and `./coverage-report.sh` to show the static
    and dynamic quality workflow around the demo.
+
+Or run `./lab.sh` first and use the generated `index.html` as the table of
+contents for the whole lesson.
