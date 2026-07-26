@@ -1,11 +1,12 @@
-#define main p101_test_unused_main
-#include "../src/main.c"
-#undef main
-
+#include "cli.h"
+#include "constants.h"
+#include "errors.h"
+#include "scenario.h"
 #include "unity.h"
 #include <p101_c/p101_string.h>
 #include <p101_env/env.h>
 #include <p101_error/error.h>
+#include <p101_posix/p101_unistd.h>
 #include <stdbool.h>
 
 static struct p101_error *error;
@@ -51,9 +52,9 @@ static void test_parse_accepts_full_option_set(void)
     reset_getopt();
     set_defaults(&args);
 
-    parse_arguments(env, error, 10, argv, &args);
-    check_arguments(env, error, &args);
-    convert_arguments(env, error, &args);
+    p101_tool_playground_parse_arguments(env, error, 10, argv, &args);
+    p101_tool_playground_check_arguments(env, error, &args);
+    p101_tool_playground_convert_arguments(env, error, &args);
 
     TEST_ASSERT_FALSE(p101_error_has_error(error));
     TEST_ASSERT_TRUE(args.verbose);
@@ -67,12 +68,12 @@ static void test_scenario_names_round_trip(void)
 {
     bool ok;
 
-    TEST_ASSERT_EQUAL_INT(SCENARIO_TOUR, scenario_from_name(env, "tour", &ok));
+    TEST_ASSERT_EQUAL_INT(SCENARIO_TOUR, p101_tool_playground_scenario_from_name(env, "tour", &ok));
     TEST_ASSERT_TRUE(ok);
-    TEST_ASSERT_EQUAL_STRING("tour", scenario_name(SCENARIO_TOUR));
-    TEST_ASSERT_EQUAL_INT(SCENARIO_FAULT_LAB, scenario_from_name(env, "fault-lab", &ok));
+    TEST_ASSERT_EQUAL_STRING("tour", p101_tool_playground_scenario_name(SCENARIO_TOUR));
+    TEST_ASSERT_EQUAL_INT(SCENARIO_FAULT_LAB, p101_tool_playground_scenario_from_name(env, "fault-lab", &ok));
     TEST_ASSERT_TRUE(ok);
-    TEST_ASSERT_EQUAL_STRING("fault-lab", scenario_name(SCENARIO_FAULT_LAB));
+    TEST_ASSERT_EQUAL_STRING("fault-lab", p101_tool_playground_scenario_name(SCENARIO_FAULT_LAB));
 }
 
 static void test_rejects_unknown_scenario(void)
@@ -83,8 +84,8 @@ static void test_rejects_unknown_scenario(void)
     reset_getopt();
     set_defaults(&args);
 
-    parse_arguments(env, error, 3, argv, &args);
-    check_arguments(env, error, &args);
+    p101_tool_playground_parse_arguments(env, error, 3, argv, &args);
+    p101_tool_playground_check_arguments(env, error, &args);
 
     TEST_ASSERT_TRUE(p101_error_is_error(error, P101_ERROR_USER, ERR_USAGE));
 }
@@ -97,9 +98,9 @@ static void test_rejects_too_many_bytes(void)
     reset_getopt();
     set_defaults(&args);
 
-    parse_arguments(env, error, 3, argv, &args);
-    check_arguments(env, error, &args);
-    convert_arguments(env, error, &args);
+    p101_tool_playground_parse_arguments(env, error, 3, argv, &args);
+    p101_tool_playground_check_arguments(env, error, &args);
+    p101_tool_playground_convert_arguments(env, error, &args);
 
     TEST_ASSERT_TRUE(p101_error_is_error(error, P101_ERROR_USER, ERR_USAGE));
 }
@@ -112,7 +113,7 @@ static void test_rejects_positional_argument(void)
     reset_getopt();
     set_defaults(&args);
 
-    parse_arguments(env, error, 2, argv, &args);
+    p101_tool_playground_parse_arguments(env, error, 2, argv, &args);
 
     TEST_ASSERT_TRUE(p101_error_is_error(error, P101_ERROR_USER, ERR_USAGE));
 }
