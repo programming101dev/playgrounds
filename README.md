@@ -65,6 +65,21 @@ Options:
 | `predictable-temp-file` | Use a predictable file in `/tmp` | temporary-file bug |
 | `signed-conversion` | Convert a negative count to an unsigned size | integer-conversion bug |
 | `truncation` | Store a large value in a too-small type | truncation bug |
+| `use-after-free` | Continue using ownership after free | lifetime bug |
+| `realloc-failure` | Lose the original pointer when growth fails | cleanup/ownership bug |
+| `out-of-bounds-write` | Accept a write past the buffer end | bounds bug |
+| `out-of-bounds-read` | Accept a read past valid data | bounds/information bug |
+| `buffer-overflow` | Copy more bytes than the destination holds | buffer overflow bug |
+| `uninitialized-read` | Use a value before initialization | state bug |
+| `null-dereference` | Continue after a NULL result | checked-result bug |
+| `integer-overflow` | Let a size calculation wrap | integer/allocation bug |
+| `path-traversal` | Accept a path that escapes its root | path validation bug |
+| `format-string` | Treat user text as a format string | format-string bug |
+| `stale-secret` | Reuse a buffer without clearing old secret data | information exposure bug |
+| `resource-exhaustion` | Accept an unbounded resource request | resource-limit bug |
+| `toctou` | Check a path separately from the later use | race bug |
+| `data-race` | Update shared state without synchronization | concurrency bug |
+| `parser-fuzz` | Parse boundary-heavy input without fuzz coverage | testing practice bug |
 
 The bug scenarios are intentionally broken. They are not regressions; they are
 teaching targets.

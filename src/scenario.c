@@ -120,6 +120,66 @@ enum playground_scenario p101_tool_playground_scenario_from_name(const struct p1
     {
         scenario = SCENARIO_TRUNCATION;
     }
+    else if(p101_strcmp(env, name, "use-after-free") == 0)
+    {
+        scenario = SCENARIO_USE_AFTER_FREE;
+    }
+    else if(p101_strcmp(env, name, "realloc-failure") == 0)
+    {
+        scenario = SCENARIO_REALLOC_FAILURE;
+    }
+    else if(p101_strcmp(env, name, "out-of-bounds-write") == 0)
+    {
+        scenario = SCENARIO_OUT_OF_BOUNDS_WRITE;
+    }
+    else if(p101_strcmp(env, name, "out-of-bounds-read") == 0)
+    {
+        scenario = SCENARIO_OUT_OF_BOUNDS_READ;
+    }
+    else if(p101_strcmp(env, name, "buffer-overflow") == 0)
+    {
+        scenario = SCENARIO_BUFFER_OVERFLOW;
+    }
+    else if(p101_strcmp(env, name, "uninitialized-read") == 0)
+    {
+        scenario = SCENARIO_UNINITIALIZED_READ;
+    }
+    else if(p101_strcmp(env, name, "null-dereference") == 0)
+    {
+        scenario = SCENARIO_NULL_DEREFERENCE;
+    }
+    else if(p101_strcmp(env, name, "integer-overflow") == 0)
+    {
+        scenario = SCENARIO_INTEGER_OVERFLOW;
+    }
+    else if(p101_strcmp(env, name, "path-traversal") == 0)
+    {
+        scenario = SCENARIO_PATH_TRAVERSAL;
+    }
+    else if(p101_strcmp(env, name, "format-string") == 0)
+    {
+        scenario = SCENARIO_FORMAT_STRING;
+    }
+    else if(p101_strcmp(env, name, "stale-secret") == 0)
+    {
+        scenario = SCENARIO_STALE_SECRET;
+    }
+    else if(p101_strcmp(env, name, "resource-exhaustion") == 0)
+    {
+        scenario = SCENARIO_RESOURCE_EXHAUSTION;
+    }
+    else if(p101_strcmp(env, name, "toctou") == 0)
+    {
+        scenario = SCENARIO_TOCTOU;
+    }
+    else if(p101_strcmp(env, name, "data-race") == 0)
+    {
+        scenario = SCENARIO_DATA_RACE;
+    }
+    else if(p101_strcmp(env, name, "parser-fuzz") == 0)
+    {
+        scenario = SCENARIO_PARSER_FUZZ;
+    }
     else
     {
         *ok = false;
@@ -273,6 +333,81 @@ const char *p101_tool_playground_scenario_name(enum playground_scenario scenario
             name = "truncation";
             break;
         }
+        case SCENARIO_USE_AFTER_FREE:
+        {
+            name = "use-after-free";
+            break;
+        }
+        case SCENARIO_REALLOC_FAILURE:
+        {
+            name = "realloc-failure";
+            break;
+        }
+        case SCENARIO_OUT_OF_BOUNDS_WRITE:
+        {
+            name = "out-of-bounds-write";
+            break;
+        }
+        case SCENARIO_OUT_OF_BOUNDS_READ:
+        {
+            name = "out-of-bounds-read";
+            break;
+        }
+        case SCENARIO_BUFFER_OVERFLOW:
+        {
+            name = "buffer-overflow";
+            break;
+        }
+        case SCENARIO_UNINITIALIZED_READ:
+        {
+            name = "uninitialized-read";
+            break;
+        }
+        case SCENARIO_NULL_DEREFERENCE:
+        {
+            name = "null-dereference";
+            break;
+        }
+        case SCENARIO_INTEGER_OVERFLOW:
+        {
+            name = "integer-overflow";
+            break;
+        }
+        case SCENARIO_PATH_TRAVERSAL:
+        {
+            name = "path-traversal";
+            break;
+        }
+        case SCENARIO_FORMAT_STRING:
+        {
+            name = "format-string";
+            break;
+        }
+        case SCENARIO_STALE_SECRET:
+        {
+            name = "stale-secret";
+            break;
+        }
+        case SCENARIO_RESOURCE_EXHAUSTION:
+        {
+            name = "resource-exhaustion";
+            break;
+        }
+        case SCENARIO_TOCTOU:
+        {
+            name = "toctou";
+            break;
+        }
+        case SCENARIO_DATA_RACE:
+        {
+            name = "data-race";
+            break;
+        }
+        case SCENARIO_PARSER_FUZZ:
+        {
+            name = "parser-fuzz";
+            break;
+        }
         default:
         {
             name = "unknown";
@@ -316,4 +451,19 @@ void p101_tool_playground_print_scenarios(const struct p101_env *env, struct p10
     p101_fputs(env, err, "  predictable-temp-file    Use a predictable filename in /tmp\n", stream);
     p101_fputs(env, err, "  signed-conversion        Convert a negative count to an unsigned size\n", stream);
     p101_fputs(env, err, "  truncation               Store a large value in a too-small integer type\n", stream);
+    p101_fputs(env, err, "  use-after-free           Continue using ownership after free\n", stream);
+    p101_fputs(env, err, "  realloc-failure          Lose the original pointer on failed grow\n", stream);
+    p101_fputs(env, err, "  out-of-bounds-write      Accept a write past the end of a buffer\n", stream);
+    p101_fputs(env, err, "  out-of-bounds-read       Accept a read past the end of valid data\n", stream);
+    p101_fputs(env, err, "  buffer-overflow          Copy more bytes than the destination can hold\n", stream);
+    p101_fputs(env, err, "  uninitialized-read       Use a value before it is initialized\n", stream);
+    p101_fputs(env, err, "  null-dereference         Continue after an allocation-like result is NULL\n", stream);
+    p101_fputs(env, err, "  integer-overflow         Let an allocation size calculation wrap\n", stream);
+    p101_fputs(env, err, "  path-traversal           Accept a path that escapes a root directory\n", stream);
+    p101_fputs(env, err, "  format-string            Treat user text as a printf format string\n", stream);
+    p101_fputs(env, err, "  stale-secret             Reuse a buffer without clearing old secret data\n", stream);
+    p101_fputs(env, err, "  resource-exhaustion      Accept an unbounded resource request\n", stream);
+    p101_fputs(env, err, "  toctou                   Separate a path check from the later use\n", stream);
+    p101_fputs(env, err, "  data-race                Update shared state without synchronization\n", stream);
+    p101_fputs(env, err, "  parser-fuzz              Parse boundary-heavy input without a fuzz target\n", stream);
 }

@@ -1,0 +1,22 @@
+{
+  "name": "format-string",
+  "lab_order": 32,
+  "issue_id": "P101-LAB-317",
+  "title": "Never use user text as a printf format",
+  "category": "security/format",
+  "scenario": "format-string",
+  "expected_exit": 0,
+  "expected_status": "LOGIC",
+  "lesson": "printf-style functions interpret percent sequences in the format string.",
+  "logic_issue_id": "P101-FIO-002",
+  "expected_output_contains": ["format=%x%x%x", "source=user", "outcome=used_as_format"],
+  "fixed_output_not_contains": ["outcome=used_as_format"],
+  "fixed_output_contains": ["source=user", "outcome=used_as_data"],
+  "fix_goal": "Use a constant format string and pass user text as data.",
+  "fix_steps": [
+    "Find the format-string scenario.",
+    "Make the format string a fixed string owned by the program.",
+    "Pass user-controlled text through a %s argument.",
+    "Re-run the lab and confirm user text is treated as data."
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "name": "integer-overflow",
+  "lab_order": 30,
+  "issue_id": "P101-LAB-315",
+  "title": "Check size calculations before allocation",
+  "category": "integer/allocation",
+  "scenario": "integer-overflow",
+  "expected_exit": 0,
+  "expected_status": "LOGIC",
+  "lesson": "Unchecked multiplication can wrap and allocate less storage than later code assumes.",
+  "logic_issue_id": "P101-INT-003",
+  "expected_output_contains": ["event=size_multiply", "outcome=wrapped"],
+  "fixed_output_not_contains": ["outcome=wrapped"],
+  "fixed_output_contains": ["outcome=rejected"],
+  "fix_goal": "Reject size calculations that would overflow before allocating.",
+  "fix_steps": [
+    "Find the integer-overflow scenario.",
+    "Check count against SIZE_MAX / element_width before multiplying.",
+    "Reject impossible sizes instead of wrapping.",
+    "Re-run the lab and confirm the wrapped result is gone."
+  ]
+}

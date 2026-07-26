@@ -38,6 +38,21 @@ static int   run_command_injection_demo(const struct p101_env *env, struct p101_
 static int   run_predictable_temp_file_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
 static int   run_signed_conversion_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
 static int   run_truncation_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_use_after_free_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_realloc_failure_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_out_of_bounds_write_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_out_of_bounds_read_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_buffer_overflow_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_uninitialized_read_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_null_dereference_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_integer_overflow_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_path_traversal_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_format_string_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_stale_secret_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_resource_exhaustion_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_toctou_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_data_race_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_parser_fuzz_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
 static int   write_demo_file(const struct p101_env *env, struct p101_error *err, const struct arguments *args, const char *label, bool leak_fd, bool leak_alloc);
 static int   write_text_output(const struct p101_env *env, struct p101_error *err, const struct arguments *args, const char *text);
 static char *make_buffer(const struct p101_env *env, struct p101_error *err, size_t bytes, char fill);
@@ -200,6 +215,81 @@ int p101_tool_playground_run(const struct p101_env *env, struct p101_error *err,
         case SCENARIO_TRUNCATION:
         {
             ret_val = run_truncation_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_USE_AFTER_FREE:
+        {
+            ret_val = run_use_after_free_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_REALLOC_FAILURE:
+        {
+            ret_val = run_realloc_failure_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_OUT_OF_BOUNDS_WRITE:
+        {
+            ret_val = run_out_of_bounds_write_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_OUT_OF_BOUNDS_READ:
+        {
+            ret_val = run_out_of_bounds_read_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_BUFFER_OVERFLOW:
+        {
+            ret_val = run_buffer_overflow_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_UNINITIALIZED_READ:
+        {
+            ret_val = run_uninitialized_read_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_NULL_DEREFERENCE:
+        {
+            ret_val = run_null_dereference_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_INTEGER_OVERFLOW:
+        {
+            ret_val = run_integer_overflow_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_PATH_TRAVERSAL:
+        {
+            ret_val = run_path_traversal_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_FORMAT_STRING:
+        {
+            ret_val = run_format_string_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_STALE_SECRET:
+        {
+            ret_val = run_stale_secret_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_RESOURCE_EXHAUSTION:
+        {
+            ret_val = run_resource_exhaustion_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_TOCTOU:
+        {
+            ret_val = run_toctou_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_DATA_RACE:
+        {
+            ret_val = run_data_race_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_PARSER_FUZZ:
+        {
+            ret_val = run_parser_fuzz_demo(env, err, args);
             break;
         }
         default:
@@ -885,6 +975,141 @@ static int run_truncation_demo(const struct p101_env *env, struct p101_error *er
     stored_count = narrow_count;
     p101_snprintf(env, err, log_text, sizeof(log_text), "severity=error event=count_store requested=%u stored=%u outcome=accepted\n", requested_count, stored_count);
     p101_printf(env, err, "truncation: stores a large count in a too-small integer type\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_use_after_free_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=error event=use_after_free pointer_state=freed action=used outcome=accepted\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "use-after-free: records ownership use after free\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_realloc_failure_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=error event=realloc_failure original_pointer=lost outcome=leaked\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "realloc-failure: records losing the original pointer on failed grow\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_out_of_bounds_write_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=error event=bounds_check operation=write index=16 capacity=16 outcome=accepted\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "out-of-bounds-write: records accepting an index past the writable range\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_out_of_bounds_read_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=error event=bounds_check operation=read index=16 valid=16 outcome=accepted\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "out-of-bounds-read: records accepting an index past the readable range\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_buffer_overflow_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=error event=copy_check source_bytes=32 destination_bytes=16 outcome=accepted\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "buffer-overflow: records accepting a copy that does not fit\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_uninitialized_read_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=error event=state_read initialized=false outcome=used\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "uninitialized-read: records using a value before initialization\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_null_dereference_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=error event=null_check pointer=null action=dereference outcome=accepted\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "null-dereference: records continuing after a NULL result\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_integer_overflow_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=error event=size_multiply count=9223372036854775808 width=2 outcome=wrapped\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "integer-overflow: records an allocation size calculation that wrapped\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_path_traversal_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=error event=path_check root=/safe path=/safe/../secret.txt outcome=accepted\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "path-traversal: records a path that escapes its intended root\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_format_string_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=error event=format_string format=%x%x%x source=user outcome=used_as_format\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "format-string: records user text treated as a printf format\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_stale_secret_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=error event=buffer_reuse old_secret=api-key-123 outcome=leaked\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "stale-secret: records reusing a buffer before clearing secret bytes\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_resource_exhaustion_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=error event=allocation_request requested=unbounded limit=none outcome=accepted\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "resource-exhaustion: records accepting an unbounded resource request\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_toctou_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=error event=file_open pattern=check_then_use path=/tmp/p101-target outcome=accepted\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "toctou: records checking a path separately from using it\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_data_race_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=error event=counter_update threads=2 synchronization=none outcome=accepted\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "data-race: records updating shared state without synchronization\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_parser_fuzz_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=warning event=parser_boundary_check fuzz_target=missing outcome=untested\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "parser-fuzz: records boundary-heavy parsing without a fuzz target\n");
     return write_text_output(env, err, args, log_text);
 }
 

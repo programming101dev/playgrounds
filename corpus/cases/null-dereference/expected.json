@@ -1,0 +1,22 @@
+{
+  "name": "null-dereference",
+  "lab_order": 29,
+  "issue_id": "P101-LAB-314",
+  "title": "Check NULL before dereferencing",
+  "category": "state/checked-result",
+  "scenario": "null-dereference",
+  "expected_exit": 0,
+  "expected_status": "LOGIC",
+  "lesson": "A NULL pointer is a failed lookup or allocation result, not an object.",
+  "logic_issue_id": "P101-EXP-002",
+  "expected_output_contains": ["pointer=null", "action=dereference", "outcome=accepted"],
+  "fixed_output_not_contains": ["action=dereference", "outcome=accepted"],
+  "fixed_output_contains": ["pointer=null", "outcome=rejected"],
+  "fix_goal": "Handle NULL results before dereferencing.",
+  "fix_steps": [
+    "Find the null-dereference scenario.",
+    "Check pointer results immediately after acquisition or lookup.",
+    "Return or raise an error before any dereference when the pointer is NULL.",
+    "Re-run the lab and confirm the NULL path is rejected."
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "name": "realloc-failure",
+  "lab_order": 24,
+  "issue_id": "P101-LAB-309",
+  "title": "Preserve the original pointer when realloc fails",
+  "category": "memory/ownership",
+  "scenario": "realloc-failure",
+  "expected_exit": 0,
+  "expected_status": "LOGIC",
+  "lesson": "Assigning realloc directly back to the only pointer can lose the original allocation on failure.",
+  "logic_issue_id": "P101-MEM-002",
+  "expected_output_contains": ["event=realloc_failure", "original_pointer=lost", "outcome=leaked"],
+  "fixed_output_not_contains": ["original_pointer=lost", "outcome=leaked"],
+  "fixed_output_contains": ["original_pointer=preserved", "outcome=cleaned"],
+  "fix_goal": "Store realloc's result in a temporary pointer before replacing the original.",
+  "fix_steps": [
+    "Find the realloc-failure scenario.",
+    "Call realloc into a temporary pointer.",
+    "Only replace the original pointer after the temporary result is non-NULL.",
+    "On failure, keep and clean up the original allocation."
+  ]
+}

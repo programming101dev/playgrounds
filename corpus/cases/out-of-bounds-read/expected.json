@@ -1,0 +1,22 @@
+{
+  "name": "out-of-bounds-read",
+  "lab_order": 26,
+  "issue_id": "P101-LAB-311",
+  "title": "Reject reads past valid data",
+  "category": "memory/bounds",
+  "scenario": "out-of-bounds-read",
+  "expected_exit": 0,
+  "expected_status": "LOGIC",
+  "lesson": "Reading one past valid data can disclose stale memory or crash.",
+  "logic_issue_id": "P101-ARR-002",
+  "expected_output_contains": ["operation=read", "index=16", "valid=16", "outcome=accepted"],
+  "fixed_output_not_contains": ["outcome=accepted"],
+  "fixed_output_contains": ["operation=read", "outcome=rejected"],
+  "fix_goal": "Check reads with index < valid_length before accessing the buffer.",
+  "fix_steps": [
+    "Find the out-of-bounds-read scenario.",
+    "Track the number of valid bytes separately from total capacity.",
+    "Reject indexes equal to or greater than the valid byte count.",
+    "Re-run the lab and confirm the bad read is rejected."
+  ]
+}

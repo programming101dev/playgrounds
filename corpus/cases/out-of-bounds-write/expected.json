@@ -1,0 +1,22 @@
+{
+  "name": "out-of-bounds-write",
+  "lab_order": 25,
+  "issue_id": "P101-LAB-310",
+  "title": "Reject writes past the end of a buffer",
+  "category": "memory/bounds",
+  "scenario": "out-of-bounds-write",
+  "expected_exit": 0,
+  "expected_status": "LOGIC",
+  "lesson": "Index 16 is outside a 16-byte buffer because the last valid index is 15.",
+  "logic_issue_id": "P101-ARR-001",
+  "expected_output_contains": ["operation=write", "index=16", "capacity=16", "outcome=accepted"],
+  "fixed_output_not_contains": ["outcome=accepted"],
+  "fixed_output_contains": ["operation=write", "outcome=rejected"],
+  "fix_goal": "Check writes with index < capacity before touching the buffer.",
+  "fix_steps": [
+    "Find the out-of-bounds-write scenario.",
+    "Use a strict less-than capacity check.",
+    "Reject index values equal to or greater than the capacity.",
+    "Re-run the lab and confirm the bad write is rejected."
+  ]
+}

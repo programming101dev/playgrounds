@@ -44,31 +44,31 @@ The status column is intentionally simple:
 | Double close / stale descriptor ownership | CWE-666, CERT FIO ownership rules | `covered`: `double-close` |
 | Close/free of unowned resource | CWE-590/CWE-666 | `covered`: `stray-close`, `stray-free` |
 | Double free | CWE-415, CERT MEM01-C/MEM30-C | `covered`: `double-free` |
-| Use after free | CWE-416, CERT MEM30-C | `candidate`: read/write after `p101_free` with sanitizer/report lesson |
+| Use after free | CWE-416, CERT MEM30-C | `covered`: `use-after-free` |
 | Realloc ownership loss | CWE-401, CERT MEM31-C | `covered`: `realloc-leak` |
-| Realloc failure handling | CERT MEM31-C/MEM35-C | `candidate`: preserve original pointer across failed grow |
+| Realloc failure handling | CERT MEM31-C/MEM35-C | `covered`: `realloc-failure` |
 | Exec descriptor inheritance | CWE-403/CWE-200, POSIX close-on-exec practice | `covered`: `exec-inherit` |
-| Out-of-bounds write | CWE-787, CERT ARR30-C/STR31-C | `candidate`: fixed-size buffer write past end |
-| Out-of-bounds read | CWE-125, CERT ARR30-C | `candidate`: read one past buffer end |
-| Stack/heap buffer overflow | CWE-121/CWE-122/CWE-120 | `candidate`: unsafe copy or incorrect length |
+| Out-of-bounds write | CWE-787, CERT ARR30-C/STR31-C | `covered`: `out-of-bounds-write` |
+| Out-of-bounds read | CWE-125, CERT ARR30-C | `covered`: `out-of-bounds-read` |
+| Stack/heap buffer overflow | CWE-121/CWE-122/CWE-120 | `covered`: `buffer-overflow` |
 | `sizeof(pointer)` used as array length | CWE-467, CERT ARR01-C | `covered`: `sizeof-pointer` |
 | Ignoring read/write byte counts | CWE-252/CWE-200, CERT FIO | `covered`: `ignore-read-count` |
 | Ignoring return values | CWE-252, JPL checked-return rule | `tool`: wrapper audit / static checks; add fixture if useful |
-| Uninitialized read | CWE-457, CERT EXP33-C | `candidate`: branch/output based on uninitialized stack data |
-| Null dereference | CWE-476, CERT EXP34-C | `candidate`: unchecked allocation/lookup result |
-| Integer overflow in size calculation | CWE-190/CWE-680, CERT INT30-C/INT32-C | `candidate`: allocation size wrap |
+| Uninitialized read | CWE-457, CERT EXP33-C | `covered`: `uninitialized-read` |
+| Null dereference | CWE-476, CERT EXP34-C | `covered`: `null-dereference` |
+| Integer overflow in size calculation | CWE-190/CWE-680, CERT INT30-C/INT32-C | `covered`: `integer-overflow` |
 | Signed/unsigned conversion mistake | CWE-195/CWE-681, CERT INT rules | `covered`: `signed-conversion` |
 | Truncation/narrowing | CWE-197, CERT INT rules | `covered`: `truncation` |
 | Missing input validation | CWE-20, CERT API00-C | `covered`: `input-validation` |
-| Path traversal | CWE-22 | `candidate`: output file path escapes intended directory |
+| Path traversal | CWE-22 | `covered`: `path-traversal` |
 | Command injection | CWE-78/CWE-77 | `covered`: `command-injection` |
 | Dangerous libc function | CWE-676, CERT STR/FIO rules | `tool`: wrapper audit / include doctor; use commented fixture |
-| Format string misuse | CWE-134, CERT FIO30-C/FIO47-C | `candidate`: user-controlled format; may need commented fixture |
-| Secret data left in reusable resource | CWE-226/CWE-200, CERT MEM03-C/MEM06-C | `candidate`: stale buffer or temp-file lesson |
+| Format string misuse | CWE-134, CERT FIO30-C/FIO47-C | `covered`: `format-string` |
+| Secret data left in reusable resource | CWE-226/CWE-200, CERT MEM03-C/MEM06-C | `covered`: `stale-secret` |
 | Predictable temporary file | CWE-377, CERT FIO21-C | `covered`: `predictable-temp-file` |
-| Resource exhaustion / missing limits | CWE-770, CERT MEM11-C | `candidate`: unbounded allocation/repeat count |
-| Race / TOCTOU | CWE-367, CERT POS rules | `candidate`: check-then-open path demo |
-| Data race / unsynchronized shared state | CWE-362, CERT CON rules | `candidate`: pthread counter fixture |
+| Resource exhaustion / missing limits | CWE-770, CERT MEM11-C | `covered`: `resource-exhaustion` |
+| Race / TOCTOU | CWE-367, CERT POS rules | `covered`: `toctou` |
+| Data race / unsynchronized shared state | CWE-362, CERT CON rules | `covered`: `data-race` |
 | Public API too broad / missing `static` | JPL narrow-scope rule, MISRA analyzability | `tool`: `p101-module-map` |
 | Preprocessor misuse | CERT PRE, MISRA preprocessor rules | `tool`: include doctor / module map |
 | Portability assumptions | CERT MSC/POS, MISRA implementation-defined behavior | `tool`: portability checks |
@@ -89,10 +89,10 @@ habits worth covering alongside the traps above.
 | Every resource has one owner and one cleanup path | CERT MEM12-C, JPL narrow-control-flow guidance | `covered`: clean fixtures and resource-leak fixes |
 | Prefer small functions with narrow scope and `static` internal helpers | MISRA analyzability, JPL narrow-scope guidance | `tool`: `p101-module-map` |
 | Validate all external input at the boundary | CERT API00-C, CWE-20 | `covered`: `input-validation` |
-| Preserve the original value when acquisition/growth can fail | CERT MEM/realloc guidance | `candidate`: `realloc` failure lesson |
+| Preserve the original value when acquisition/growth can fail | CERT MEM/realloc guidance | `covered`: `realloc-failure` |
 | Check return values or explicitly document intentional discard | CWE-252, JPL checked-return guidance | `tool`: static/tooling rule with commented fixture |
 | Make tests cover both happy paths and failure paths | NIST SSDF, CERT conformance/testing guidance | `covered`: corpus, `p101-error-path-walk` |
-| Add fuzz targets around parsers and boundary-heavy code | NIST SSDF verification practices | `covered`: project scripts; `candidate`: student parser lab |
+| Add fuzz targets around parsers and boundary-heavy code | NIST SSDF verification practices | `covered`: project scripts, `parser-fuzz` |
 | Keep a reproducible bug bundle for failures | NIST SSDF response/reproducibility practices | `covered`: `p101 bug-bundle` / `p101 check` |
 | Prefer source-visible, plain-text diagnostics for teaching tools | p101 teaching principle, SSDF traceability | `covered`: TSV logs and markdown/HTML reports |
 

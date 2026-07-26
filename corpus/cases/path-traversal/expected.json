@@ -1,0 +1,22 @@
+{
+  "name": "path-traversal",
+  "lab_order": 31,
+  "issue_id": "P101-LAB-316",
+  "title": "Keep paths inside their intended root",
+  "category": "security/path",
+  "scenario": "path-traversal",
+  "expected_exit": 0,
+  "expected_status": "LOGIC",
+  "lesson": "A path containing .. can escape the directory the program intended to use.",
+  "logic_issue_id": "P101-SEC-003",
+  "expected_output_contains": ["root=/safe", "path=/safe/../secret.txt", "outcome=accepted"],
+  "fixed_output_not_contains": ["outcome=accepted"],
+  "fixed_output_contains": ["outcome=rejected"],
+  "fix_goal": "Normalize and validate paths against an allowed root before use.",
+  "fix_steps": [
+    "Find the path-traversal scenario.",
+    "Normalize the candidate path.",
+    "Check that the normalized path is still under the allowed root.",
+    "Reject paths that escape the root directory."
+  ]
+}
