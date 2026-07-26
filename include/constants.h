@@ -12,6 +12,7 @@ enum
     MAX_BYTES        = 4096,
     MAX_REPEATS      = 32,
     READ_BUF_LEN     = 128,
+    STRAY_CLOSE_FD   = 999,
     REPORT_FILE_MODE = 0644,
     EXEC_FAILURE     = 127
 };

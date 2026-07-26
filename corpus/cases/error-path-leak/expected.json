@@ -1,0 +1,10 @@
+{
+  "name": "error-path-leak",
+  "scenario": "fault-lab",
+  "expected_exit": 1,
+  "expected_status": "FINDINGS",
+  "expected_findings": [],
+  "expected_error_path_findings": true,
+  "fault_count": 8,
+  "lesson": "The happy path can be clean while an injected setup failure leaks partially acquired resources."
+}

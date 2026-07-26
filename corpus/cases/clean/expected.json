@@ -1,0 +1,9 @@
+{
+  "name": "clean",
+  "scenario": "tour",
+  "expected_exit": 0,
+  "expected_status": "PASS",
+  "expected_findings": [],
+  "fault_count": 1,
+  "lesson": "A well-structured p101 program closes descriptors, frees allocations, and keeps ordinary and injected-error paths clean."
+}

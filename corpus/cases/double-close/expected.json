@@ -1,0 +1,9 @@
+{
+  "name": "double-close",
+  "scenario": "double-close",
+  "expected_exit": 1,
+  "expected_status": "FINDINGS",
+  "expected_findings": ["P101-FD-002"],
+  "fault_count": 0,
+  "lesson": "Ownership should be cleared after close so cleanup code cannot close the same descriptor twice."
+}

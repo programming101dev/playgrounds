@@ -1,0 +1,9 @@
+{
+  "name": "stray-close",
+  "scenario": "stray-close",
+  "expected_exit": 1,
+  "expected_status": "FINDINGS",
+  "expected_findings": ["P101-FD-003"],
+  "fault_count": 0,
+  "lesson": "Cleanup should only release resources that were successfully acquired."
+}

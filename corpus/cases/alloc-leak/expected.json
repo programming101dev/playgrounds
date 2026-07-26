@@ -1,0 +1,9 @@
+{
+  "name": "alloc-leak",
+  "scenario": "alloc-leak",
+  "expected_exit": 1,
+  "expected_status": "FINDINGS",
+  "expected_findings": ["P101-ALLOC-001"],
+  "fault_count": 0,
+  "lesson": "A heap allocation returned by p101_malloc remains owned until it is passed to p101_free."
+}

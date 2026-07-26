@@ -46,7 +46,7 @@ Options:
 | `fd-leak` | Intentionally leave one descriptor open | descriptor leak |
 | `alloc-leak` | Intentionally leave one allocation live | allocation leak |
 | `double-close` | Close a descriptor twice | bad release |
-| `stray-close` | Close descriptor `-1` | bad release |
+| `stray-close` | Close an unopened descriptor | bad release |
 | `fault-lab` | Clean normally, leaky when setup calls are fault-injected | error-path leaks |
 
 The bug scenarios are intentionally broken. They are not regressions; they are
@@ -76,6 +76,19 @@ For shorter classroom slices, use the lesson script:
 ./lesson.sh error-path
 ./lesson.sh module-split
 ```
+
+For the regression/lesson corpus, run:
+
+```sh
+./corpus.sh --quick
+./corpus.sh
+```
+
+The corpus lives under `corpus/cases/`. Each case has an `expected.json` oracle
+and a short `lesson.md`. The runner executes each scenario through `p101 check`,
+verifies expected exit status and diagnostic IDs, and writes a linked
+`summary.md` plus the full per-case HTML reports. This makes the playground both
+a demo target and the checked answer key for the toolchain.
 
 Build the playground:
 

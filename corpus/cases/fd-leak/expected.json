@@ -1,0 +1,9 @@
+{
+  "name": "fd-leak",
+  "scenario": "fd-leak",
+  "expected_exit": 1,
+  "expected_status": "FINDINGS",
+  "expected_findings": ["P101-FD-001"],
+  "fault_count": 0,
+  "lesson": "A descriptor opened with p101_open must be closed on every ownership path."
+}

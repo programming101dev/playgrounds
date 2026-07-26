@@ -317,7 +317,7 @@ static int run_stray_close_demo(const struct p101_env *env, struct p101_error *e
     int ret_val;
 
     P101_TRACE(env);
-    p101_close(env, err, -1);
+    p101_close(env, err, STRAY_CLOSE_FD);
     ret_val = EXIT_SUCCESS;
 
     if(p101_error_has_error(err))
