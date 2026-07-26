@@ -191,6 +191,12 @@ static void test_scenario_names_round_trip(void)
     TEST_ASSERT_EQUAL_INT(SCENARIO_THREAD_ARGUMENT_LIFETIME, p101_tool_playground_scenario_from_name(env, "thread-argument-lifetime", &ok));
     TEST_ASSERT_TRUE(ok);
     TEST_ASSERT_EQUAL_STRING("thread-argument-lifetime", p101_tool_playground_scenario_name(SCENARIO_THREAD_ARGUMENT_LIFETIME));
+    TEST_ASSERT_EQUAL_INT(SCENARIO_SHORT_READ, p101_tool_playground_scenario_from_name(env, "short-read", &ok));
+    TEST_ASSERT_TRUE(ok);
+    TEST_ASSERT_EQUAL_STRING("short-read", p101_tool_playground_scenario_name(SCENARIO_SHORT_READ));
+    TEST_ASSERT_EQUAL_INT(SCENARIO_READ_EOF_HANDLING, p101_tool_playground_scenario_from_name(env, "read-eof-handling", &ok));
+    TEST_ASSERT_TRUE(ok);
+    TEST_ASSERT_EQUAL_STRING("read-eof-handling", p101_tool_playground_scenario_name(SCENARIO_READ_EOF_HANDLING));
     TEST_ASSERT_EQUAL_INT(SCENARIO_PARSER_FUZZ, p101_tool_playground_scenario_from_name(env, "parser-fuzz", &ok));
     TEST_ASSERT_TRUE(ok);
     TEST_ASSERT_EQUAL_STRING("parser-fuzz", p101_tool_playground_scenario_name(SCENARIO_PARSER_FUZZ));

@@ -4,10 +4,15 @@
   "issue_id": "P101-LAB-103",
   "title": "Double close",
   "category": "resource ownership",
+  "tracks": [
+    "systems"
+  ],
   "scenario": "double-close",
   "expected_exit": 1,
   "expected_status": "FINDINGS",
-  "expected_findings": ["P101-FD-002"],
+  "expected_findings": [
+    "P101-FD-002"
+  ],
   "fault_count": 0,
   "fix_goal": "A resource should have one owner and one release; after release, clear the ownership marker.",
   "fix_steps": [

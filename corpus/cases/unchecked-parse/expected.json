@@ -1,17 +1,31 @@
 {
   "name": "unchecked-parse",
-  "lab_order": 29,
+  "lab_order": 31,
   "issue_id": "P101-LAB-329",
   "title": "Reject trailing junk after numeric parses",
   "category": "input/parsing",
+  "tracks": [
+    "c"
+  ],
   "scenario": "unchecked-parse",
   "expected_exit": 0,
   "expected_status": "LOGIC",
   "lesson": "A parse that consumes only the prefix of an input has not validated the whole input.",
   "logic_issue_id": "P101-INT-004",
-  "expected_output_contains": ["event=parse_int", "input=123abc", "trailing=abc", "outcome=accepted"],
-  "fixed_output_not_contains": ["trailing=abc", "outcome=accepted"],
-  "fixed_output_contains": ["trailing=none", "outcome=accepted"],
+  "expected_output_contains": [
+    "event=parse_int",
+    "input=123abc",
+    "trailing=abc",
+    "outcome=accepted"
+  ],
+  "fixed_output_not_contains": [
+    "trailing=abc",
+    "outcome=accepted"
+  ],
+  "fixed_output_contains": [
+    "trailing=none",
+    "outcome=accepted"
+  ],
   "fix_goal": "Require the whole input to parse cleanly and be in range.",
   "fix_steps": [
     "Find the unchecked-parse scenario.",

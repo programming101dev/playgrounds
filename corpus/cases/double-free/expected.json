@@ -4,10 +4,15 @@
   "issue_id": "P101-LAB-211",
   "title": "Double free",
   "category": "security",
+  "tracks": [
+    "c"
+  ],
   "scenario": "double-free",
   "expected_exit": 1,
   "expected_status": "FINDINGS",
-  "expected_findings": ["P101-ALLOC-002"],
+  "expected_findings": [
+    "P101-ALLOC-002"
+  ],
   "fault_count": 0,
   "fix_goal": "Heap ownership should have one release path; after free, clear the pointer or transfer ownership explicitly.",
   "fix_steps": [

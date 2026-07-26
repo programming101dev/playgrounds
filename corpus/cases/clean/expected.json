@@ -4,6 +4,10 @@
   "issue_id": "P101-LAB-000",
   "title": "Baseline: clean ownership",
   "category": "baseline",
+  "tracks": [
+    "c",
+    "systems"
+  ],
   "scenario": "tour",
   "expected_exit": 0,
   "expected_status": "PASS",

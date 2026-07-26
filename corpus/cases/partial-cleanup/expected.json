@@ -4,10 +4,17 @@
   "issue_id": "P101-LAB-107",
   "title": "Partial cleanup after multiple acquisitions",
   "category": "resource ownership",
+  "tracks": [
+    "c",
+    "systems"
+  ],
   "scenario": "partial-cleanup",
   "expected_exit": 1,
   "expected_status": "FINDINGS",
-  "expected_findings": ["P101-FD-001", "P101-ALLOC-001"],
+  "expected_findings": [
+    "P101-FD-001",
+    "P101-ALLOC-001"
+  ],
   "fault_count": 0,
   "fix_goal": "When a function acquires several resources, cleanup must account for every resource independently.",
   "fix_steps": [

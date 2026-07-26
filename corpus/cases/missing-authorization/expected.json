@@ -1,17 +1,30 @@
 {
   "name": "missing-authorization",
-  "lab_order": 34,
+  "lab_order": 36,
   "issue_id": "P101-LAB-331",
   "title": "Check authorization after authentication",
   "category": "security/authorization",
+  "tracks": [
+    "c"
+  ],
   "scenario": "missing-authorization",
   "expected_exit": 0,
   "expected_status": "LOGIC",
   "lesson": "Knowing who a user is does not prove they are allowed to perform an action.",
   "logic_issue_id": "P101-AUTH-001",
-  "expected_output_contains": ["authenticated=true", "authorized=false", "outcome=accepted"],
-  "fixed_output_not_contains": ["authorized=false", "outcome=accepted"],
-  "fixed_output_contains": ["authorized=false", "outcome=rejected"],
+  "expected_output_contains": [
+    "authenticated=true",
+    "authorized=false",
+    "outcome=accepted"
+  ],
+  "fixed_output_not_contains": [
+    "authorized=false",
+    "outcome=accepted"
+  ],
+  "fixed_output_contains": [
+    "authorized=false",
+    "outcome=rejected"
+  ],
   "fix_goal": "Check both identity and permission before performing sensitive actions.",
   "fix_steps": [
     "Find the missing-authorization scenario.",

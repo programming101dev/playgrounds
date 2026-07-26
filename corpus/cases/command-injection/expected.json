@@ -1,17 +1,26 @@
 {
   "name": "command-injection",
-  "lab_order": 32,
+  "lab_order": 34,
   "issue_id": "P101-LAB-304",
   "title": "Do not build shell commands from untrusted text",
   "category": "security/injection",
+  "tracks": [
+    "systems"
+  ],
   "scenario": "command-injection",
   "expected_exit": 0,
   "expected_status": "LOGIC",
   "lesson": "Shell metacharacters change data into syntax.",
   "logic_issue_id": "P101-SEC-002",
-  "expected_output_contains": ["; rm -rf /"],
-  "fixed_output_not_contains": ["; rm -rf /"],
-  "fixed_output_contains": ["argv="],
+  "expected_output_contains": [
+    "; rm -rf /"
+  ],
+  "fixed_output_not_contains": [
+    "; rm -rf /"
+  ],
+  "fixed_output_contains": [
+    "argv="
+  ],
   "fix_goal": "Represent commands as argv arrays or reject shell metacharacters.",
   "fix_steps": [
     "Find the command-injection scenario.",

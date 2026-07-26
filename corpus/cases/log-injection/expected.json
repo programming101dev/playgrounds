@@ -1,17 +1,26 @@
 {
   "name": "log-injection",
-  "lab_order": 42,
+  "lab_order": 44,
   "issue_id": "P101-LAB-301",
   "title": "Neutralize log injection",
   "category": "good-practice/security/logging",
+  "tracks": [
+    "c"
+  ],
   "scenario": "log-injection",
   "expected_exit": 0,
   "expected_status": "LOGIC",
   "lesson": "A newline inside untrusted text can forge a second log record.",
   "logic_issue_id": "P101-LOG-002",
-  "expected_output_contains": ["event=admin_login outcome=success"],
-  "fixed_output_not_contains": ["event=admin_login outcome=success"],
-  "fixed_output_contains": ["user=mallory\\nseverity=info"],
+  "expected_output_contains": [
+    "event=admin_login outcome=success"
+  ],
+  "fixed_output_not_contains": [
+    "event=admin_login outcome=success"
+  ],
+  "fixed_output_contains": [
+    "user=mallory\\nseverity=info"
+  ],
   "fix_goal": "Escape or encode control characters before writing untrusted text to logs.",
   "fix_steps": [
     "Find the log-injection scenario.",

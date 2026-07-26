@@ -62,6 +62,8 @@ static int   run_unchecked_parse_demo(const struct p101_env *env, struct p101_er
 static int   run_missing_authorization_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
 static int   run_cleanup_order_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
 static int   run_thread_argument_lifetime_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_short_read_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static int   run_read_eof_handling_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
 static int   run_parser_fuzz_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
 static int   write_demo_file(const struct p101_env *env, struct p101_error *err, const struct arguments *args, const char *label, bool leak_fd, bool leak_alloc);
 static int   write_text_output(const struct p101_env *env, struct p101_error *err, const struct arguments *args, const char *text);
@@ -345,6 +347,16 @@ int p101_tool_playground_run(const struct p101_env *env, struct p101_error *err,
         case SCENARIO_THREAD_ARGUMENT_LIFETIME:
         {
             ret_val = run_thread_argument_lifetime_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_SHORT_READ:
+        {
+            ret_val = run_short_read_demo(env, err, args);
+            break;
+        }
+        case SCENARIO_READ_EOF_HANDLING:
+        {
+            ret_val = run_read_eof_handling_demo(env, err, args);
             break;
         }
         case SCENARIO_PARSER_FUZZ:
@@ -1251,6 +1263,24 @@ static int run_thread_argument_lifetime_demo(const struct p101_env *env, struct 
 
     P101_TRACE(env);
     p101_printf(env, err, "thread-argument-lifetime: records a thread using an expired argument\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_short_read_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=error event=read_loop requested=64 read=17 object_complete=false outcome=accepted\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "short-read: records accepting a short read as a complete object\n");
+    return write_text_output(env, err, args, log_text);
+}
+
+static int run_read_eof_handling_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    const char log_text[] = "severity=error event=read_result result=0 meaning=error outcome=accepted\n";
+
+    P101_TRACE(env);
+    p101_printf(env, err, "read-eof-handling: records treating EOF as an I/O error\n");
     return write_text_output(env, err, args, log_text);
 }
 

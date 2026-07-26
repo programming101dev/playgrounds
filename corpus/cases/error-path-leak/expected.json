@@ -4,6 +4,10 @@
   "issue_id": "P101-LAB-108",
   "title": "Error-path leak",
   "category": "fault injection",
+  "tracks": [
+    "c",
+    "systems"
+  ],
   "scenario": "fault-lab",
   "expected_exit": 1,
   "expected_status": "FINDINGS",

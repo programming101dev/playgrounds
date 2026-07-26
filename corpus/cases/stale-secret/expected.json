@@ -1,17 +1,29 @@
 {
   "name": "stale-secret",
-  "lab_order": 40,
+  "lab_order": 42,
   "issue_id": "P101-LAB-318",
   "title": "Clear secret data before reusing storage",
   "category": "security/information-exposure",
+  "tracks": [
+    "c"
+  ],
   "scenario": "stale-secret",
   "expected_exit": 0,
   "expected_status": "LOGIC",
   "lesson": "Secret bytes can leak when a buffer or file is reused without clearing old contents.",
   "logic_issue_id": "P101-MEM-003",
-  "expected_output_contains": ["old_secret=api-key-123", "outcome=leaked"],
-  "fixed_output_not_contains": ["old_secret=api-key-123", "outcome=leaked"],
-  "fixed_output_contains": ["old_secret=cleared", "outcome=contained"],
+  "expected_output_contains": [
+    "old_secret=api-key-123",
+    "outcome=leaked"
+  ],
+  "fixed_output_not_contains": [
+    "old_secret=api-key-123",
+    "outcome=leaked"
+  ],
+  "fixed_output_contains": [
+    "old_secret=cleared",
+    "outcome=contained"
+  ],
   "fix_goal": "Clear sensitive data before releasing or reusing storage.",
   "fix_steps": [
     "Find the stale-secret scenario.",

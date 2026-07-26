@@ -4,10 +4,15 @@
   "issue_id": "P101-LAB-104",
   "title": "Close of unknown descriptor",
   "category": "defensive cleanup",
+  "tracks": [
+    "systems"
+  ],
   "scenario": "stray-close",
   "expected_exit": 1,
   "expected_status": "FINDINGS",
-  "expected_findings": ["P101-FD-003"],
+  "expected_findings": [
+    "P101-FD-003"
+  ],
   "fault_count": 0,
   "fix_goal": "Cleanup should only release descriptors that this function successfully acquired.",
   "fix_steps": [

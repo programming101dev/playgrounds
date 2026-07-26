@@ -5,6 +5,10 @@ runtime tools. It deliberately exercises files, heap allocations, realloc,
 pipes, forked children, clean cleanup, intentional leaks, bad closes, fault
 injection, tests, fuzzing, and coverage.
 
+This repository is now the transition/meta playground for a cleaner family split:
+`p101-c-playground`, `p101-systems-playground`, and a future
+`p101-network-playground`. See [PLAYGROUND-FAMILY.md](./PLAYGROUND-FAMILY.md).
+
 The point is to have one program that makes the whole toolchain visible:
 
 ```text
@@ -81,6 +85,8 @@ Options:
 | `path-traversal` | Accept a path that escapes its root | path validation bug |
 | `trusted-environment` | Trust environment variables for sensitive behavior | environment bug |
 | `missing-authorization` | Authenticate a user but skip the permission check | authorization bug |
+| `short-read` | Treat a short read as a complete object | I/O bug |
+| `read-eof-handling` | Confuse EOF with an I/O error | I/O bug |
 | `format-string` | Treat user text as a format string | format-string bug |
 | `unsafe-file-mode` | Create a sensitive file with broad permissions | file-permission bug |
 | `symlink-follow` | Follow an untrusted symlink for a sensitive open | file/link bug |
@@ -103,7 +109,7 @@ syntax but have not yet practiced defensive systems programming:
 2. normal cleanup mistakes;
 3. memory lifetime mistakes;
 4. error-path cleanup;
-5. checked results, initialization, byte counts, strings, bounds, and integer traps;
+5. checked results, initialization, read/write byte counts, strings, bounds, and integer traps;
 6. adversarial input, authorization, environment, and file-security mistakes;
 7. logging and observability practice;
 8. concurrency/race hazards;
@@ -160,6 +166,8 @@ For the student-facing lab series, run:
 ```sh
 ./lab.sh --quick
 ./lab.sh
+./lab.sh --track c
+./lab.sh --track systems
 ```
 
 The lab generator runs the same checked corpus and writes a self-contained
@@ -185,6 +193,10 @@ submission, run:
 ```sh
 ./submit-labs.sh
 ```
+
+Networking-specific labs intentionally do not live in this playground. TCP, UDP,
+interfaces, socket nonblocking behavior, protocol framing, and the port-forwarder
+capstone belong in the future networking playground.
 
 For instructor/CI checks that prove the committed broken fixtures still produce
 their expected diagnostics, add `--strict-corpus`:

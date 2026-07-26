@@ -4,10 +4,15 @@
   "issue_id": "P101-LAB-109",
   "title": "Realloc result remains owned",
   "category": "resource ownership",
+  "tracks": [
+    "c"
+  ],
   "scenario": "realloc-leak",
   "expected_exit": 1,
   "expected_status": "FINDINGS",
-  "expected_findings": ["P101-ALLOC-001"],
+  "expected_findings": [
+    "P101-ALLOC-001"
+  ],
   "fault_count": 0,
   "fix_goal": "A successful p101_realloc returns an owned pointer that must still be released.",
   "fix_steps": [

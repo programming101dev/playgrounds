@@ -4,10 +4,15 @@
   "issue_id": "P101-LAB-210",
   "title": "Descriptor inherited across exec",
   "category": "security",
+  "tracks": [
+    "systems"
+  ],
   "scenario": "exec-inherit",
   "expected_exit": 1,
   "expected_status": "FINDINGS",
-  "expected_findings": ["P101-FD-004"],
+  "expected_findings": [
+    "P101-FD-004"
+  ],
   "fault_count": 0,
   "fix_goal": "Descriptors that should not cross an exec boundary must be closed or marked FD_CLOEXEC before exec.",
   "fix_steps": [

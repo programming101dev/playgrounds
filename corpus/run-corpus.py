@@ -27,6 +27,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run p101-tool-playground corpus cases through p101 check.")
     parser.add_argument("-o", "--output", type=Path, help="Output directory. Default: /tmp/p101-tool-playground-corpus-<pid>")
     parser.add_argument("--case", action="append", dest="cases", help="Run only this case name; may be repeated.")
+    parser.add_argument("--track", choices=("c", "systems", "network"), help="Run only cases assigned to this playground track.")
     parser.add_argument("--quick", action="store_true", help="Run only the clean and fd-leak cases.")
     parser.add_argument("--keep-going", action="store_true", help="Continue after a failed case.")
     parser.add_argument("--p101", type=Path, help="Path to the p101 dispatcher.")
@@ -67,12 +68,26 @@ def current_playground_candidates(root: Path) -> list[Path | str]:
     return candidates
 
 
-def load_cases(cases_dir: Path, selected: set[str] | None) -> list[dict[str, Any]]:
+def case_tracks(case: dict[str, Any]) -> set[str]:
+    tracks = case.get("tracks", [])
+    if isinstance(tracks, list):
+        return {str(item) for item in tracks}
+    if isinstance(tracks, str):
+        return {tracks}
+    return set()
+
+
+def load_cases(cases_dir: Path, selected: set[str] | None, track: str | None) -> list[dict[str, Any]]:
     cases: list[dict[str, Any]] = []
     for expected_path in sorted(cases_dir.glob("*/expected.json")):
         case = read_json(expected_path)
         case["case_dir"] = str(expected_path.parent)
-        if selected is None or str(case.get("name")) in selected:
+        name = str(case.get("name"))
+        if selected is not None and name not in selected:
+            continue
+        if track is not None and track not in case_tracks(case):
+            continue
+        if selected is None or name in selected:
             cases.append(case)
     cases.sort(key=lambda item: (int(item.get("lab_order", 1000)), str(item.get("name", ""))))
     return cases
@@ -262,7 +277,7 @@ def main(argv: list[str]) -> int:
     else:
         selected = None
 
-    cases = load_cases(cases_dir, selected)
+    cases = load_cases(cases_dir, selected, args.track)
     if not cases:
         print("p101 corpus: no cases selected", file=sys.stderr)
         return 2

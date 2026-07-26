@@ -1,9 +1,12 @@
 {
   "name": "ignore-read-count",
-  "lab_order": 19,
+  "lab_order": 21,
   "issue_id": "P101-LAB-314",
   "title": "Ignoring read count writes stale bytes",
   "category": "security",
+  "tracks": [
+    "systems"
+  ],
   "scenario": "ignore-read-count",
   "expected_exit": 0,
   "expected_status": "LOGIC",

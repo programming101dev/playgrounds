@@ -1,17 +1,30 @@
 {
   "name": "string-not-terminated",
-  "lab_order": 22,
+  "lab_order": 24,
   "issue_id": "P101-LAB-328",
   "title": "Do not treat unterminated bytes as a C string",
   "category": "string/bounds",
+  "tracks": [
+    "c"
+  ],
   "scenario": "string-not-terminated",
   "expected_exit": 0,
   "expected_status": "LOGIC",
   "lesson": "A byte buffer is not a C string unless it has a terminating NUL within its bounds.",
   "logic_issue_id": "P101-STR-002",
-  "expected_output_contains": ["event=string_copy", "terminator=missing", "outcome=accepted"],
-  "fixed_output_not_contains": ["terminator=missing", "outcome=accepted"],
-  "fixed_output_contains": ["terminator=present", "outcome=accepted"],
+  "expected_output_contains": [
+    "event=string_copy",
+    "terminator=missing",
+    "outcome=accepted"
+  ],
+  "fixed_output_not_contains": [
+    "terminator=missing",
+    "outcome=accepted"
+  ],
+  "fixed_output_contains": [
+    "terminator=present",
+    "outcome=accepted"
+  ],
   "fix_goal": "Track lengths explicitly or reserve space for a NUL terminator.",
   "fix_steps": [
     "Find the string-not-terminated scenario.",

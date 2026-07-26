@@ -1,17 +1,30 @@
 {
   "name": "toctou",
-  "lab_order": 44,
+  "lab_order": 46,
   "issue_id": "P101-LAB-320",
   "title": "Avoid check-then-use races on paths",
   "category": "security/race",
+  "tracks": [
+    "systems"
+  ],
   "scenario": "toctou",
   "expected_exit": 0,
   "expected_status": "LOGIC",
   "lesson": "A path can change between a separate check and the later open or use.",
   "logic_issue_id": "P101-FIO-003",
-  "expected_output_contains": ["pattern=check_then_use", "path=/tmp/p101-target", "outcome=accepted"],
-  "fixed_output_not_contains": ["pattern=check_then_use", "outcome=accepted"],
-  "fixed_output_contains": ["pattern=open_then_verify", "outcome=accepted"],
+  "expected_output_contains": [
+    "pattern=check_then_use",
+    "path=/tmp/p101-target",
+    "outcome=accepted"
+  ],
+  "fixed_output_not_contains": [
+    "pattern=check_then_use",
+    "outcome=accepted"
+  ],
+  "fixed_output_contains": [
+    "pattern=open_then_verify",
+    "outcome=accepted"
+  ],
   "fix_goal": "Operate on the opened descriptor rather than trusting a prior path check.",
   "fix_steps": [
     "Find the toctou scenario.",

@@ -4,10 +4,15 @@
   "issue_id": "P101-LAB-105",
   "title": "Early return leaks a descriptor",
   "category": "control flow",
+  "tracks": [
+    "systems"
+  ],
   "scenario": "early-return-fd-leak",
   "expected_exit": 1,
   "expected_status": "FINDINGS",
-  "expected_findings": ["P101-FD-001"],
+  "expected_findings": [
+    "P101-FD-001"
+  ],
   "fault_count": 0,
   "fix_goal": "Avoid returning out of the middle of an ownership scope before cleanup has run.",
   "fix_steps": [

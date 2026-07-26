@@ -4,14 +4,28 @@
   "issue_id": "P101-LAB-308",
   "title": "Do not use ownership after free",
   "category": "memory/lifetime",
+  "tracks": [
+    "c"
+  ],
   "scenario": "use-after-free",
   "expected_exit": 0,
   "expected_status": "LOGIC",
   "lesson": "After a pointer's allocation has been freed, the pointer no longer names live storage.",
   "logic_issue_id": "P101-MEM-001",
-  "expected_output_contains": ["pointer_state=freed", "action=used", "outcome=accepted"],
-  "fixed_output_not_contains": ["pointer_state=freed", "action=used", "outcome=accepted"],
-  "fixed_output_contains": ["pointer_state=cleared", "outcome=rejected"],
+  "expected_output_contains": [
+    "pointer_state=freed",
+    "action=used",
+    "outcome=accepted"
+  ],
+  "fixed_output_not_contains": [
+    "pointer_state=freed",
+    "action=used",
+    "outcome=accepted"
+  ],
+  "fixed_output_contains": [
+    "pointer_state=cleared",
+    "outcome=rejected"
+  ],
   "fix_goal": "Stop using pointers after ownership has been released.",
   "fix_steps": [
     "Find the use-after-free scenario.",

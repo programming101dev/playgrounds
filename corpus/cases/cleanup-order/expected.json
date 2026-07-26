@@ -4,14 +4,31 @@
   "issue_id": "P101-LAB-325",
   "title": "Destroy dependent resources in the right order",
   "category": "resource ownership/lifetime",
+  "tracks": [
+    "c",
+    "systems"
+  ],
   "scenario": "cleanup-order",
   "expected_exit": 0,
   "expected_status": "LOGIC",
   "lesson": "Cleanup has dependencies: child resources often need the parent state to remain alive until they are released.",
   "logic_issue_id": "P101-LIFE-001",
-  "expected_output_contains": ["event=cleanup_order", "parent=destroyed", "child=still_owned", "outcome=accepted"],
-  "fixed_output_not_contains": ["parent=destroyed", "child=still_owned", "outcome=accepted"],
-  "fixed_output_contains": ["child=released", "parent=destroyed", "outcome=accepted"],
+  "expected_output_contains": [
+    "event=cleanup_order",
+    "parent=destroyed",
+    "child=still_owned",
+    "outcome=accepted"
+  ],
+  "fixed_output_not_contains": [
+    "parent=destroyed",
+    "child=still_owned",
+    "outcome=accepted"
+  ],
+  "fixed_output_contains": [
+    "child=released",
+    "parent=destroyed",
+    "outcome=accepted"
+  ],
   "fix_goal": "Release child resources before destroying the parent state they depend on.",
   "fix_steps": [
     "Find the cleanup-order scenario.",

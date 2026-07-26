@@ -4,7 +4,37 @@
 set -euo pipefail
 cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
 
-out="${1:-/tmp/p101-tool-playground-submit}"
+out="/tmp/p101-tool-playground-submit"
+lab_args=()
+
+while (($#)); do
+  case "$1" in
+    -o|--output)
+      if (($# < 2)); then
+        echo "submit-labs: $1 requires a path" >&2
+        exit 2
+      fi
+      out="$2"
+      shift 2
+      ;;
+    --track)
+      if (($# < 2)); then
+        echo "submit-labs: --track requires c, systems, or network" >&2
+        exit 2
+      fi
+      lab_args+=(--track "$2")
+      shift 2
+      ;;
+    -h|--help)
+      echo "Usage: ./submit-labs.sh [-o OUTPUT] [--track c|systems|network]"
+      exit 0
+      ;;
+    *)
+      echo "submit-labs: unknown argument: $1" >&2
+      exit 2
+      ;;
+  esac
+done
 
 if [[ -e "$out" ]]; then
   echo "submit-labs: output path already exists: $out" >&2
@@ -19,7 +49,7 @@ echo "==> unit tests"
 ./test.sh
 
 echo "==> lab progress"
-./lab.sh -o "$out"
+./lab.sh "${lab_args[@]}" -o "$out"
 
 echo "Submission check output: $out"
 echo "Open: $out/index.html"

@@ -13,6 +13,8 @@ Generate the current answer-key view with:
 
 ```sh
 ./lab.sh --strict-corpus
+./lab.sh --track c --strict-corpus
+./lab.sh --track systems --strict-corpus
 ```
 
 Open `lab.md` or `index.html` and look for “Instructor answer key signal” on

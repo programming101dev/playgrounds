@@ -1,17 +1,26 @@
 {
   "name": "predictable-temp-file",
-  "lab_order": 36,
+  "lab_order": 38,
   "issue_id": "P101-LAB-305",
   "title": "Avoid predictable temporary files",
   "category": "security/filesystem",
+  "tracks": [
+    "systems"
+  ],
   "scenario": "predictable-temp-file",
   "expected_exit": 0,
   "expected_status": "LOGIC",
   "lesson": "A fixed filename in /tmp is guessable by other users and processes.",
   "logic_issue_id": "P101-FIO-001",
-  "expected_output_contains": ["path=/tmp/p101-tool-playground.tmp"],
-  "fixed_output_not_contains": ["path=/tmp/p101-tool-playground.tmp"],
-  "fixed_output_contains": ["mkstemp"],
+  "expected_output_contains": [
+    "path=/tmp/p101-tool-playground.tmp"
+  ],
+  "fixed_output_not_contains": [
+    "path=/tmp/p101-tool-playground.tmp"
+  ],
+  "fixed_output_contains": [
+    "mkstemp"
+  ],
   "fix_goal": "Use an unpredictable exclusive-create pattern instead of a fixed /tmp path.",
   "fix_steps": [
     "Find the predictable-temp-file scenario.",

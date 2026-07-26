@@ -4,14 +4,26 @@
   "issue_id": "P101-LAB-324",
   "title": "Initialize values before reading them",
   "category": "state/initialization",
+  "tracks": [
+    "c"
+  ],
   "scenario": "uninitialized-read",
   "expected_exit": 0,
   "expected_status": "LOGIC",
   "lesson": "A value that was never initialized does not have a meaningful program state.",
   "logic_issue_id": "P101-EXP-001",
-  "expected_output_contains": ["initialized=false", "outcome=used"],
-  "fixed_output_not_contains": ["initialized=false", "outcome=used"],
-  "fixed_output_contains": ["initialized=true", "outcome=used"],
+  "expected_output_contains": [
+    "initialized=false",
+    "outcome=used"
+  ],
+  "fixed_output_not_contains": [
+    "initialized=false",
+    "outcome=used"
+  ],
+  "fixed_output_contains": [
+    "initialized=true",
+    "outcome=used"
+  ],
   "fix_goal": "Initialize local state before any branch or output depends on it.",
   "fix_steps": [
     "Find the uninitialized-read scenario.",

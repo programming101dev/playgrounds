@@ -1,17 +1,31 @@
 {
   "name": "resource-exhaustion",
-  "lab_order": 39,
+  "lab_order": 41,
   "issue_id": "P101-LAB-319",
   "title": "Put limits on resource requests",
   "category": "security/resource-limit",
+  "tracks": [
+    "c",
+    "systems"
+  ],
   "scenario": "resource-exhaustion",
   "expected_exit": 0,
   "expected_status": "LOGIC",
   "lesson": "Unbounded counts, sizes, and repeat values let one request consume too much memory, CPU, or I/O.",
   "logic_issue_id": "P101-RES-001",
-  "expected_output_contains": ["requested=unbounded", "limit=none", "outcome=accepted"],
-  "fixed_output_not_contains": ["limit=none", "outcome=accepted"],
-  "fixed_output_contains": ["limit=present", "outcome=rejected"],
+  "expected_output_contains": [
+    "requested=unbounded",
+    "limit=none",
+    "outcome=accepted"
+  ],
+  "fixed_output_not_contains": [
+    "limit=none",
+    "outcome=accepted"
+  ],
+  "fixed_output_contains": [
+    "limit=present",
+    "outcome=rejected"
+  ],
   "fix_goal": "Define and enforce an upper bound before acquiring resources.",
   "fix_steps": [
     "Find the resource-exhaustion scenario.",

@@ -4,10 +4,15 @@
   "issue_id": "P101-LAB-102",
   "title": "Allocation leak",
   "category": "resource ownership",
+  "tracks": [
+    "c"
+  ],
   "scenario": "alloc-leak",
   "expected_exit": 1,
   "expected_status": "FINDINGS",
-  "expected_findings": ["P101-ALLOC-001"],
+  "expected_findings": [
+    "P101-ALLOC-001"
+  ],
   "fault_count": 0,
   "fix_goal": "Every pointer returned by p101_malloc or p101_realloc remains owned until p101_free releases it.",
   "fix_steps": [

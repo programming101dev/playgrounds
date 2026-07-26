@@ -55,6 +55,8 @@ The status column is intentionally simple:
 | Missing NUL terminator / treating bytes as strings | CWE-170, CERT STR rules | `covered`: `string-not-terminated` |
 | `sizeof(pointer)` used as array length | CWE-467, CERT ARR01-C | `covered`: `sizeof-pointer` |
 | Ignoring read/write byte counts | CWE-252/CWE-200, CERT FIO | `covered`: `ignore-read-count` |
+| Short read handling | CWE-252, POSIX read semantics, CERT FIO guidance | `covered`: `short-read` |
+| EOF handling for reads | POSIX read semantics, CERT FIO guidance | `covered`: `read-eof-handling` |
 | Partial write handling | CWE-252, CERT FIO write-count guidance | `covered`: `partial-write` |
 | Interrupted syscall / EINTR handling | POSIX signal behavior, CERT ERR/FIO guidance | `covered`: `interrupted-syscall` |
 | Ignoring return values | CWE-252, JPL checked-return rule | `tool`: wrapper audit / static checks; add fixture if useful |

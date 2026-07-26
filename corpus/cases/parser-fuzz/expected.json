@@ -1,17 +1,30 @@
 {
   "name": "parser-fuzz",
-  "lab_order": 47,
+  "lab_order": 49,
   "issue_id": "P101-LAB-322",
   "title": "Fuzz boundary-heavy parsers",
   "category": "testing/fuzzing",
+  "tracks": [
+    "c"
+  ],
   "scenario": "parser-fuzz",
   "expected_exit": 0,
   "expected_status": "LOGIC",
   "lesson": "Parsers need tests that explore strange lengths, separators, encodings, and malformed input.",
   "logic_issue_id": "P101-TEST-001",
-  "expected_output_contains": ["event=parser_boundary_check", "fuzz_target=missing", "outcome=untested"],
-  "fixed_output_not_contains": ["fuzz_target=missing", "outcome=untested"],
-  "fixed_output_contains": ["fuzz_target=present", "outcome=tested"],
+  "expected_output_contains": [
+    "event=parser_boundary_check",
+    "fuzz_target=missing",
+    "outcome=untested"
+  ],
+  "fixed_output_not_contains": [
+    "fuzz_target=missing",
+    "outcome=untested"
+  ],
+  "fixed_output_contains": [
+    "fuzz_target=present",
+    "outcome=tested"
+  ],
   "fix_goal": "Add a fuzz target or boundary-focused test harness for parser inputs.",
   "fix_steps": [
     "Find the parser-fuzz scenario.",

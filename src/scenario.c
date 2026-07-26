@@ -216,6 +216,14 @@ enum playground_scenario p101_tool_playground_scenario_from_name(const struct p1
     {
         scenario = SCENARIO_THREAD_ARGUMENT_LIFETIME;
     }
+    else if(p101_strcmp(env, name, "short-read") == 0)
+    {
+        scenario = SCENARIO_SHORT_READ;
+    }
+    else if(p101_strcmp(env, name, "read-eof-handling") == 0)
+    {
+        scenario = SCENARIO_READ_EOF_HANDLING;
+    }
     else if(p101_strcmp(env, name, "parser-fuzz") == 0)
     {
         scenario = SCENARIO_PARSER_FUZZ;
@@ -493,6 +501,16 @@ const char *p101_tool_playground_scenario_name(enum playground_scenario scenario
             name = "thread-argument-lifetime";
             break;
         }
+        case SCENARIO_SHORT_READ:
+        {
+            name = "short-read";
+            break;
+        }
+        case SCENARIO_READ_EOF_HANDLING:
+        {
+            name = "read-eof-handling";
+            break;
+        }
         case SCENARIO_PARSER_FUZZ:
         {
             name = "parser-fuzz";
@@ -565,5 +583,7 @@ void p101_tool_playground_print_scenarios(const struct p101_env *env, struct p10
     p101_fputs(env, err, "  missing-authorization    Authenticate a user but skip the permission check\n", stream);
     p101_fputs(env, err, "  cleanup-order            Destroy parent state before owned child state\n", stream);
     p101_fputs(env, err, "  thread-argument-lifetime Let a thread use an argument after its lifetime\n", stream);
+    p101_fputs(env, err, "  short-read               Treat a short read as a complete object\n", stream);
+    p101_fputs(env, err, "  read-eof-handling        Confuse EOF with an I/O error\n", stream);
     p101_fputs(env, err, "  parser-fuzz              Parse boundary-heavy input without a fuzz target\n", stream);
 }

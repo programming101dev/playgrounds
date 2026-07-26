@@ -1,17 +1,30 @@
 {
   "name": "data-race",
-  "lab_order": 45,
+  "lab_order": 47,
   "issue_id": "P101-LAB-321",
   "title": "Synchronize shared mutable state",
   "category": "concurrency",
+  "tracks": [
+    "systems"
+  ],
   "scenario": "data-race",
   "expected_exit": 0,
   "expected_status": "LOGIC",
   "lesson": "Two threads updating shared state need synchronization or atomics.",
   "logic_issue_id": "P101-CON-001",
-  "expected_output_contains": ["threads=2", "synchronization=none", "outcome=accepted"],
-  "fixed_output_not_contains": ["synchronization=none", "outcome=accepted"],
-  "fixed_output_contains": ["synchronization=mutex", "outcome=accepted"],
+  "expected_output_contains": [
+    "threads=2",
+    "synchronization=none",
+    "outcome=accepted"
+  ],
+  "fixed_output_not_contains": [
+    "synchronization=none",
+    "outcome=accepted"
+  ],
+  "fixed_output_contains": [
+    "synchronization=mutex",
+    "outcome=accepted"
+  ],
   "fix_goal": "Protect shared mutable state with a mutex or appropriate atomic operation.",
   "fix_steps": [
     "Find the data-race scenario.",

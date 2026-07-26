@@ -4,6 +4,9 @@
   "issue_id": "P101-LAB-313",
   "title": "sizeof(pointer) is not buffer length",
   "category": "common C trap",
+  "tracks": [
+    "c"
+  ],
   "scenario": "sizeof-pointer",
   "expected_exit": 0,
   "expected_status": "LOGIC",

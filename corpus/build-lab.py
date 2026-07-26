@@ -21,6 +21,7 @@ class LabCase:
     issue_id: str
     title: str
     category: str
+    tracks: list[str]
     scenario: str
     expected_exit: int
     expected_status: str
@@ -44,6 +45,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build the p101-tool-playground lab series.")
     parser.add_argument("-o", "--output", type=Path, help="Output directory. Default: /tmp/p101-tool-playground-lab-<pid>")
     parser.add_argument("--case", action="append", dest="cases", help="Include only this case name; may be repeated.")
+    parser.add_argument("--track", choices=("c", "systems", "network"), help="Include only cases assigned to this playground track.")
     parser.add_argument("--quick", action="store_true", help="Use the short classroom set: clean and fd-leak.")
     parser.add_argument("--keep-going", action="store_true", help="Keep running corpus cases after a failed case.")
     parser.add_argument("--p101", type=Path, help="Path to the p101 dispatcher.")
@@ -94,12 +96,24 @@ def selected_case_names(args: argparse.Namespace) -> set[str] | None:
     return None
 
 
-def load_cases(root: Path, runs_dir: Path, selected: set[str] | None) -> list[LabCase]:
+def expected_tracks(expected: dict[str, Any]) -> list[str]:
+    tracks = expected.get("tracks", [])
+    if isinstance(tracks, list):
+        return [str(item) for item in tracks]
+    if isinstance(tracks, str):
+        return [tracks]
+    return []
+
+
+def load_cases(root: Path, runs_dir: Path, selected: set[str] | None, track: str | None) -> list[LabCase]:
     cases: list[LabCase] = []
     for expected_path in sorted((root / "corpus" / "cases").glob("*/expected.json")):
         expected = load_expected(expected_path)
         name = str(expected["name"])
         if selected is not None and name not in selected:
+            continue
+        tracks = expected_tracks(expected)
+        if track is not None and track not in tracks:
             continue
         case_dir = Path(expected["case_dir"])
         lesson = read_text(case_dir / "lesson.md", str(expected.get("lesson", ""))).strip()
@@ -118,6 +132,7 @@ def load_cases(root: Path, runs_dir: Path, selected: set[str] | None) -> list[La
                 issue_id=str(expected.get("issue_id", name)),
                 title=str(expected.get("title", name)),
                 category=str(expected.get("category", "")),
+                tracks=tracks,
                 scenario=str(expected["scenario"]),
                 expected_exit=int(expected["expected_exit"]),
                 expected_status=str(expected.get("expected_status", "")),
@@ -284,6 +299,18 @@ def progress_counts(cases: list[LabCase]) -> tuple[int, int, int]:
 
 
 def case_phase(case: LabCase) -> str:
+    if case.tracks == ["systems"] or ("systems" in case.tracks and "c" not in case.tracks):
+        if case.order <= 4:
+            return "descriptor ownership"
+        if case.order <= 15:
+            return "process and error-path cleanup"
+        if case.order <= 30:
+            return "file I/O and syscall behavior"
+        if case.order <= 42:
+            return "file-system and OS security"
+        if case.order <= 48:
+            return "concurrency and multiprocessing"
+        return "verification practice"
     if case.order == 0:
         return "reference"
     if case.order <= 4:
@@ -292,13 +319,13 @@ def case_phase(case: LabCase) -> str:
         return "memory lifetime"
     if case.order <= 15:
         return "error-path cleanup"
-    if case.order <= 28:
+    if case.order <= 30:
         return "checked state, bounds, and integers"
-    if case.order <= 40:
+    if case.order <= 42:
         return "adversarial input and file security"
-    if case.order <= 43:
+    if case.order <= 45:
         return "logging and observability"
-    if case.order <= 46:
+    if case.order <= 48:
         return "concurrency and races"
     return "verification practice"
 
@@ -388,6 +415,8 @@ def render_markdown(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
         f"- Corpus summary: [runs/summary.md](./runs/summary.md)",
         f"- HTML lab book: [index.html](./index.html)",
         "",
+        "Use `./lab.sh --track c` for the C-language playground slice and `./lab.sh --track systems` for the systems playground slice. Networking labs intentionally do not live here; they belong in a future `p101-network-playground`.",
+        "",
         "## Student workflow",
         "",
         "1. Run `./lab.sh` and open the first `OPEN` lab.",
@@ -406,8 +435,8 @@ def render_markdown(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
         "",
         "## Progress board",
         "",
-        "| Lab | Status | Phase | Difficulty | Time | Issue | Scenario | Expected signal |",
-        "| ---: | --- | --- | --- | ---: | --- | --- | --- |",
+        "| Lab | Status | Tracks | Phase | Difficulty | Time | Issue | Scenario | Expected signal |",
+        "| ---: | --- | --- | --- | --- | ---: | --- | --- | --- |",
     ]
     for case in cases:
         signal = ", ".join(case.expected_findings)
@@ -421,7 +450,7 @@ def render_markdown(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
             signal = (signal + ", " if signal else "") + "output missing " + "; ".join(case.expected_output_missing)
         if not signal:
             signal = "clean reference"
-        lines.append(f"| {case.order} | `{lab_progress(case)}` | {case_phase(case)} | {case_difficulty(case)} | {case_minutes(case)} min | {case.issue_id}: {case.title} | `{case.scenario}` | {signal} |")
+        lines.append(f"| {case.order} | `{lab_progress(case)}` | {', '.join(case.tracks)} | {case_phase(case)} | {case_difficulty(case)} | {case_minutes(case)} min | {case.issue_id}: {case.title} | `{case.scenario}` | {signal} |")
     lines.extend(
         [
             "",
@@ -448,6 +477,7 @@ def render_markdown(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
                 "",
                 f"- Issue ID: `{case.issue_id}`",
                 f"- Category: `{case.category}`",
+                f"- Tracks: `{', '.join(case.tracks)}`",
                 f"- Phase: `{case_phase(case)}`",
                 f"- Difficulty: `{case_difficulty(case)}`",
                 f"- Estimated time: `{case_minutes(case)} minutes`",
@@ -546,7 +576,7 @@ def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
                 <h3>Lab {case.order}: {html.escape(case.title)}</h3>
                 <span>{html.escape(progress)}</span>
               </div>
-              <p><code>{html.escape(case.issue_id)}</code> · {html.escape(case_phase(case))} · {html.escape(case_difficulty(case))} · about {case_minutes(case)} min · scenario <code>{html.escape(case.scenario)}</code></p>
+              <p><code>{html.escape(case.issue_id)}</code> · tracks {html.escape(', '.join(case.tracks))} · {html.escape(case_phase(case))} · {html.escape(case_difficulty(case))} · about {case_minutes(case)} min · scenario <code>{html.escape(case.scenario)}</code></p>
               <p class="lesson">{html.escape(lesson_excerpt(case.lesson))}</p>
               <dl>
                 <dt>Goal</dt><dd>{html.escape(case.fix_goal)}</dd>
@@ -612,6 +642,7 @@ def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
     <p class="pill">Generated lab series · {fixed}/{total} fixed · corpus {html.escape(status)}</p>
     <h1>p101 tool playground lab series</h1>
     <p>This is the 10x playground: a sequence of intentionally broken, fixable labs. Students fix one issue at a time, re-run the lab, and see the progress board move from OPEN to FIXED.</p>
+    <p>Use <code>./lab.sh --track c</code> for the C-language slice and <code>./lab.sh --track systems</code> for the systems-programming slice. Networking gets its own future playground.</p>
     <p><a href="runs/summary.md">Corpus summary</a> · <a href="lab.md">Markdown lab</a> · <a href="logs/corpus.log">Corpus command log</a></p>
   </section>
 
@@ -651,6 +682,8 @@ def run_corpus(root: Path, out_dir: Path, args: argparse.Namespace) -> int:
     command.append("--keep-going")
     if args.quick:
         command.append("--quick")
+    if args.track is not None:
+        command.extend(["--track", args.track])
     for case_name in args.cases or []:
         command.extend(["--case", case_name])
     if args.p101 is not None:
@@ -682,7 +715,7 @@ def main(argv: list[str]) -> int:
     out_dir.mkdir(parents=True)
 
     corpus_rc = run_corpus(root, out_dir, args)
-    cases = load_cases(root, out_dir / "runs", selected_case_names(args))
+    cases = load_cases(root, out_dir / "runs", selected_case_names(args), args.track)
     if not cases:
         print("p101 playground lab: no cases selected", file=sys.stderr)
         return 2

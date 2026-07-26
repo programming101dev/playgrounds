@@ -1,0 +1,39 @@
+{
+  "name": "short-read",
+  "lab_order": 19,
+  "issue_id": "P101-LAB-335",
+  "title": "Handle short reads",
+  "category": "posix/io",
+  "tracks": [
+    "systems"
+  ],
+  "scenario": "short-read",
+  "expected_exit": 0,
+  "expected_status": "LOGIC",
+  "lesson": "A successful read can return fewer bytes than requested; that is not the same thing as a complete object.",
+  "logic_issue_id": "P101-FIO-007",
+  "expected_output_contains": [
+    "event=read_loop",
+    "requested=64",
+    "read=17",
+    "object_complete=false",
+    "outcome=accepted"
+  ],
+  "fixed_output_not_contains": [
+    "read=17",
+    "object_complete=false",
+    "outcome=accepted"
+  ],
+  "fixed_output_contains": [
+    "read=64",
+    "object_complete=true",
+    "outcome=complete"
+  ],
+  "fix_goal": "Loop until the required object bytes are read, EOF occurs, or a real error occurs.",
+  "fix_steps": [
+    "Find the short-read scenario.",
+    "Track total bytes read separately from the requested object length.",
+    "Advance the destination pointer after each successful short read.",
+    "Stop only when the object is complete, EOF is reached, or an error is raised."
+  ]
+}
