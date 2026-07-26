@@ -415,7 +415,7 @@ def render_markdown(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
         f"- Corpus summary: [runs/summary.md](./runs/summary.md)",
         f"- HTML lab book: [index.html](./index.html)",
         "",
-        "Use `./lab.sh --track c` for the C-language playground slice and `./lab.sh --track systems` for the systems playground slice. Networking labs intentionally do not live here; they belong in a future `p101-network-playground`.",
+        "Use `./lab.sh --track c`, `./lab.sh --track systems`, or `./lab.sh --track network` for coarse lab slices. The full wrapper curriculum map lives in `tracks/README.md`.",
         "",
         "## Student workflow",
         "",
@@ -642,7 +642,7 @@ def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
     <p class="pill">Generated lab series · {fixed}/{total} fixed · corpus {html.escape(status)}</p>
     <h1>p101 tool playground lab series</h1>
     <p>This is the 10x playground: a sequence of intentionally broken, fixable labs. Students fix one issue at a time, re-run the lab, and see the progress board move from OPEN to FIXED.</p>
-    <p>Use <code>./lab.sh --track c</code> for the C-language slice and <code>./lab.sh --track systems</code> for the systems-programming slice. Networking gets its own future playground.</p>
+    <p>Use <code>./lab.sh --track c</code>, <code>./lab.sh --track systems</code>, or <code>./lab.sh --track network</code> for coarse lab slices. The full wrapper curriculum map lives in <code>tracks/README.md</code>.</p>
     <p><a href="runs/summary.md">Corpus summary</a> · <a href="lab.md">Markdown lab</a> · <a href="logs/corpus.log">Corpus command log</a></p>
   </section>
 

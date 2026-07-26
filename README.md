@@ -5,9 +5,10 @@ runtime tools. It deliberately exercises files, heap allocations, realloc,
 pipes, forked children, clean cleanup, intentional leaks, bad closes, fault
 injection, tests, fuzzing, and coverage.
 
-This repository is now the transition/meta playground for a cleaner family split:
-`p101-c-playground`, `p101-systems-playground`, and a future
-`p101-network-playground`. See [PLAYGROUND-FAMILY.md](./PLAYGROUND-FAMILY.md).
+This repository is the single playground home for the wrapper curriculum. It is
+organized as many small tracks rather than one broad `systems` bucket or a pile
+of standalone example repos. See [tracks/README.md](./tracks/README.md) for the
+generated track map.
 
 The point is to have one program that makes the whole toolchain visible:
 
@@ -22,6 +23,23 @@ p101-tool-playground
   -> p101-error-path-walk
       -> fail p101 call N
       -> per-run resource/call/fault/report artifacts
+```
+
+## Track map
+
+The track map is generated from the library function graph, so it stays tied to
+the actual wrapper surface:
+
+- 40 tracks;
+- 1,185 wrappers assigned to one primary track;
+- 0 uncovered domains;
+- no `misc` bucket.
+
+Refresh it after changing wrapper libraries or classification rules:
+
+```sh
+../../scripts/analyze-lib-function-graph.py
+./sync-track-map.py
 ```
 
 ## Usage
@@ -168,6 +186,7 @@ For the student-facing lab series, run:
 ./lab.sh
 ./lab.sh --track c
 ./lab.sh --track systems
+./lab.sh --track network
 ```
 
 The lab generator runs the same checked corpus and writes a self-contained
@@ -194,9 +213,11 @@ submission, run:
 ./submit-labs.sh
 ```
 
-Networking-specific labs intentionally do not live in this playground. TCP, UDP,
-interfaces, socket nonblocking behavior, protocol framing, and the port-forwarder
-capstone belong in the future networking playground.
+Networking-specific labs live in this repository too, as focused networking
+tracks rather than a separate playground repo. TCP, UDP, interfaces, socket
+nonblocking behavior, protocol framing, and the port-forwarder capstone should
+land under the relevant `network-*` track directories as those lessons are
+filled in.
 
 For instructor/CI checks that prove the committed broken fixtures still produce
 their expected diagnostics, add `--strict-corpus`:
