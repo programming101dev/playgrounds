@@ -54,6 +54,20 @@ teaching targets.
 
 ## Full toolchain tour
 
+Run the one-command tour:
+
+```sh
+./tour.sh
+```
+
+That writes a timestamped report directory under `/tmp` with strict checks,
+tests, fuzzing, coverage, observed resource/call reports, correlated reports,
+and a fault-injected error-path walk. For quick runtime-only demos:
+
+```sh
+./tour.sh --skip-quality --skip-coverage -n 5
+```
+
 Build the playground:
 
 ```sh

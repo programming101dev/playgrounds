@@ -35,6 +35,8 @@ Quick reference for the playground and the tools it is meant to show.
 
 | Command | What it does |
 | --- | --- |
+| `./tour.sh` | One-command full playground artifact |
+| `./tour.sh --skip-quality --skip-coverage -n 5` | Fast runtime-only tour |
 | `./change-compiler.sh -c clang` | Configure the build |
 | `./build.sh` | Strict analysis build |
 | `./test.sh` | Unity tests |
