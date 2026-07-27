@@ -1,5 +1,6 @@
 #include "playground.h"
 #include "constants.h"
+#include "errors.h"
 #include "scenario.h"
 #include <fcntl.h>
 #include <limits.h>
@@ -115,6 +116,7 @@ static int   run_thread_argument_lifetime_demo(const struct p101_env *env, struc
 static int   run_short_read_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
 static int   run_read_eof_handling_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
 static int   run_parser_fuzz_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
+static void  close_fd_preserving_error(const struct p101_env *env, struct p101_error *err, int *fd);
 static int   run_child_exit_wrapper(const struct p101_env *env, struct p101_error *err, enum child_exit_mode mode);
 static int   compare_ints(const void *lhs, const void *rhs);
 static void  c_memory_runtime_atexit_hook(void);
@@ -516,10 +518,19 @@ static int run_c_memory_runtime_demo(const struct p101_env *env, struct p101_err
     found = (const int *)p101_bsearch(env, &key, values, C_MEMORY_VALUE_COUNT, sizeof(values[0]), compare_ints);
     if(found == NULL || *found != key)
     {
+        P101_ERROR_RAISE_USER(err, "The qsort/bsearch smoke check failed.", ERR_SCENARIO_FAILURE);
         goto done;
     }
 
-    if(p101_abs(env, err, -C_MEMORY_ABS_VALUE) != C_MEMORY_ABS_VALUE || p101_labs(env, err, -C_MEMORY_ABS_VALUE) != C_MEMORY_ABS_VALUE || p101_llabs(env, err, -C_MEMORY_ABS_VALUE) != C_MEMORY_ABS_VALUE || p101_error_has_error(err))
+    if(p101_abs(env, err, -C_MEMORY_ABS_VALUE) != C_MEMORY_ABS_VALUE || p101_error_has_error(err))
+    {
+        goto done;
+    }
+    if(p101_labs(env, err, -C_MEMORY_ABS_VALUE) != C_MEMORY_ABS_VALUE || p101_error_has_error(err))
+    {
+        goto done;
+    }
+    if(p101_llabs(env, err, -C_MEMORY_ABS_VALUE) != C_MEMORY_ABS_VALUE || p101_error_has_error(err))
     {
         goto done;
     }
@@ -528,24 +539,61 @@ static int run_c_memory_runtime_demo(const struct p101_env *env, struct p101_err
     lldiv_result = p101_lldiv(env, C_MEMORY_DIV_NUMERATOR, C_MEMORY_DIV_DENOMINATOR);
     if(div_result.quot != C_MEMORY_EXPECTED_QUOTIENT || ldiv_result.rem != C_MEMORY_EXPECTED_REMAINDER || lldiv_result.quot != C_MEMORY_EXPECTED_QUOTIENT)
     {
+        P101_ERROR_RAISE_USER(err, "The div/ldiv/lldiv smoke check failed.", ERR_SCENARIO_FAILURE);
         goto done;
     }
 
-    if(p101_mblen(env, err, "A", 1) != 1 || p101_mbtowc(env, err, wide_text, "A", 1) != 1 || p101_error_has_error(err))
+    if(p101_mblen(env, err, "A", 1) != 1 || p101_error_has_error(err))
     {
         goto done;
     }
-    if(p101_mbstowcs(env, err, wide_text, "ABC", C_MEMORY_WIDE_TEXT_CAPACITY) == (size_t)-1 || p101_wcstombs(env, err, mb_output, L"Z", sizeof(mb_output)) == (size_t)-1 || p101_wctomb(env, err, mb_output, L'Q') <= 0 || p101_error_has_error(err))
+    if(p101_mbtowc(env, err, wide_text, "A", 1) != 1 || p101_error_has_error(err))
+    {
+        goto done;
+    }
+    if(p101_mbstowcs(env, err, wide_text, "ABC", C_MEMORY_WIDE_TEXT_CAPACITY) == (size_t)-1 || p101_error_has_error(err))
+    {
+        goto done;
+    }
+    if(p101_wcstombs(env, err, mb_output, L"Z", sizeof(mb_output)) == (size_t)-1 || p101_error_has_error(err))
+    {
+        goto done;
+    }
+    if(p101_wctomb(env, err, mb_output, L'Q') <= 0 || p101_error_has_error(err))
     {
         goto done;
     }
 
     (void)p101_strtod(env, err, "1.25", NULL);
+    if(p101_error_has_error(err))
+    {
+        goto done;
+    }
     (void)p101_strtof(env, err, "2.5", NULL);
+    if(p101_error_has_error(err))
+    {
+        goto done;
+    }
     (void)p101_strtold(env, err, "3.75", NULL);
+    if(p101_error_has_error(err))
+    {
+        goto done;
+    }
     (void)p101_strtol(env, err, "42", NULL, C_MEMORY_PARSE_BASE);
+    if(p101_error_has_error(err))
+    {
+        goto done;
+    }
     (void)p101_strtoll(env, err, "420", NULL, C_MEMORY_PARSE_BASE);
+    if(p101_error_has_error(err))
+    {
+        goto done;
+    }
     (void)p101_strtoul(env, err, "42", NULL, C_MEMORY_PARSE_BASE);
+    if(p101_error_has_error(err))
+    {
+        goto done;
+    }
     (void)p101_strtoull(env, err, "420", NULL, C_MEMORY_PARSE_BASE);
     if(p101_error_has_error(err))
     {
@@ -553,8 +601,13 @@ static int run_c_memory_runtime_demo(const struct p101_env *env, struct p101_err
     }
 
     p101_setenv(env, err, "P101_TRACK_MEMORY_RUNTIME", "setenv", 1);
-    if(p101_error_has_error(err) || p101_getenv(env, "P101_TRACK_MEMORY_RUNTIME") == NULL)
+    if(p101_error_has_error(err))
     {
+        goto done;
+    }
+    if(p101_getenv(env, "P101_TRACK_MEMORY_RUNTIME") == NULL)
+    {
+        P101_ERROR_RAISE_USER(err, "The setenv/getenv smoke check failed.", ERR_SCENARIO_FAILURE);
         goto done;
     }
     p101_unsetenv(env, err, "P101_TRACK_MEMORY_RUNTIME");
@@ -569,9 +622,18 @@ static int run_c_memory_runtime_demo(const struct p101_env *env, struct p101_err
         goto done;
     }
     p101_snprintf(env, err, putenv_value, C_MEMORY_PUTENV_BYTES, "%s", "P101_TRACK_PUTENV=1");
-    p101_putenv(env, err, putenv_value);
-    if(p101_error_has_error(err) || p101_getenv(env, "P101_TRACK_PUTENV") == NULL)
+    if(p101_error_has_error(err))
     {
+        goto done;
+    }
+    p101_putenv(env, err, putenv_value);
+    if(p101_error_has_error(err))
+    {
+        goto done;
+    }
+    if(p101_getenv(env, "P101_TRACK_PUTENV") == NULL)
+    {
+        P101_ERROR_RAISE_USER(err, "The putenv/getenv smoke check failed.", ERR_SCENARIO_FAILURE);
         goto done;
     }
     p101_unsetenv(env, err, "P101_TRACK_PUTENV");
@@ -590,8 +652,11 @@ static int run_c_memory_runtime_demo(const struct p101_env *env, struct p101_err
     {
         goto done;
     }
-    p101_close(env, err, temp_fd);
-    temp_fd = -1;
+    close_fd_preserving_error(env, err, &temp_fd);
+    if(p101_error_has_error(err))
+    {
+        goto done;
+    }
     p101_remove(env, err, temp_file_template);
     if(p101_error_has_error(err))
     {
@@ -645,6 +710,11 @@ static int run_c_memory_runtime_demo(const struct p101_env *env, struct p101_err
     }
     (void)p101_rpmatch(env, "yes");
 
+    /*
+     * Some systems can deny pseudo-terminal allocation in constrained
+     * environments. The wrapper still gets exercised; grantpt/unlockpt/ptsname
+     * are exercised only when a pty was actually acquired.
+     */
     pty_fd = p101_posix_openpt(env, err, O_RDWR | O_NOCTTY);
     if(pty_fd != -1 && p101_error_has_no_error(err))
     {
@@ -662,8 +732,7 @@ static int run_c_memory_runtime_demo(const struct p101_env *env, struct p101_err
     }
     if(pty_fd != -1)
     {
-        p101_close(env, err, pty_fd);
-        pty_fd = -1;
+        close_fd_preserving_error(env, err, &pty_fd);
         if(p101_error_has_error(err))
         {
             goto done;
@@ -681,6 +750,10 @@ static int run_c_memory_runtime_demo(const struct p101_env *env, struct p101_err
     }
 
     p101_printf(env, err, "c-memory-runtime: exercised 55 wrappers\n");
+    if(p101_error_has_error(err))
+    {
+        goto done;
+    }
     if(write_text_output(env, err, args, "c-memory-runtime: exercised 55 wrappers\n") != EXIT_SUCCESS)
     {
         goto done;
@@ -691,14 +764,8 @@ static int run_c_memory_runtime_demo(const struct p101_env *env, struct p101_err
     }
 
 done:
-    if(pty_fd != -1)
-    {
-        p101_close(env, err, pty_fd);
-    }
-    if(temp_fd != -1)
-    {
-        p101_close(env, err, temp_fd);
-    }
+    close_fd_preserving_error(env, err, &pty_fd);
+    close_fd_preserving_error(env, err, &temp_fd);
     p101_free(env, aligned);
     p101_free(env, putenv_value);
     p101_free(env, zeroed);
@@ -1613,6 +1680,41 @@ static int run_parser_fuzz_demo(const struct p101_env *env, struct p101_error *e
     P101_TRACE(env);
     p101_printf(env, err, "parser-fuzz: records boundary-heavy parsing without a fuzz target\n");
     return write_text_output(env, err, args, log_text);
+}
+
+static void close_fd_preserving_error(const struct p101_env *env, struct p101_error *err, int *fd)
+{
+    struct p101_error *cleanup_err;
+
+    P101_TRACE(env);
+    if(fd == NULL || *fd == -1)
+    {
+        return;
+    }
+
+    if(p101_error_has_no_error(err))
+    {
+        p101_close(env, err, *fd);
+        *fd = -1;
+        return;
+    }
+
+    cleanup_err = p101_error_create(false);
+    if(cleanup_err != NULL)
+    {
+        p101_close(env, cleanup_err, *fd);
+        p101_error_destroy(cleanup_err);
+    }
+    else
+    {
+        /*
+         * Last-resort cleanup: p101_error_create itself could not allocate a
+         * scratch error object, so close with the primary object rather than
+         * intentionally leaking the descriptor.
+         */
+        p101_close(env, err, *fd);
+    }
+    *fd = -1;
 }
 
 static int run_child_exit_wrapper(const struct p101_env *env, struct p101_error *err, enum child_exit_mode mode)

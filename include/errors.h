@@ -3,7 +3,8 @@
 
 enum errors
 {
-    ERR_USAGE = 1
+    ERR_USAGE = 1,
+    ERR_SCENARIO_FAILURE
 };
 
 #endif    // P101_TOOL_PLAYGROUND_ERRORS_H
