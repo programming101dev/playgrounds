@@ -1,6 +1,13 @@
 {
   "source": "scripts/docs/lib-function-graph.json",
   "repository": "p101-tool-playground",
+  "orientation_track": {
+    "index": 0,
+    "track": "p101-orientation",
+    "directory": "00-p101-orientation",
+    "function_count": 0,
+    "purpose": "Hand-authored pre-track for env, err, wrappers, and tools."
+  },
   "track_count": 40,
   "covered_function_count": 1185,
   "uncovered_function_count": 0,

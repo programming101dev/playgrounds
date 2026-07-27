@@ -6,6 +6,7 @@
 enum playground_scenario
 {
     SCENARIO_TOUR = 0,
+    SCENARIO_ORIENTATION,
     SCENARIO_CLEAN_FILE,
     SCENARIO_REALLOC,
     SCENARIO_PIPE,

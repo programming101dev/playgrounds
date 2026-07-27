@@ -1,0 +1,27 @@
+{
+  "track": "p101-orientation",
+  "track_number": 0,
+  "generated": false,
+  "wrapper_count": 0,
+  "purpose": "Hand-authored pre-track for env, err, wrappers, and tools.",
+  "cases": [
+    {
+      "step": 0,
+      "case": "orientation",
+      "scenario": "orientation",
+      "purpose": "Valid first tour through p101 env, err, wrappers, and tool outputs."
+    },
+    {
+      "step": 1,
+      "case": "clean",
+      "scenario": "tour",
+      "purpose": "Valid baseline used by later resource and error-path labs."
+    }
+  ],
+  "tool_lessons": [
+    "wrappers",
+    "fd-leak",
+    "error-path",
+    "module-split"
+  ]
+}

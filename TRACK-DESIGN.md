@@ -11,9 +11,11 @@ The better shape is a single repo with explicit internal tracks:
 - small lesson families so students are not handed a giant `systems` lab;
 - no `misc` track.
 
-The generated source of truth is [tracks/README.md](./tracks/README.md).
+The generated source of truth is [tracks/README.md](./tracks/README.md). Track
+`00-p101-orientation` is the hand-authored pre-track; it is not generated from
+the wrapper graph and does not own wrapper coverage.
 
-The first fully curated track is
+The first wrapper-family curated track is
 [tracks/01-c-memory-runtime/TRACK.md](./tracks/01-c-memory-runtime/TRACK.md).
 Use it as the pattern for later tracks: generated inventory in `README.md`,
 curated lesson sequence in `TRACK.md`, machine-readable case map in

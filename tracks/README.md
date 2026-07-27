@@ -11,12 +11,14 @@ areas while still covering every p101 wrapper exactly once.
 - Wrappers covered: `1185`
 - Uncovered wrappers/domains: `0`
 - Track count: `40`
+- Orientation pre-track: `00-p101-orientation`
 - Misc tracks/domains are intentionally forbidden.
 
 ## Track list
 
 | # | Track | Wrappers | Purpose |
 | ---: | --- | ---: | --- |
+| 00 | [`p101-orientation`](00-p101-orientation/README.md) | 0 | Hand-authored pre-track for env, err, wrappers, and tools. |
 | 01 | [`c-memory-runtime`](01-c-memory-runtime/README.md) | 55 | Allocation, process termination, environment variables, sorting/searching helpers, and common stdlib extensions. |
 | 02 | [`c-memory-bytes`](02-c-memory-bytes/README.md) | 7 | Raw byte memory operations and the difference between object bytes and strings. |
 | 03 | [`c-byte-strings`](03-c-byte-strings/README.md) | 32 | NUL-terminated byte strings, comparisons, searching, collation, and common string extensions. |

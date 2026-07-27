@@ -101,12 +101,14 @@ def tracks_index(graph: dict[str, Any], tracks: list[dict[str, Any]]) -> str:
         f"- Wrappers covered: `{repo['covered_function_count']}`",
         f"- Uncovered wrappers/domains: `{repo['uncovered_function_count']}`",
         f"- Track count: `{repo['track_count']}`",
+        "- Orientation pre-track: `00-p101-orientation`",
         "- Misc tracks/domains are intentionally forbidden.",
         "",
         "## Track list",
         "",
         "| # | Track | Wrappers | Purpose |",
         "| ---: | --- | ---: | --- |",
+        "| 00 | [`p101-orientation`](00-p101-orientation/README.md) | 0 | Hand-authored pre-track for env, err, wrappers, and tools. |",
     ]
     for index, track in enumerate(tracks, start=1):
         path = f"{index:02d}-{slug(track['track'])}/README.md"
@@ -136,6 +138,13 @@ def manifest(graph: dict[str, Any], tracks: list[dict[str, Any]]) -> str:
     data = {
         "source": str(GRAPH.relative_to(ROOT)),
         "repository": graph["repository_recommendation"]["repository"],
+        "orientation_track": {
+            "index": 0,
+            "track": "p101-orientation",
+            "directory": "00-p101-orientation",
+            "function_count": 0,
+            "purpose": "Hand-authored pre-track for env, err, wrappers, and tools.",
+        },
         "track_count": len(tracks),
         "covered_function_count": graph["repository_recommendation"]["covered_function_count"],
         "uncovered_function_count": graph["repository_recommendation"]["uncovered_function_count"],

@@ -10,6 +10,15 @@ organized as many small tracks rather than one broad `systems` bucket or a pile
 of standalone example repos. See [tracks/README.md](./tracks/README.md) for the
 generated track map.
 
+Start with the hand-authored orientation pre-track:
+
+```sh
+./tracks/00-p101-orientation/run.sh
+```
+
+That first pass introduces `struct p101_error`, `struct p101_env`, p101
+wrappers, and the tools before the wrapper-family tracks begin.
+
 The point is to have one program that makes the whole toolchain visible:
 
 ```text
@@ -31,6 +40,7 @@ The track map is generated from the library function graph, so it stays tied to
 the actual wrapper surface:
 
 - 40 tracks;
+- 1 orientation pre-track;
 - 1,185 wrappers assigned to one primary track;
 - 0 uncovered domains;
 - no `misc` bucket.
@@ -61,6 +71,7 @@ Options:
 | Scenario | Purpose | Expected resource result |
 | --- | --- | --- |
 | `tour` | Clean file, realloc, pipe, and fork path | clean |
+| `orientation` | First p101 tour: env, err, wrappers, and tools | clean |
 | `c-memory-runtime` | Clean smoke test for all 55 Track 01 wrappers | clean |
 | `clean-file` | Open/write/close/free | clean |
 | `realloc` | Allocate, grow, and free | clean |
@@ -153,6 +164,7 @@ and a fault-injected error-path walk. For quick runtime-only demos:
 For shorter classroom slices, use the lesson script:
 
 ```sh
+./lesson.sh all
 ./lesson.sh wrappers
 ./lesson.sh fd-leak
 ./lesson.sh error-path

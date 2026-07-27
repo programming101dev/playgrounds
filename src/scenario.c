@@ -16,6 +16,10 @@ enum playground_scenario p101_tool_playground_scenario_from_name(const struct p1
     {
         scenario = SCENARIO_TOUR;
     }
+    else if(p101_strcmp(env, name, "orientation") == 0)
+    {
+        scenario = SCENARIO_ORIENTATION;
+    }
     else if(p101_strcmp(env, name, "clean-file") == 0)
     {
         scenario = SCENARIO_CLEAN_FILE;
@@ -253,6 +257,11 @@ const char *p101_tool_playground_scenario_name(enum playground_scenario scenario
         case SCENARIO_TOUR:
         {
             name = "tour";
+            break;
+        }
+        case SCENARIO_ORIENTATION:
+        {
+            name = "orientation";
             break;
         }
         case SCENARIO_CLEAN_FILE:
@@ -542,6 +551,7 @@ void p101_tool_playground_print_scenarios(const struct p101_env *env, struct p10
 {
     p101_fputs(env, err, "Scenarios:\n", stream);
     p101_fputs(env, err, "  tour          Clean default: file + realloc + pipe + fork\n", stream);
+    p101_fputs(env, err, "  orientation   First p101 tour: env, err, wrappers, and tools\n", stream);
     p101_fputs(env, err, "  clean-file    Open/write/close/free cleanly\n", stream);
     p101_fputs(env, err, "  realloc       Allocate, grow, and free a block\n", stream);
     p101_fputs(env, err, "  pipe          Create a pipe and close both descriptors\n", stream);

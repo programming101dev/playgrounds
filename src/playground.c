@@ -33,6 +33,7 @@ enum child_exit_mode
 
 enum c_memory_runtime_demo_constants
 {
+    ORIENTATION_MESSAGE_BYTES       = 64,
     C_MEMORY_INITIAL_BYTES          = 32,
     C_MEMORY_ZEROED_ITEMS           = 4,
     C_MEMORY_ZEROED_ITEM_BYTES      = 8,
@@ -62,6 +63,7 @@ enum c_memory_runtime_demo_constants
     C_MEMORY_IMMEDIATE_EXIT_STATUS  = 19
 };
 
+static int   run_orientation_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
 static int   run_clean_file(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
 static int   run_c_memory_runtime_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
 static int   run_realloc_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
@@ -152,6 +154,11 @@ int p101_tool_playground_run(const struct p101_env *env, struct p101_error *err,
             {
                 ret_val = run_fork_demo(env, err, args);
             }
+            break;
+        }
+        case SCENARIO_ORIENTATION:
+        {
+            ret_val = run_orientation_demo(env, err, args);
             break;
         }
         case SCENARIO_CLEAN_FILE:
@@ -434,6 +441,50 @@ int p101_tool_playground_run(const struct p101_env *env, struct p101_error *err,
     #pragma clang diagnostic pop
 #endif
 
+    return ret_val;
+}
+
+static int run_orientation_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
+{
+    static const char output_text[] = "p101-orientation: env err wrappers tools\n"
+                                      "env: created once in main and passed to every p101-aware function\n"
+                                      "err: checked after fallible wrappers and preserved through cleanup\n"
+                                      "wrappers: p101_malloc p101_memset p101_snprintf p101_open p101_write p101_close p101_free\n"
+                                      "tools: p101 check observe resource-tracker trace report error-path-walk wrapper-audit module-map\n";
+    char             *message;
+    int               ret_val;
+
+    P101_TRACE(env);
+    message = NULL;
+    ret_val = EXIT_FAILURE;
+
+    p101_printf(env, err, "orientation: env + err + wrappers + tools\n");
+    if(p101_error_has_error(err))
+    {
+        goto done;
+    }
+
+    message = (char *)p101_malloc(env, err, ORIENTATION_MESSAGE_BYTES);
+    if(message == NULL || p101_error_has_error(err))
+    {
+        goto done;
+    }
+    p101_memset(env, message, 0, ORIENTATION_MESSAGE_BYTES);
+    p101_snprintf(env, err, message, ORIENTATION_MESSAGE_BYTES, "%s", "p101 orientation");
+    if(p101_error_has_error(err))
+    {
+        goto done;
+    }
+
+    if(write_text_output(env, err, args, output_text) != EXIT_SUCCESS)
+    {
+        goto done;
+    }
+
+    ret_val = EXIT_SUCCESS;
+
+done:
+    p101_free(env, message);
     return ret_val;
 }
 
