@@ -1166,9 +1166,9 @@ static int run_early_return_alloc_leak_demo(const struct p101_env *env, struct p
 
 static int run_partial_cleanup_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
 {
-    int   file_fd;
-    int   pipe_fds[2];
-    char *buffer;
+    int         file_fd;
+    int         pipe_fds[2];
+    const char *buffer;
 
     P101_TRACE(env);
     buffer      = NULL;
