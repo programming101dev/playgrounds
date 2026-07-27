@@ -1,0 +1,55 @@
+{
+  "track": "c-char-classification",
+  "title": "c char classification",
+  "order": 4,
+  "generated": true,
+  "wrapper_count": 28,
+  "purpose": "Character classification, case mapping, locale-sensitive predicates, and signed-char pitfalls.",
+  "domains": [
+    {
+      "name": "c/char-classification",
+      "function_count": 14,
+      "functions": [
+        "p101_isalnum",
+        "p101_isalpha",
+        "p101_isblank",
+        "p101_iscntrl",
+        "p101_isdigit",
+        "p101_isgraph",
+        "p101_islower",
+        "p101_isprint",
+        "p101_ispunct",
+        "p101_isspace",
+        "p101_isupper",
+        "p101_isxdigit",
+        "p101_tolower",
+        "p101_toupper"
+      ]
+    },
+    {
+      "name": "c/char-classification-extensions",
+      "function_count": 14,
+      "functions": [
+        "p101_isalnum_l",
+        "p101_isalpha_l",
+        "p101_isblank_l",
+        "p101_iscntrl_l",
+        "p101_isdigit_l",
+        "p101_isgraph_l",
+        "p101_islower_l",
+        "p101_isprint_l",
+        "p101_ispunct_l",
+        "p101_isspace_l",
+        "p101_isupper_l",
+        "p101_isxdigit_l",
+        "p101_tolower_l",
+        "p101_toupper_l"
+      ]
+    }
+  ],
+  "local_project": {
+    "source": "src/main.c",
+    "header": "include/track_info.h",
+    "binary": "p101-track-c-char-classification"
+  }
+}

@@ -6,7 +6,17 @@ Track number: `39`
 
 Wrapper count: `17`
 
-Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+This directory is a standalone track project. You can enter it, build it,
+run it, and edit its source without depending on the top-level playground
+driver.
+
+```sh
+cd tracks/39-fsm
+./run.sh
+./test.sh
+```
+
+Curated lesson guide: [TRACK.md](./TRACK.md).
 
 ## Purpose
 

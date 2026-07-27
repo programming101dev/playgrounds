@@ -10,14 +10,16 @@ organized as many small tracks rather than one broad `systems` bucket or a pile
 of standalone example repos. See [tracks/README.md](./tracks/README.md) for the
 generated track map.
 
-Start with the hand-authored orientation pre-track:
+Start with the orientation pre-track:
 
 ```sh
 ./tracks/00-p101-orientation/run.sh
 ```
 
 That first pass introduces `struct p101_error`, `struct p101_env`, p101
-wrappers, and the tools before the wrapper-family tracks begin.
+wrappers, and the tools before the wrapper-family tracks begin. Every track
+directory is also a standalone mini-project with its own `src/`, `include/`,
+`config.cmake`, `test/`, and `run.sh`.
 
 The point is to have one program that makes the whole toolchain visible:
 

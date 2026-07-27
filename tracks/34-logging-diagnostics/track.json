@@ -1,0 +1,33 @@
+{
+  "track": "logging-diagnostics",
+  "title": "logging diagnostics",
+  "order": 34,
+  "generated": true,
+  "wrapper_count": 12,
+  "purpose": "syslog, err/warn-style diagnostics, formatted messages, and teachable logging/error-reporting practice.",
+  "domains": [
+    {
+      "name": "systems/logging-diagnostics",
+      "function_count": 12,
+      "functions": [
+        "p101_closelog",
+        "p101_err",
+        "p101_errx",
+        "p101_fmtmsg",
+        "p101_openlog",
+        "p101_setlogmask",
+        "p101_verr",
+        "p101_verrx",
+        "p101_vwarn",
+        "p101_vwarnx",
+        "p101_warn",
+        "p101_warnx"
+      ]
+    }
+  ],
+  "local_project": {
+    "source": "src/main.c",
+    "header": "include/track_info.h",
+    "binary": "p101-track-logging-diagnostics"
+  }
+}

@@ -1,68 +1,82 @@
 {
   "track": "c-memory-runtime",
-  "title": "C memory runtime",
+  "title": "c memory runtime",
   "order": 1,
-  "purpose": "Teach ownership, allocation, cleanup, realloc, error paths, and bounded resource requests before moving to other resource families.",
-  "cases": [
+  "generated": true,
+  "wrapper_count": 55,
+  "purpose": "Allocation, process termination, environment variables, sorting/searching helpers, and common stdlib extensions.",
+  "domains": [
     {
-      "step": 0,
-      "case": "clean",
-      "scenario": "tour",
-      "role": "valid-baseline"
+      "name": "c/stdlib",
+      "function_count": 31,
+      "functions": [
+        "p101_abort",
+        "p101_abs",
+        "p101_atexit",
+        "p101_bsearch",
+        "p101_calloc",
+        "p101_div",
+        "p101_exit",
+        "p101_exit_immediately",
+        "p101_free",
+        "p101_getenv",
+        "p101_labs",
+        "p101_ldiv",
+        "p101_llabs",
+        "p101_lldiv",
+        "p101_malloc",
+        "p101_mblen",
+        "p101_mbstowcs",
+        "p101_mbtowc",
+        "p101_pointer_value_for_log",
+        "p101_qsort",
+        "p101_realloc",
+        "p101_strtod",
+        "p101_strtof",
+        "p101_strtol",
+        "p101_strtold",
+        "p101_strtoll",
+        "p101_strtoul",
+        "p101_strtoull",
+        "p101_system",
+        "p101_wcstombs",
+        "p101_wctomb"
+      ]
     },
     {
-      "step": 1,
-      "case": "c-memory-runtime",
-      "scenario": "c-memory-runtime",
-      "role": "all-wrapper-smoke"
-    },
-    {
-      "step": 2,
-      "case": "alloc-leak",
-      "scenario": "alloc-leak",
-      "role": "owned-allocation-release"
-    },
-    {
-      "step": 3,
-      "case": "early-return-alloc-leak",
-      "scenario": "early-return-alloc-leak",
-      "role": "cleanup-on-all-exits"
-    },
-    {
-      "step": 4,
-      "case": "realloc-leak",
-      "scenario": "realloc-leak",
-      "role": "successful-realloc-ownership"
-    },
-    {
-      "step": 5,
-      "case": "realloc-failure",
-      "scenario": "realloc-failure",
-      "role": "preserve-original-on-realloc-failure"
-    },
-    {
-      "step": 6,
-      "case": "double-free",
-      "scenario": "double-free",
-      "role": "release-once"
-    },
-    {
-      "step": 7,
-      "case": "stray-free",
-      "scenario": "stray-free",
-      "role": "free-only-owning-pointer"
-    },
-    {
-      "step": 8,
-      "case": "use-after-free",
-      "scenario": "use-after-free",
-      "role": "no-use-after-release"
-    },
-    {
-      "step": 9,
-      "case": "resource-exhaustion",
-      "scenario": "resource-exhaustion",
-      "role": "bound-resource-requests"
+      "name": "c/stdlib-extensions",
+      "function_count": 24,
+      "functions": [
+        "p101_a64l",
+        "p101_arc4random",
+        "p101_arc4random_buf",
+        "p101_arc4random_uniform",
+        "p101_getloadavg",
+        "p101_getsubopt",
+        "p101_grantpt",
+        "p101_initstate",
+        "p101_l64a",
+        "p101_mkdtemp",
+        "p101_mkstemp",
+        "p101_posix_memalign",
+        "p101_posix_openpt",
+        "p101_ptsname",
+        "p101_putenv",
+        "p101_realpath",
+        "p101_rpmatch",
+        "p101_seed48",
+        "p101_setenv",
+        "p101_setstate",
+        "p101_srand48",
+        "p101_srandom",
+        "p101_unlockpt",
+        "p101_unsetenv"
+      ]
     }
-  ]
+  ],
+  "local_project": {
+    "source": "src/main.c",
+    "header": "include/track_info.h",
+    "binary": "p101-track-c-memory-runtime"
+  }
 }

@@ -1,27 +1,14 @@
 {
   "track": "p101-orientation",
-  "track_number": 0,
-  "generated": false,
+  "title": "p101 orientation",
+  "order": 0,
+  "generated": true,
   "wrapper_count": 0,
-  "purpose": "Hand-authored pre-track for env, err, wrappers, and tools.",
-  "cases": [
-    {
-      "step": 0,
-      "case": "orientation",
-      "scenario": "orientation",
-      "purpose": "Valid first tour through p101 env, err, wrappers, and tool outputs."
-    },
-    {
-      "step": 1,
-      "case": "clean",
-      "scenario": "tour",
-      "purpose": "Valid baseline used by later resource and error-path labs."
-    }
-  ],
-  "tool_lessons": [
-    "wrappers",
-    "fd-leak",
-    "error-path",
-    "module-split"
-  ]
+  "purpose": "Learn env/error setup, the p101 wrapper boundary, and how the playground tools report what they observe.",
+  "domains": [],
+  "local_project": {
+    "source": "src/main.c",
+    "header": "include/track_info.h",
+    "binary": "p101-track-p101-orientation"
+  }
 }

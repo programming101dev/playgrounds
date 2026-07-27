@@ -1,0 +1,48 @@
+{
+  "track": "ipc",
+  "title": "ipc",
+  "order": 27,
+  "generated": true,
+  "wrapper_count": 21,
+  "purpose": "POSIX and XSI IPC: message queues, semaphores, shared memory, keys, readiness, cleanup, and permissions.",
+  "domains": [
+    {
+      "name": "systems/io-multiplexing",
+      "function_count": 3,
+      "functions": [
+        "p101_poll",
+        "p101_pselect",
+        "p101_select"
+      ]
+    },
+    {
+      "name": "systems/ipc",
+      "function_count": 18,
+      "functions": [
+        "p101_ftok",
+        "p101_msgctl",
+        "p101_msgget",
+        "p101_msgrcv",
+        "p101_msgsnd",
+        "p101_sem_close",
+        "p101_sem_open",
+        "p101_sem_post",
+        "p101_sem_trywait",
+        "p101_sem_unlink",
+        "p101_sem_wait",
+        "p101_semctl",
+        "p101_semget",
+        "p101_semop",
+        "p101_shmat",
+        "p101_shmctl",
+        "p101_shmdt",
+        "p101_shmget"
+      ]
+    }
+  ],
+  "local_project": {
+    "source": "src/main.c",
+    "header": "include/track_info.h",
+    "binary": "p101-track-ipc"
+  }
+}

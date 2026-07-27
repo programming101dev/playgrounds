@@ -1,0 +1,31 @@
+{
+  "track": "tool-building",
+  "title": "tool building",
+  "order": 40,
+  "generated": true,
+  "wrapper_count": 4,
+  "purpose": "C facts, small analyzers, support utilities, and writing tools that reason about p101 projects.",
+  "domains": [
+    {
+      "name": "support/util",
+      "function_count": 1,
+      "functions": [
+        "p101_is_little_endian"
+      ]
+    },
+    {
+      "name": "tooling/c-facts",
+      "function_count": 3,
+      "functions": [
+        "p101_c_fact_kind_name",
+        "p101_c_fact_parse_line",
+        "p101_c_fact_status_name"
+      ]
+    }
+  ],
+  "local_project": {
+    "source": "src/main.c",
+    "header": "include/track_info.h",
+    "binary": "p101-track-tool-building"
+  }
+}

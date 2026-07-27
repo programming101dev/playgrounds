@@ -1,0 +1,57 @@
+{
+  "track": "c-stdio-streams",
+  "title": "c stdio streams",
+  "order": 8,
+  "generated": true,
+  "wrapper_count": 30,
+  "purpose": "Opening, closing, positioning, reading, writing, renaming, temporary files, and stream ownership.",
+  "domains": [
+    {
+      "name": "c/stdio-streams-files",
+      "function_count": 13,
+      "functions": [
+        "p101_fclose",
+        "p101_fgetpos",
+        "p101_fopen",
+        "p101_fread",
+        "p101_freopen",
+        "p101_fseek",
+        "p101_fsetpos",
+        "p101_ftell",
+        "p101_fwrite",
+        "p101_perror",
+        "p101_remove",
+        "p101_rename",
+        "p101_tmpfile"
+      ]
+    },
+    {
+      "name": "c/stdio-streams-files-extensions",
+      "function_count": 17,
+      "functions": [
+        "p101_fdopen",
+        "p101_fileno",
+        "p101_flockfile",
+        "p101_fmemopen",
+        "p101_fpurge",
+        "p101_fseeko",
+        "p101_ftello",
+        "p101_ftrylockfile",
+        "p101_funlockfile",
+        "p101_getdelim",
+        "p101_getline",
+        "p101_open_memstream",
+        "p101_pclose",
+        "p101_popen",
+        "p101_renameat",
+        "p101_setbuffer",
+        "p101_setlinebuf"
+      ]
+    }
+  ],
+  "local_project": {
+    "source": "src/main.c",
+    "header": "include/track_info.h",
+    "binary": "p101-track-c-stdio-streams"
+  }
+}

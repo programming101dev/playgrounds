@@ -62,9 +62,11 @@ areas while still covering every p101 wrapper exactly once.
 
 ## How to use this
 
-Each track directory is a planning home for labs. A finished track should
-contain good examples first, then issue-focused labs where students
-uncomment or repair intentionally bad code and watch the checks improve.
+Each track directory is a standalone project with local source,
+metadata, build configuration, a smoke test, and a runner. A finished
+track should start from good examples, then add issue-focused labs
+where students uncomment or repair intentionally bad code and watch the
+checks improve.
 
 Regenerate after changing wrapper libraries or graph classification:
 

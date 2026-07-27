@@ -1,0 +1,48 @@
+{
+  "track": "network-io-addresses",
+  "title": "network io addresses",
+  "order": 29,
+  "generated": true,
+  "wrapper_count": 21,
+  "purpose": "send/recv families, byte order, inet conversion, and network address helper functions.",
+  "domains": [
+    {
+      "name": "network/address-conversion",
+      "function_count": 15,
+      "functions": [
+        "p101_htonl",
+        "p101_htons",
+        "p101_inet_addr",
+        "p101_inet_aton",
+        "p101_inet_lnaof",
+        "p101_inet_makeaddr",
+        "p101_inet_net_ntop",
+        "p101_inet_net_pton",
+        "p101_inet_netof",
+        "p101_inet_network",
+        "p101_inet_ntoa",
+        "p101_inet_ntop",
+        "p101_inet_pton",
+        "p101_ntohl",
+        "p101_ntohs"
+      ]
+    },
+    {
+      "name": "network/io",
+      "function_count": 6,
+      "functions": [
+        "p101_recv",
+        "p101_recvfrom",
+        "p101_recvmsg",
+        "p101_send",
+        "p101_sendmsg",
+        "p101_sendto"
+      ]
+    }
+  ],
+  "local_project": {
+    "source": "src/main.c",
+    "header": "include/track_info.h",
+    "binary": "p101-track-network-io-addresses"
+  }
+}

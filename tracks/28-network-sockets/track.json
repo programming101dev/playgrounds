@@ -1,0 +1,33 @@
+{
+  "track": "network-sockets",
+  "title": "network sockets",
+  "order": 28,
+  "generated": true,
+  "wrapper_count": 12,
+  "purpose": "socket, bind, listen, accept, connect, socketpair, shutdown, socket options, and socket metadata.",
+  "domains": [
+    {
+      "name": "network/sockets",
+      "function_count": 12,
+      "functions": [
+        "p101_accept",
+        "p101_bind",
+        "p101_connect",
+        "p101_getpeername",
+        "p101_getsockname",
+        "p101_getsockopt",
+        "p101_listen",
+        "p101_setsockopt",
+        "p101_shutdown",
+        "p101_sockatmark",
+        "p101_socket",
+        "p101_socketpair"
+      ]
+    }
+  ],
+  "local_project": {
+    "source": "src/main.c",
+    "header": "include/track_info.h",
+    "binary": "p101-track-network-sockets"
+  }
+}

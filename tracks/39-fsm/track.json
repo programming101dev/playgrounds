@@ -1,0 +1,38 @@
+{
+  "track": "fsm",
+  "title": "fsm",
+  "order": 39,
+  "generated": true,
+  "wrapper_count": 17,
+  "purpose": "Finite-state-machine structure, state transitions, callbacks, invalid transitions, and lifecycle ownership.",
+  "domains": [
+    {
+      "name": "support/fsm",
+      "function_count": 17,
+      "functions": [
+        "p101_fsm_exit_immediately",
+        "p101_fsm_info_create",
+        "p101_fsm_info_default_bad_change_state_handler",
+        "p101_fsm_info_default_bad_change_state_notifier",
+        "p101_fsm_info_default_did_change_state_notifier",
+        "p101_fsm_info_default_will_change_state_notifier",
+        "p101_fsm_info_destroy",
+        "p101_fsm_info_get_bad_change_state_handler",
+        "p101_fsm_info_get_bad_change_state_notifier",
+        "p101_fsm_info_get_did_change_state_notifier",
+        "p101_fsm_info_get_name",
+        "p101_fsm_info_get_will_change_state_notifier",
+        "p101_fsm_info_set_bad_change_state_handler",
+        "p101_fsm_info_set_bad_change_state_notifier",
+        "p101_fsm_info_set_did_change_state_notifier",
+        "p101_fsm_info_set_will_change_state_notifier",
+        "p101_fsm_run"
+      ]
+    }
+  ],
+  "local_project": {
+    "source": "src/main.c",
+    "header": "include/track_info.h",
+    "binary": "p101-track-fsm"
+  }
+}

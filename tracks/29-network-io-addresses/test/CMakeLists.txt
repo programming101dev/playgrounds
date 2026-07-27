@@ -1,0 +1,15 @@
+cmake_minimum_required(VERSION 3.14)
+project(p101-track-network-io-addresses-tests C)
+enable_testing()
+
+set(_P101_LAST_BUILD_DIR "build-clang")
+if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../.last-build-dir")
+    file(READ "${CMAKE_CURRENT_SOURCE_DIR}/../.last-build-dir" _P101_LAST_BUILD_DIR)
+    string(STRIP "${_P101_LAST_BUILD_DIR}" _P101_LAST_BUILD_DIR)
+endif ()
+set(_P101_TRACK_BINARY "${CMAKE_CURRENT_SOURCE_DIR}/../${_P101_LAST_BUILD_DIR}/p101-track-network-io-addresses")
+if (NOT EXISTS "${_P101_TRACK_BINARY}")
+    message(FATAL_ERROR "Track binary not found: ${_P101_TRACK_BINARY}. Run ../build.sh first.")
+endif ()
+
+add_test(NAME track-runs COMMAND "${_P101_TRACK_BINARY}")

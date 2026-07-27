@@ -72,17 +72,12 @@ fi
 
 echo ">> fuzzer compiler: $CC"
 bd="fuzz/build-$(basename "$CC")"
-source_dir="$(cd fuzz && pwd)"
-if [ -f "$bd/CMakeCache.txt" ] && ! grep -Fqx "CMAKE_HOME_DIRECTORY:INTERNAL=$source_dir" "$bd/CMakeCache.txt"; then
-  rm -rf "$bd"
-fi
 cmake -S fuzz -B "$bd" -D"${cc_var}=$CC" >/dev/null
 cmake --build "$bd"
 
 bin="$bd/fuzz"
 [ -x "$bin" ] || { echo "fuzz target not built ($bin)." >&2; exit 1; }
 mkdir -p fuzz/corpus fuzz/findings fuzz/artifacts
-find fuzz/findings -mindepth 1 -maxdepth 1 -exec rm -rf {} +
 
 # Marker so we can tell a defect found THIS run from stale artifacts.
 start_marker="$bd/.last-run-start"
@@ -90,9 +85,9 @@ start_marker="$bd/.last-run-start"
 
 # libFuzzer writes newly-discovered inputs into the FIRST corpus dir. We give it
 # fuzz/findings (transient) so the committed seed corpus (fuzz/corpus) stays clean.
-echo ">> running: $bin fuzz/findings fuzz/corpus -max_total_time=$secs -verbosity=0 (findings -> fuzz/findings/, crashes -> fuzz/artifacts/)"
+echo ">> running: $bin fuzz/findings fuzz/corpus -max_total_time=$secs (findings -> fuzz/findings/, crashes -> fuzz/artifacts/)"
 rc=0
-"$bin" fuzz/findings fuzz/corpus -max_total_time="$secs" -verbosity=0 -print_final_stats=1 \
+"$bin" fuzz/findings fuzz/corpus -max_total_time="$secs" -print_final_stats=1 \
        -artifact_prefix=fuzz/artifacts/ ${extra[@]+"${extra[@]}"} || rc=$?
 
 newart="$(find fuzz/artifacts -type f -newer "$start_marker" 2>/dev/null | head -1)"

@@ -1,0 +1,33 @@
+{
+  "track": "c-complex-exp-log-power",
+  "title": "c complex exp log power",
+  "order": 18,
+  "generated": true,
+  "wrapper_count": 12,
+  "purpose": "Complex exponentials, logarithms, powers, and square roots.",
+  "domains": [
+    {
+      "name": "c/complex-exp-log-power",
+      "function_count": 12,
+      "functions": [
+        "p101_cexp",
+        "p101_cexpf",
+        "p101_cexpl",
+        "p101_clog",
+        "p101_clogf",
+        "p101_clogl",
+        "p101_cpow",
+        "p101_cpowf",
+        "p101_cpowl",
+        "p101_csqrt",
+        "p101_csqrtf",
+        "p101_csqrtl"
+      ]
+    }
+  ],
+  "local_project": {
+    "source": "src/main.c",
+    "header": "include/track_info.h",
+    "binary": "p101-track-c-complex-exp-log-power"
+  }
+}

@@ -6,7 +6,17 @@ Track number: `16`
 
 Wrapper count: `18`
 
-Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+This directory is a standalone track project. You can enter it, build it,
+run it, and edit its source without depending on the top-level playground
+driver.
+
+```sh
+cd tracks/16-c-complex-components
+./run.sh
+./test.sh
+```
+
+Curated lesson guide: [TRACK.md](./TRACK.md).
 
 ## Purpose
 

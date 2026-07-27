@@ -6,7 +6,17 @@ Track number: `06`
 
 Wrapper count: `33`
 
-Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+This directory is a standalone track project. You can enter it, build it,
+run it, and edit its source without depending on the top-level playground
+driver.
+
+```sh
+cd tracks/06-c-wide-io-conversion
+./run.sh
+./test.sh
+```
+
+Curated lesson guide: [TRACK.md](./TRACK.md).
 
 ## Purpose
 

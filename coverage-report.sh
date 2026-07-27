@@ -98,20 +98,10 @@ if [[ $report_only -eq 0 ]] && has_gcno "$main_bd"; then
   echo ">> running target(s) for coverage: ${exes[*]}"
   for t in "${exes[@]}"; do
     bin=""
-    names=("$t")
-    if [[ -f config.cmake ]]; then
-      output_name="$(sed -n "s/^[[:space:]]*set(${t}_OUTPUT_NAME[[:space:]]*\\([^)]*\\)).*/\\1/p" config.cmake | tr -d '"' | awk '{print $1}' | head -1)"
-      [[ -n "$output_name" ]] && names+=("$output_name")
-    fi
-    for n in "${names[@]}"; do
-      [[ -x "$main_bd/$n" ]] && { bin="$main_bd/$n"; break; }
-    done
+    [[ -x "$main_bd/$t" ]] && bin="$main_bd/$t"
     if [[ -z "$bin" ]]; then
-      for n in "${names[@]}"; do
-        while IFS= read -r f; do [[ -x "$f" ]] && { bin="$f"; break; }; done \
-          < <(find "$main_bd" -type f -name "$n" 2>/dev/null)
-        [[ -n "$bin" ]] && break
-      done
+      while IFS= read -r f; do [[ -x "$f" ]] && { bin="$f"; break; }; done \
+        < <(find "$main_bd" -type f -name "$t" 2>/dev/null)
     fi
     [[ -n "$bin" && -x "$bin" ]] || { echo "   (skip: no executable for '$t')"; continue; }
     echo "   $bin ${prog_args[*]-}"

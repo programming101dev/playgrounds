@@ -361,10 +361,10 @@ else
 fi
 
 if [ -z "$playground" ] || [ -z "$doctor" ] || [ -z "$wrapper_audit" ] || [ -z "$module_map" ] || [ -z "$observe" ] || [ -z "$walker" ] || [ -z "$tracker" ] || [ -z "$trace" ] || [ -z "$report" ]; then
-  record "SKIP" "doctor clean run" "missing: $(missing_tools p101-tool-playground "$playground" p101-doctor "$doctor" p101-wrapper-audit "$wrapper_audit" p101-module-map "$module_map" p101-observe "$observe" p101-error-path-walk "$walker" p101-resource-tracker "$tracker" p101-trace "$trace" p101-report "$report")"
+  record "SKIP" "doctor full source audit" "missing: $(missing_tools p101-tool-playground "$playground" p101-doctor "$doctor" p101-wrapper-audit "$wrapper_audit" p101-module-map "$module_map" p101-observe "$observe" p101-error-path-walk "$walker" p101-resource-tracker "$tracker" p101-trace "$trace" p101-report "$report")"
 else
   reset_child_dir "$out_dir/doctor"
-  run_logged "doctor clean run" "$log_dir/doctor.log" "0" "$doctor" -o "$out_dir/doctor" -s src -n "$fault_count" -A "$wrapper_audit" -M "$module_map" -O "$observe" -W "$walker" -r "$tracker" -t "$trace" -p "$report" -- "$playground" -s clean-file -o "$out_dir/doctor-target-output.txt" || true
+  run_logged "doctor full source audit" "$log_dir/doctor.log" "0 1" "$doctor" -o "$out_dir/doctor" -s src -n "$fault_count" -A "$wrapper_audit" -M "$module_map" -O "$observe" -W "$walker" -r "$tracker" -t "$trace" -p "$report" -- "$playground" -s clean-file -o "$out_dir/doctor-target-output.txt" || true
 fi
 
 append_summary_footer

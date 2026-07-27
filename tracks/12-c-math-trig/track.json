@@ -1,0 +1,60 @@
+{
+  "track": "c-math-trig",
+  "title": "c math trig",
+  "order": 12,
+  "generated": true,
+  "wrapper_count": 39,
+  "purpose": "Trigonometric and hyperbolic math families, including float/double/long double variants.",
+  "domains": [
+    {
+      "name": "c/math-trig",
+      "function_count": 39,
+      "functions": [
+        "p101_acos",
+        "p101_acosf",
+        "p101_acosh",
+        "p101_acoshf",
+        "p101_acoshl",
+        "p101_acosl",
+        "p101_asin",
+        "p101_asinf",
+        "p101_asinh",
+        "p101_asinhf",
+        "p101_asinhl",
+        "p101_asinl",
+        "p101_atan",
+        "p101_atan2",
+        "p101_atan2f",
+        "p101_atan2l",
+        "p101_atanf",
+        "p101_atanh",
+        "p101_atanhf",
+        "p101_atanhl",
+        "p101_atanl",
+        "p101_cos",
+        "p101_cosf",
+        "p101_cosh",
+        "p101_coshf",
+        "p101_coshl",
+        "p101_cosl",
+        "p101_sin",
+        "p101_sinf",
+        "p101_sinh",
+        "p101_sinhf",
+        "p101_sinhl",
+        "p101_sinl",
+        "p101_tan",
+        "p101_tanf",
+        "p101_tanh",
+        "p101_tanhf",
+        "p101_tanhl",
+        "p101_tanl"
+      ]
+    }
+  ],
+  "local_project": {
+    "source": "src/main.c",
+    "header": "include/track_info.h",
+    "binary": "p101-track-c-math-trig"
+  }
+}

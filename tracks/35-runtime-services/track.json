@@ -1,0 +1,81 @@
+{
+  "track": "runtime-services",
+  "title": "runtime services",
+  "order": 35,
+  "generated": true,
+  "wrapper_count": 36,
+  "purpose": "Dynamic loading, regex, iconv, locale/message catalogs, legacy DBM, and libc search structures.",
+  "domains": [
+    {
+      "name": "systems/dynamic-loading",
+      "function_count": 4,
+      "functions": [
+        "p101_dlclose",
+        "p101_dlerror",
+        "p101_dlopen",
+        "p101_dlsym"
+      ]
+    },
+    {
+      "name": "systems/legacy-database",
+      "function_count": 9,
+      "functions": [
+        "p101_dbm_clearerr",
+        "p101_dbm_close",
+        "p101_dbm_delete",
+        "p101_dbm_error",
+        "p101_dbm_fetch",
+        "p101_dbm_firstkey",
+        "p101_dbm_nextkey",
+        "p101_dbm_open",
+        "p101_dbm_store"
+      ]
+    },
+    {
+      "name": "systems/localization-conversion",
+      "function_count": 8,
+      "functions": [
+        "p101_catclose",
+        "p101_catgets",
+        "p101_catopen",
+        "p101_iconv",
+        "p101_iconv_close",
+        "p101_iconv_open",
+        "p101_nl_langinfo",
+        "p101_nl_langinfo_l"
+      ]
+    },
+    {
+      "name": "systems/search-structures",
+      "function_count": 11,
+      "functions": [
+        "p101_hcreate",
+        "p101_hdestroy",
+        "p101_hsearch",
+        "p101_insque",
+        "p101_lfind",
+        "p101_lsearch",
+        "p101_remque",
+        "p101_tdelete",
+        "p101_tfind",
+        "p101_tsearch",
+        "p101_twalk"
+      ]
+    },
+    {
+      "name": "systems/text-patterns",
+      "function_count": 4,
+      "functions": [
+        "p101_regcomp",
+        "p101_regerror",
+        "p101_regexec",
+        "p101_regfree"
+      ]
+    }
+  ],
+  "local_project": {
+    "source": "src/main.c",
+    "header": "include/track_info.h",
+    "binary": "p101-track-runtime-services"
+  }
+}

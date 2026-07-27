@@ -1,0 +1,55 @@
+{
+  "track": "filesystem-paths",
+  "title": "filesystem paths",
+  "order": 21,
+  "generated": true,
+  "wrapper_count": 34,
+  "purpose": "Paths, permissions, stat, links, directories-as-filesystem-objects, timestamps, and filesystem mutation.",
+  "domains": [
+    {
+      "name": "systems/filesystem-paths",
+      "function_count": 34,
+      "functions": [
+        "p101_access",
+        "p101_chdir",
+        "p101_chmod",
+        "p101_chown",
+        "p101_faccessat",
+        "p101_fchdir",
+        "p101_fchmod",
+        "p101_fchmodat",
+        "p101_fchown",
+        "p101_fchownat",
+        "p101_fstat",
+        "p101_fstatat",
+        "p101_fstatvfs",
+        "p101_futimens",
+        "p101_lchown",
+        "p101_link",
+        "p101_linkat",
+        "p101_lstat",
+        "p101_mkdir",
+        "p101_mkdirat",
+        "p101_mkfifo",
+        "p101_mknod",
+        "p101_readlink",
+        "p101_readlinkat",
+        "p101_rmdir",
+        "p101_stat",
+        "p101_statvfs",
+        "p101_symlink",
+        "p101_symlinkat",
+        "p101_truncate",
+        "p101_umask",
+        "p101_unlink",
+        "p101_unlinkat",
+        "p101_utimensat"
+      ]
+    }
+  ],
+  "local_project": {
+    "source": "src/main.c",
+    "header": "include/track_info.h",
+    "binary": "p101-track-filesystem-paths"
+  }
+}

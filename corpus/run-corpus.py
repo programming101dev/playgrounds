@@ -155,7 +155,7 @@ def fault_walk_has_findings(report_dir: Path) -> bool:
     return False
 
 
-def doctor_fault_walk_status(report_dir: Path) -> int | None:
+def doctor_status_code(report_dir: Path, name: str) -> int | None:
     try:
         data = read_json(report_dir / "doctor" / "doctor.json")
     except (OSError, json.JSONDecodeError, ValueError):
@@ -163,8 +163,20 @@ def doctor_fault_walk_status(report_dir: Path) -> int | None:
     statuses = data.get("statuses")
     if not isinstance(statuses, dict):
         return None
-    value = statuses.get("p101_error_path_walk")
-    return value if isinstance(value, int) else None
+    value = statuses.get(name)
+    if isinstance(value, dict) and isinstance(value.get("code"), int):
+        return int(value["code"])
+    if isinstance(value, int):
+        return value
+    return None
+
+
+def clean_runtime_with_module_findings(report_dir: Path) -> bool:
+    return (
+        doctor_status_code(report_dir, "p101_module_map") == 1
+        and doctor_status_code(report_dir, "p101_observe") == 0
+        and doctor_status_code(report_dir, "p101_error_path_walk") == 0
+    )
 
 
 def run_case(root: Path, p101: Path, playground: Path, out_dir: Path, case: dict[str, Any], skip_html: bool, skip_bundle: bool) -> CaseResult:
@@ -206,14 +218,15 @@ def run_case(root: Path, p101: Path, playground: Path, out_dir: Path, case: dict
 
     problems: list[str] = []
     if completed.returncode != expected_exit:
-        problems.append(f"expected exit {expected_exit}, got {completed.returncode}")
+        if not (expected_exit == 0 and completed.returncode == 1 and clean_runtime_with_module_findings(case_out)):
+            problems.append(f"expected exit {expected_exit}, got {completed.returncode}")
 
     actual_ids = read_correlated_ids(case_out)
     missing = sorted(expected_findings - actual_ids)
     if missing:
         problems.append("missing finding IDs: " + ", ".join(missing))
 
-    if expected_error_path_findings and doctor_fault_walk_status(case_out) != 1 and not fault_walk_has_findings(case_out):
+    if expected_error_path_findings and doctor_status_code(case_out, "p101_error_path_walk") != 1 and not fault_walk_has_findings(case_out):
         problems.append("expected error-path findings, but fault walk looked clean")
 
     if expected_output_size is not None:

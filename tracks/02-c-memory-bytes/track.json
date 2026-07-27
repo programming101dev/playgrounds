@@ -1,0 +1,40 @@
+{
+  "track": "c-memory-bytes",
+  "title": "c memory bytes",
+  "order": 2,
+  "generated": true,
+  "wrapper_count": 7,
+  "purpose": "Raw byte memory operations and the difference between object bytes and strings.",
+  "domains": [
+    {
+      "name": "c/byte-utility",
+      "function_count": 1,
+      "functions": [
+        "p101_swab"
+      ]
+    },
+    {
+      "name": "c/memory-bytes",
+      "function_count": 5,
+      "functions": [
+        "p101_memchr",
+        "p101_memcmp",
+        "p101_memcpy",
+        "p101_memmove",
+        "p101_memset"
+      ]
+    },
+    {
+      "name": "c/memory-bytes-extensions",
+      "function_count": 1,
+      "functions": [
+        "p101_memccpy"
+      ]
+    }
+  ],
+  "local_project": {
+    "source": "src/main.c",
+    "header": "include/track_info.h",
+    "binary": "p101-track-c-memory-bytes"
+  }
+}

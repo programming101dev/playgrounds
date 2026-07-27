@@ -6,7 +6,17 @@ Track number: `08`
 
 Wrapper count: `30`
 
-Curated lesson guide: [TRACK.md](./TRACK.md) if present.
+This directory is a standalone track project. You can enter it, build it,
+run it, and edit its source without depending on the top-level playground
+driver.
+
+```sh
+cd tracks/08-c-stdio-streams
+./run.sh
+./test.sh
+```
+
+Curated lesson guide: [TRACK.md](./TRACK.md).
 
 ## Purpose
 

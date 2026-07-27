@@ -1,0 +1,40 @@
+{
+  "track": "directories-patterns",
+  "title": "directories patterns",
+  "order": 22,
+  "generated": true,
+  "wrapper_count": 19,
+  "purpose": "Directory traversal, glob/fnmatch/wordexp, path decomposition, and tree walking.",
+  "domains": [
+    {
+      "name": "systems/directories-patterns",
+      "function_count": 19,
+      "functions": [
+        "p101_alphasort",
+        "p101_basename",
+        "p101_closedir",
+        "p101_dirfd",
+        "p101_dirname",
+        "p101_fdopendir",
+        "p101_fnmatch",
+        "p101_ftw",
+        "p101_glob",
+        "p101_globfree",
+        "p101_nftw",
+        "p101_opendir",
+        "p101_readdir",
+        "p101_rewinddir",
+        "p101_scandir",
+        "p101_seekdir",
+        "p101_telldir",
+        "p101_wordexp",
+        "p101_wordfree"
+      ]
+    }
+  ],
+  "local_project": {
+    "source": "src/main.c",
+    "header": "include/track_info.h",
+    "binary": "p101-track-directories-patterns"
+  }
+}

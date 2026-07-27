@@ -1,0 +1,39 @@
+{
+  "track": "c-complex-components",
+  "title": "c complex components",
+  "order": 16,
+  "generated": true,
+  "wrapper_count": 18,
+  "purpose": "Complex absolute value, phase, real/imaginary access, conjugation, and projection helpers.",
+  "domains": [
+    {
+      "name": "c/complex-components",
+      "function_count": 18,
+      "functions": [
+        "p101_cabs",
+        "p101_cabsf",
+        "p101_cabsl",
+        "p101_carg",
+        "p101_cargf",
+        "p101_cargl",
+        "p101_cimag",
+        "p101_cimagf",
+        "p101_cimagl",
+        "p101_conj",
+        "p101_conjf",
+        "p101_conjl",
+        "p101_cproj",
+        "p101_cprojf",
+        "p101_cprojl",
+        "p101_creal",
+        "p101_crealf",
+        "p101_creall"
+      ]
+    }
+  ],
+  "local_project": {
+    "source": "src/main.c",
+    "header": "include/track_info.h",
+    "binary": "p101-track-c-complex-components"
+  }
+}
