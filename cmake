@@ -1,1 +1,1 @@
-../../scripts/cmake
+../scripts/cmake

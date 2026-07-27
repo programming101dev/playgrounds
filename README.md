@@ -48,7 +48,7 @@ the actual wrapper surface:
 Refresh it after changing wrapper libraries or classification rules:
 
 ```sh
-../../scripts/analyze-lib-function-graph.py
+../scripts/analyze-lib-function-graph.py
 ./sync-track-map.py
 ```
 
@@ -251,9 +251,9 @@ Run a clean observed tour:
 ```sh
 p101-observe \
   -o /tmp/p101-playground-tour \
-  -r ../p101-resource-tracker/build-clang/p101-resource-tracker \
-  -t ../p101-trace/build-clang/p101-trace \
-  -p ../p101-report/build-clang/p101-report \
+  -r ../programs/p101-resource-tracker/build-clang/p101-resource-tracker \
+  -t ../programs/p101-trace/build-clang/p101-trace \
+  -p ../programs/p101-report/build-clang/p101-report \
   -- ./build-clang/p101-tool-playground -s tour
 ```
 
@@ -281,8 +281,8 @@ Walk injected error paths:
 p101-error-path-walk \
   -n 20 \
   -l /tmp/p101-playground-walk \
-  -r ../p101-resource-tracker/build-clang/p101-resource-tracker \
-  -p ../p101-report/build-clang/p101-report \
+  -r ../programs/p101-resource-tracker/build-clang/p101-resource-tracker \
+  -p ../programs/p101-report/build-clang/p101-report \
   -- ./build-clang/p101-tool-playground -s fault-lab
 ```
 

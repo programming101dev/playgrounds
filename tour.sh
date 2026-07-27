@@ -117,6 +117,22 @@ find_tool() {
   return 1
 }
 
+last_build_tool() {
+  project_dir="$1"
+  tool_name="$2"
+
+  if [ -f "$project_dir/.last-build-dir" ]; then
+    build_dir="$(cat "$project_dir/.last-build-dir")"
+    candidate="$project_dir/$build_dir/$tool_name"
+    if [ -x "$candidate" ]; then
+      printf '%s\n' "$candidate"
+      return 0
+    fi
+  fi
+
+  return 1
+}
+
 run_logged() {
   title="$1"
   log="$2"
@@ -311,15 +327,15 @@ else
   record "SKIP" "quality pipeline" "--skip-quality"
 fi
 
-playground="$(find_tool P101_TOOL_PLAYGROUND ./build-clang-22/p101-tool-playground ./build-clang/p101-tool-playground ./build-gcc-16/p101-tool-playground p101-tool-playground)"
-observe="$(find_tool P101_OBSERVE ../p101-observe/build-clang-22/p101-observe ../p101-observe/build-clang/p101-observe ../p101-observe/build-gcc-16/p101-observe p101-observe)"
-tracker="$(find_tool P101_RESOURCE_TRACKER ../p101-resource-tracker/build-clang-22/p101-resource-tracker ../p101-resource-tracker/build-clang/p101-resource-tracker ../p101-resource-tracker/build-gcc-16/p101-resource-tracker ../p101-resource-tracker/build-clang/resource-tracker p101-resource-tracker resource-tracker)"
-trace="$(find_tool P101_TRACE ../p101-trace/build-clang-22/p101-trace ../p101-trace/build-clang/p101-trace ../p101-trace/build-gcc-16/p101-trace p101-trace)"
-report="$(find_tool P101_REPORT ../p101-report/build-clang-22/p101-report ../p101-report/build-clang/p101-report ../p101-report/build-gcc-16/p101-report p101-report)"
-walker="$(find_tool P101_ERROR_PATH_WALK ../p101-error-path-walk/build-clang-22/p101-error-path-walk ../p101-error-path-walk/build-clang/p101-error-path-walk ../p101-error-path-walk/build-gcc-16/p101-error-path-walk ../p101-error-path-walk/build-clang/error-path-walk p101-error-path-walk error-path-walk)"
-wrapper_audit="$(find_tool P101_WRAPPER_AUDIT ../p101-wrapper-audit/p101-wrapper-audit p101-wrapper-audit)"
-module_map="$(find_tool P101_MODULE_MAP ../p101-module-map/build-clang-22/p101-module-map ../p101-module-map/build-clang/p101-module-map ../p101-module-map/build-gcc-16/p101-module-map p101-module-map)"
-doctor="$(find_tool P101_DOCTOR ../p101-doctor/build-clang-22/p101-doctor ../p101-doctor/build-clang/p101-doctor ../p101-doctor/build-gcc-16/p101-doctor p101-doctor)"
+playground="$(find_tool P101_TOOL_PLAYGROUND "$(last_build_tool . p101-tool-playground)" ./build-clang-22/p101-tool-playground ./build-clang/p101-tool-playground ./build-gcc-16/p101-tool-playground p101-tool-playground)"
+observe="$(find_tool P101_OBSERVE "$(last_build_tool ../programs/p101-observe p101-observe)" ../programs/p101-observe/build-clang-22/p101-observe ../programs/p101-observe/build-clang/p101-observe ../programs/p101-observe/build-gcc-16/p101-observe p101-observe)"
+tracker="$(find_tool P101_RESOURCE_TRACKER "$(last_build_tool ../programs/p101-resource-tracker p101-resource-tracker)" ../programs/p101-resource-tracker/build-clang-22/p101-resource-tracker ../programs/p101-resource-tracker/build-clang/p101-resource-tracker ../programs/p101-resource-tracker/build-gcc-16/p101-resource-tracker ../programs/p101-resource-tracker/build-clang/resource-tracker p101-resource-tracker resource-tracker)"
+trace="$(find_tool P101_TRACE "$(last_build_tool ../programs/p101-trace p101-trace)" ../programs/p101-trace/build-clang-22/p101-trace ../programs/p101-trace/build-clang/p101-trace ../programs/p101-trace/build-gcc-16/p101-trace p101-trace)"
+report="$(find_tool P101_REPORT "$(last_build_tool ../programs/p101-report p101-report)" ../programs/p101-report/build-clang-22/p101-report ../programs/p101-report/build-clang/p101-report ../programs/p101-report/build-gcc-16/p101-report p101-report)"
+walker="$(find_tool P101_ERROR_PATH_WALK "$(last_build_tool ../programs/p101-error-path-walk p101-error-path-walk)" ../programs/p101-error-path-walk/build-clang-22/p101-error-path-walk ../programs/p101-error-path-walk/build-clang/p101-error-path-walk ../programs/p101-error-path-walk/build-gcc-16/p101-error-path-walk ../programs/p101-error-path-walk/build-clang/error-path-walk p101-error-path-walk error-path-walk)"
+wrapper_audit="$(find_tool P101_WRAPPER_AUDIT ../programs/p101-wrapper-audit/p101-wrapper-audit p101-wrapper-audit)"
+module_map="$(find_tool P101_MODULE_MAP "$(last_build_tool ../programs/p101-module-map p101-module-map)" ../programs/p101-module-map/build-clang-22/p101-module-map ../programs/p101-module-map/build-clang/p101-module-map ../programs/p101-module-map/build-gcc-16/p101-module-map p101-module-map)"
+doctor="$(find_tool P101_DOCTOR "$(last_build_tool ../programs/p101-doctor p101-doctor)" ../programs/p101-doctor/build-clang-22/p101-doctor ../programs/p101-doctor/build-clang/p101-doctor ../programs/p101-doctor/build-gcc-16/p101-doctor p101-doctor)"
 
 if [ -z "$playground" ]; then
   record "FAIL" "locate playground binary" "run ./build.sh first"

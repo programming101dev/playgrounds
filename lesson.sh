@@ -108,13 +108,13 @@ assert_contains() {
 }
 
 playground="$(find_tool P101_TOOL_PLAYGROUND ./build-clang-22/p101-tool-playground ./build-clang/p101-tool-playground ./build-gcc-16/p101-tool-playground p101-tool-playground || true)"
-observe="$(find_tool P101_OBSERVE ../p101-observe/build-clang-22/p101-observe ../p101-observe/build-clang/p101-observe ../p101-observe/build-gcc-16/p101-observe p101-observe || true)"
-tracker="$(find_tool P101_RESOURCE_TRACKER ../p101-resource-tracker/build-clang-22/p101-resource-tracker ../p101-resource-tracker/build-clang/p101-resource-tracker ../p101-resource-tracker/build-gcc-16/p101-resource-tracker p101-resource-tracker || true)"
-trace="$(find_tool P101_TRACE ../p101-trace/build-clang-22/p101-trace ../p101-trace/build-clang/p101-trace ../p101-trace/build-gcc-16/p101-trace p101-trace || true)"
-report="$(find_tool P101_REPORT ../p101-report/build-clang-22/p101-report ../p101-report/build-clang/p101-report ../p101-report/build-gcc-16/p101-report p101-report || true)"
-walker="$(find_tool P101_ERROR_PATH_WALK ../p101-error-path-walk/build-clang-22/p101-error-path-walk ../p101-error-path-walk/build-clang/p101-error-path-walk ../p101-error-path-walk/build-gcc-16/p101-error-path-walk p101-error-path-walk || true)"
-wrapper_audit="$(find_tool P101_WRAPPER_AUDIT ../p101-wrapper-audit/p101-wrapper-audit p101-wrapper-audit || true)"
-module_map="$(find_tool P101_MODULE_MAP ../p101-module-map/build-clang-22/p101-module-map ../p101-module-map/build-clang/p101-module-map ../p101-module-map/build-gcc-16/p101-module-map p101-module-map || true)"
+observe="$(find_tool P101_OBSERVE ../programs/p101-observe/build-clang-22/p101-observe ../programs/p101-observe/build-clang/p101-observe ../programs/p101-observe/build-gcc-16/p101-observe p101-observe || true)"
+tracker="$(find_tool P101_RESOURCE_TRACKER ../programs/p101-resource-tracker/build-clang-22/p101-resource-tracker ../programs/p101-resource-tracker/build-clang/p101-resource-tracker ../programs/p101-resource-tracker/build-gcc-16/p101-resource-tracker p101-resource-tracker || true)"
+trace="$(find_tool P101_TRACE ../programs/p101-trace/build-clang-22/p101-trace ../programs/p101-trace/build-clang/p101-trace ../programs/p101-trace/build-gcc-16/p101-trace p101-trace || true)"
+report="$(find_tool P101_REPORT ../programs/p101-report/build-clang-22/p101-report ../programs/p101-report/build-clang/p101-report ../programs/p101-report/build-gcc-16/p101-report p101-report || true)"
+walker="$(find_tool P101_ERROR_PATH_WALK ../programs/p101-error-path-walk/build-clang-22/p101-error-path-walk ../programs/p101-error-path-walk/build-clang/p101-error-path-walk ../programs/p101-error-path-walk/build-gcc-16/p101-error-path-walk p101-error-path-walk || true)"
+wrapper_audit="$(find_tool P101_WRAPPER_AUDIT ../programs/p101-wrapper-audit/p101-wrapper-audit p101-wrapper-audit || true)"
+module_map="$(find_tool P101_MODULE_MAP ../programs/p101-module-map/build-clang-22/p101-module-map ../programs/p101-module-map/build-clang/p101-module-map ../programs/p101-module-map/build-gcc-16/p101-module-map p101-module-map || true)"
 
 cat > "$summary" <<EOF
 # p101 playground lesson

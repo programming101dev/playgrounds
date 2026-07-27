@@ -69,6 +69,6 @@ uncomment or repair intentionally bad code and watch the checks improve.
 Regenerate after changing wrapper libraries or graph classification:
 
 ```sh
-../scripts/analyze-lib-function-graph.py
+../../scripts/analyze-lib-function-graph.py
 ./sync-track-map.py
 ```

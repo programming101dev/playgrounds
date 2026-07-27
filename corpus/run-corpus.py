@@ -282,7 +282,7 @@ def main(argv: list[str]) -> int:
         print("p101 corpus: no cases selected", file=sys.stderr)
         return 2
 
-    p101 = args.p101.resolve() if args.p101 else find_executable([root / "../../scripts/p101", "p101"])
+    p101 = args.p101.resolve() if args.p101 else find_executable([root / "../scripts/p101", "p101"])
     playground = args.playground.resolve() if args.playground else find_executable(current_playground_candidates(root))
 
     results: list[CaseResult] = []
