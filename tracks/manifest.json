@@ -1,6 +1,6 @@
 {
   "source": "scripts/docs/lib-function-graph.json",
-  "repository": "p101-tool-playground",
+  "repository": "playgrounds",
   "orientation_track": {
     "index": 0,
     "track": "p101-orientation",
