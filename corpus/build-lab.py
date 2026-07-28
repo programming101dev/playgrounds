@@ -7,6 +7,7 @@ import argparse
 import html
 import json
 import os
+import shutil
 import subprocess
 import sys
 from dataclasses import dataclass
@@ -53,6 +54,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--skip-html", action="store_true", help="Skip per-case p101 check HTML generation.")
     parser.add_argument("--skip-bundle", action="store_true", help="Skip per-case bug bundles.")
     parser.add_argument("--strict-corpus", action="store_true", help="Exit nonzero if the committed issue corpus no longer matches its oracle.")
+    parser.add_argument("--require-all-fixed", action="store_true", help="Exit nonzero unless every selected issue lab is FIXED.")
     return parser.parse_args(argv)
 
 
@@ -213,6 +215,39 @@ def collect_fault_findings(report_dir: Path) -> list[dict[str, Any]]:
     return findings
 
 
+def issue_case(case: LabCase) -> bool:
+    return (
+        bool(case.expected_findings)
+        or case.expects_error_path_findings
+        or case.expected_output_size is not None
+        or bool(case.expected_output_contains)
+        or bool(case.expected_output_missing)
+    )
+
+
+def parseable_json(path: Path) -> bool:
+    try:
+        read_json(path)
+    except (OSError, json.JSONDecodeError, ValueError):
+        return False
+    return True
+
+
+def missing_evidence(case: LabCase) -> list[str]:
+    missing: list[str] = []
+    if not case.report_dir.exists():
+        return ["case report directory"]
+    if case.expected_findings and not parseable_json(case.report_dir / "doctor" / "observe" / "correlated-report.json"):
+        missing.append("ordinary correlated-report.json")
+    if case.expects_error_path_findings:
+        fault_dir = case.report_dir / "doctor" / "fault-walk"
+        if not fault_dir.exists() or not any(fault_dir.glob("*.observe/*")):
+            missing.append("fault-walk reports")
+    if (case.expected_output_size is not None or case.expected_output_contains or case.expected_output_missing) and not (case.report_dir / "playground-output.txt").exists():
+        missing.append("playground output")
+    return missing
+
+
 def shift_markdown_headings(text: str, minimum_level: int) -> str:
     lines: list[str] = []
     for line in text.splitlines():
@@ -284,18 +319,19 @@ def expected_issue_is_present(case: LabCase) -> bool:
 
 
 def lab_progress(case: LabCase) -> str:
-    if not case.report_dir.exists():
-        return "MISSING"
-    if not case.expected_findings and not case.expects_error_path_findings and case.expected_output_size is None and not case.expected_output_contains and not case.expected_output_missing:
+    if not issue_case(case):
         return "REFERENCE"
+    if missing_evidence(case):
+        return "BLOCKED"
     return "OPEN" if expected_issue_is_present(case) else "FIXED"
 
 
-def progress_counts(cases: list[LabCase]) -> tuple[int, int, int]:
-    issue_cases = [case for case in cases if case.expected_findings or case.expects_error_path_findings or case.expected_output_size is not None or case.expected_output_contains or case.expected_output_missing]
+def progress_counts(cases: list[LabCase]) -> tuple[int, int, int, int]:
+    issue_cases = [case for case in cases if issue_case(case)]
     fixed = sum(1 for case in issue_cases if lab_progress(case) == "FIXED")
     open_count = sum(1 for case in issue_cases if lab_progress(case) == "OPEN")
-    return fixed, open_count, len(issue_cases)
+    blocked = sum(1 for case in issue_cases if lab_progress(case) == "BLOCKED")
+    return fixed, open_count, blocked, len(issue_cases)
 
 
 def case_phase(case: LabCase) -> str:
@@ -404,13 +440,13 @@ def phase_rows(cases: list[LabCase]) -> list[str]:
 
 
 def render_markdown(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
-    fixed, open_count, total = progress_counts(cases)
+    fixed, open_count, blocked, total = progress_counts(cases)
     lines = [
         "# p101 tool playground lab series",
         "",
         "This is a series of small, intentionally broken p101 programs inside the playground. Fix one issue, re-run the lab, and watch that lab move from OPEN to FIXED.",
         "",
-        f"- Progress: {fixed}/{total} issue labs fixed, {open_count} still open",
+        f"- Progress: {fixed}/{total} issue labs fixed, {open_count} still open, {blocked} blocked",
         f"- Instructor corpus oracle: {'PASS' if corpus_rc == 0 else 'CHANGED'}",
         f"- Corpus summary: [runs/summary.md](./runs/summary.md)",
         f"- HTML lab book: [index.html](./index.html)",
@@ -518,7 +554,7 @@ def render_markdown(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
 
 def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
     status = "PASS" if corpus_rc == 0 else "FAIL"
-    fixed, open_count, total = progress_counts(cases)
+    fixed, open_count, blocked, total = progress_counts(cases)
     cards: list[str] = []
     for case in cases:
         findings = collect_correlated_findings(case.report_dir)
@@ -534,6 +570,9 @@ def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
             fault_items = "<li>This lesson is about the ordinary run; use the error-path lesson for injected-failure behavior.</li>"
         elif not fault_items:
             fault_items = "<li>No summarized fault-walk findings.</li>"
+        if progress == "BLOCKED":
+            missing = ", ".join(missing_evidence(case))
+            fault_items = f"<li>This lab could not be judged because evidence is missing: {html.escape(missing)}.</li>"
 
         expected = " ".join(f"<code>{html.escape(item)}</code>" for item in case.expected_findings)
         if case.expects_error_path_findings:
@@ -614,6 +653,7 @@ def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
     .card.reference { border-top: .35rem solid var(--ref); }
     .card.fixed { border-top: .35rem solid var(--ok); }
     .card.open { border-top: .35rem solid var(--bad); }
+    .card.blocked { border-top: .35rem solid #a15c00; }
     .card.findings { border-top: .35rem solid var(--bad); }
     .card.missing { border-top: .35rem solid #a15c00; }
     .card-title { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
@@ -648,7 +688,7 @@ def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
 
   <h2>Progress board</h2>
   <section class="flow">
-    <div class="step"><strong>{fixed}/{total} fixed</strong><br>{open_count} issue labs still open.</div>
+    <div class="step"><strong>{fixed}/{total} fixed</strong><br>{open_count} issue labs still open; {blocked} blocked by missing evidence.</div>
     <div class="step"><strong>How to use it</strong><br>Fix one lab, rebuild if needed, run <code>./lab.sh</code>, and refresh this page.</div>
     <div class="step"><strong>Instructor oracle</strong><br>{html.escape(status)} means the committed broken fixtures still demonstrate the expected issues.</div>
     <div class="step"><strong>Recovery</strong><br>Run <code>./reset-labs.sh --show</code> to preview reset, or <code>./reset-labs.sh --yes</code> to restore fixtures.</div>
@@ -705,6 +745,20 @@ def run_corpus(root: Path, out_dir: Path, args: argparse.Namespace) -> int:
     return completed.returncode
 
 
+def find_p101_doctor(root: Path) -> Path | None:
+    candidates = [
+        root / "../programs/p101-doctor/build-clang-22/p101-doctor",
+        root / "../programs/p101-doctor/build-clang/p101-doctor",
+        root / "../programs/p101-doctor/build-gcc-16/p101-doctor",
+    ]
+    for candidate in candidates:
+        path = candidate.resolve()
+        if path.is_file() and os.access(path, os.X_OK):
+            return path
+    resolved = shutil.which("p101-doctor")
+    return Path(resolved).resolve() if resolved is not None else None
+
+
 def main(argv: list[str]) -> int:
     args = parse_args(argv)
     root = Path(__file__).resolve().parents[1]
@@ -723,6 +777,10 @@ def main(argv: list[str]) -> int:
         print("p101 playground lab: no cases selected", file=sys.stderr)
         return 2
 
+    if find_p101_doctor(root) is None:
+        print("p101 playground lab: p101-doctor is required to judge lab progress; build/install p101-doctor first", file=sys.stderr)
+        return 2
+
     corpus_rc = run_corpus(root, out_dir, args)
 
     (out_dir / "lab.md").write_text(render_markdown(out_dir, cases, corpus_rc), encoding="utf-8")
@@ -733,6 +791,13 @@ def main(argv: list[str]) -> int:
     print(f"Markdown: {out_dir / 'lab.md'}")
     if corpus_rc != 0:
         print(f"Corpus oracle changed; see {out_dir / 'logs' / 'corpus.log'}", file=sys.stderr)
+    fixed, open_count, blocked, total = progress_counts(cases)
+    if blocked > 0:
+        print(f"Lab progress is blocked: {blocked} issue labs are missing evidence", file=sys.stderr)
+        return 2
+    if args.require_all_fixed and open_count > 0:
+        print(f"Lab progress is incomplete: {open_count} of {total} issue labs are still OPEN", file=sys.stderr)
+        return 1
     return corpus_rc if args.strict_corpus else 0
 
 

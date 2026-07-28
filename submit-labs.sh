@@ -49,7 +49,7 @@ echo "==> unit tests"
 ./test.sh
 
 echo "==> lab progress"
-./lab.sh "${lab_args[@]}" -o "$out"
+./lab.sh "${lab_args[@]}" --require-all-fixed -o "$out"
 
 echo "Submission check output: $out"
 echo "Open: $out/index.html"
