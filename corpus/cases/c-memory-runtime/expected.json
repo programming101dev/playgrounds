@@ -1,6 +1,6 @@
 {
   "name": "c-memory-runtime",
-  "lab_order": 1,
+  "lab_order": -2,
   "issue_id": "P101-LAB-001",
   "title": "Track smoke: C memory runtime wrappers",
   "category": "wrapper smoke",

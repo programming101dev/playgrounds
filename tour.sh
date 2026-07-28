@@ -7,7 +7,7 @@
 set -u
 set -o pipefail
 
-cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
 
 out_dir=""
 fuzz_secs=5
@@ -54,11 +54,11 @@ done
 
 timestamp="$(date +%Y%m%d-%H%M%S)"
 if [ -z "$out_dir" ]; then
-  out_dir="/tmp/p101-tool-playground-tour-${timestamp}-$$"
+  out_dir="$(mktemp -d "/tmp/p101-tool-playground-tour-${timestamp}.XXXXXX")"
 fi
 
 mkdir -p "$out_dir"
-out_dir="$(cd "$out_dir" && pwd)"
+out_dir="$(CDPATH= cd -P "$out_dir" && pwd -P)"
 log_dir="$out_dir/logs"
 mkdir -p "$log_dir"
 

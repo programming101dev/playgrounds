@@ -1,7 +1,7 @@
 {
   "name": "orientation",
   "lab_order": -1,
-  "issue_id": "P101-LAB-000",
+  "issue_id": "P101-LAB-ORIENTATION",
   "title": "Orientation: env, err, wrappers, and tools",
   "category": "orientation",
   "tracks": [

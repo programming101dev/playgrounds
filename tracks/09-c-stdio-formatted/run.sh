@@ -3,7 +3,7 @@
 
 set -euo pipefail
 
-track_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+track_dir="$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 cd -- "${track_dir}"
 
 compiler="${CC:-clang}"

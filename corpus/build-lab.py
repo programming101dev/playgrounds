@@ -714,11 +714,16 @@ def main(argv: list[str]) -> int:
         return 2
     out_dir.mkdir(parents=True)
 
-    corpus_rc = run_corpus(root, out_dir, args)
-    cases = load_cases(root, out_dir / "runs", selected_case_names(args), args.track)
+    try:
+        cases = load_cases(root, out_dir / "runs", selected_case_names(args), args.track)
+    except ValueError as exc:
+        print(f"p101 playground lab: invalid corpus metadata: {exc}", file=sys.stderr)
+        return 2
     if not cases:
         print("p101 playground lab: no cases selected", file=sys.stderr)
         return 2
+
+    corpus_rc = run_corpus(root, out_dir, args)
 
     (out_dir / "lab.md").write_text(render_markdown(out_dir, cases, corpus_rc), encoding="utf-8")
     (out_dir / "index.html").write_text(render_html(out_dir, cases, corpus_rc), encoding="utf-8")

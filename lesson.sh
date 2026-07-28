@@ -3,7 +3,7 @@
 set -u
 set -o pipefail
 
-cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
 
 lesson="all"
 out_dir=""
@@ -33,11 +33,11 @@ while [ "$#" -gt 0 ]; do
 done
 
 if [ -z "$out_dir" ]; then
-  out_dir="/tmp/p101-tool-playground-lesson-$(date +%Y%m%d-%H%M%S)-$$"
+  out_dir="$(mktemp -d "/tmp/p101-tool-playground-lesson-$(date +%Y%m%d-%H%M%S).XXXXXX")"
 fi
 
 mkdir -p "$out_dir/logs"
-out_dir="$(cd "$out_dir" && pwd)"
+out_dir="$(CDPATH= cd -P "$out_dir" && pwd -P)"
 summary="$out_dir/summary.md"
 failures=0
 

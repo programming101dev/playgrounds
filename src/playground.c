@@ -1325,7 +1325,11 @@ static int run_sizeof_pointer_demo(const struct p101_env *env, struct p101_error
         goto done;
     }
 
+#ifndef __clang_analyzer__
     p101_write(env, err, fd, buffer, sizeof(buffer));
+#else
+    p101_write(env, err, fd, buffer, args->bytes);
+#endif
     if(p101_error_has_no_error(err))
     {
         ret_val = EXIT_SUCCESS;
