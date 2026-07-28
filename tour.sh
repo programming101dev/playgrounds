@@ -34,7 +34,8 @@ Options:
 
 Tool paths may be overridden with:
   P101_OBSERVE, P101_RESOURCE_TRACKER, P101_TRACE, P101_REPORT,
-  P101_ERROR_PATH_WALK, P101_WRAPPER_AUDIT, P101_DOCTOR, P101_TOOL_PLAYGROUND
+  P101_ERROR_PATH_WALK, P101_WRAPPER_AUDIT, P101_ERROR_CONTRACT,
+  P101_DOCTOR, P101_TOOL_PLAYGROUND
 USAGE
 }
 
@@ -334,6 +335,7 @@ trace="$(find_tool P101_TRACE "$(last_build_tool ../programs/p101-trace p101-tra
 report="$(find_tool P101_REPORT "$(last_build_tool ../programs/p101-report p101-report)" ../programs/p101-report/build-clang-22/p101-report ../programs/p101-report/build-clang/p101-report ../programs/p101-report/build-gcc-16/p101-report p101-report)"
 walker="$(find_tool P101_ERROR_PATH_WALK "$(last_build_tool ../programs/p101-error-path-walk p101-error-path-walk)" ../programs/p101-error-path-walk/build-clang-22/p101-error-path-walk ../programs/p101-error-path-walk/build-clang/p101-error-path-walk ../programs/p101-error-path-walk/build-gcc-16/p101-error-path-walk ../programs/p101-error-path-walk/build-clang/error-path-walk p101-error-path-walk error-path-walk)"
 wrapper_audit="$(find_tool P101_WRAPPER_AUDIT ../programs/p101-wrapper-audit/p101-wrapper-audit p101-wrapper-audit)"
+error_contract="$(find_tool P101_ERROR_CONTRACT "$(last_build_tool ../programs/p101-error-contract p101-error-contract)" ../programs/p101-error-contract/build-clang-22/p101-error-contract ../programs/p101-error-contract/build-clang/p101-error-contract ../programs/p101-error-contract/build-gcc-16/p101-error-contract p101-error-contract)"
 module_map="$(find_tool P101_MODULE_MAP "$(last_build_tool ../programs/p101-module-map p101-module-map)" ../programs/p101-module-map/build-clang-22/p101-module-map ../programs/p101-module-map/build-clang/p101-module-map ../programs/p101-module-map/build-gcc-16/p101-module-map p101-module-map)"
 doctor="$(find_tool P101_DOCTOR "$(last_build_tool ../programs/p101-doctor p101-doctor)" ../programs/p101-doctor/build-clang-22/p101-doctor ../programs/p101-doctor/build-clang/p101-doctor ../programs/p101-doctor/build-gcc-16/p101-doctor p101-doctor)"
 
@@ -360,11 +362,11 @@ else
   run_logged "fault walk" "$log_dir/fault-walk.log" "0 1" "$walker" -n "$fault_count" -l "$out_dir/fault-walk/fault" -O "$observe" -r "$tracker" -t "$trace" -p "$report" -- "$playground" -s fault-lab -o "$out_dir/fault-lab-output.txt" || true
 fi
 
-if [ -z "$playground" ] || [ -z "$doctor" ] || [ -z "$wrapper_audit" ] || [ -z "$module_map" ] || [ -z "$observe" ] || [ -z "$walker" ] || [ -z "$tracker" ] || [ -z "$trace" ] || [ -z "$report" ]; then
-  record "SKIP" "doctor full source audit" "missing: $(missing_tools p101-tool-playground "$playground" p101-doctor "$doctor" p101-wrapper-audit "$wrapper_audit" p101-module-map "$module_map" p101-observe "$observe" p101-error-path-walk "$walker" p101-resource-tracker "$tracker" p101-trace "$trace" p101-report "$report")"
+if [ -z "$playground" ] || [ -z "$doctor" ] || [ -z "$wrapper_audit" ] || [ -z "$error_contract" ] || [ -z "$module_map" ] || [ -z "$observe" ] || [ -z "$walker" ] || [ -z "$tracker" ] || [ -z "$trace" ] || [ -z "$report" ]; then
+  record "SKIP" "doctor full source audit" "missing: $(missing_tools p101-tool-playground "$playground" p101-doctor "$doctor" p101-wrapper-audit "$wrapper_audit" p101-error-contract "$error_contract" p101-module-map "$module_map" p101-observe "$observe" p101-error-path-walk "$walker" p101-resource-tracker "$tracker" p101-trace "$trace" p101-report "$report")"
 else
   reset_child_dir "$out_dir/doctor"
-  run_logged "doctor full source audit" "$log_dir/doctor.log" "0 1" "$doctor" -o "$out_dir/doctor" -s src -n "$fault_count" -A "$wrapper_audit" -M "$module_map" -O "$observe" -W "$walker" -r "$tracker" -t "$trace" -p "$report" -- "$playground" -s clean-file -o "$out_dir/doctor-target-output.txt" || true
+  run_logged "doctor full source audit" "$log_dir/doctor.log" "0 1" "$doctor" -o "$out_dir/doctor" -s src -n "$fault_count" -A "$wrapper_audit" -E "$error_contract" -M "$module_map" -O "$observe" -W "$walker" -r "$tracker" -t "$trace" -p "$report" -- "$playground" -s clean-file -o "$out_dir/doctor-target-output.txt" || true
 fi
 
 append_summary_footer
