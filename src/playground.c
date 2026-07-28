@@ -585,9 +585,17 @@ static int run_c_memory_runtime_demo(const struct p101_env *env, struct p101_err
     {
         goto done;
     }
+    /*
+     * These wrappers intentionally mirror the standard div-family API, whose
+     * result type is an aggregate. Keep the suppression local so the warning
+     * still protects the rest of the playground code.
+     */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Waggregate-return"
     div_result   = p101_div(env, C_MEMORY_DIV_NUMERATOR, C_MEMORY_DIV_DENOMINATOR);
     ldiv_result  = p101_ldiv(env, C_MEMORY_DIV_NUMERATOR, C_MEMORY_DIV_DENOMINATOR);
     lldiv_result = p101_lldiv(env, C_MEMORY_DIV_NUMERATOR, C_MEMORY_DIV_DENOMINATOR);
+#pragma GCC diagnostic pop
     if(div_result.quot != C_MEMORY_EXPECTED_QUOTIENT || ldiv_result.rem != C_MEMORY_EXPECTED_REMAINDER || lldiv_result.quot != C_MEMORY_EXPECTED_QUOTIENT)
     {
         P101_ERROR_RAISE_USER(err, "The div/ldiv/lldiv smoke check failed.", ERR_SCENARIO_FAILURE);
