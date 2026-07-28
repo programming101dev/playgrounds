@@ -2,7 +2,7 @@
 # reset-labs.sh — restore the committed p101-tool-playground lab fixtures.
 
 set -euo pipefail
-CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
 
 usage() {
   cat <<'USAGE'

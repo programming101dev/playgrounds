@@ -2,7 +2,7 @@
 # submit-labs.sh — student-facing pre-submission checks for the playground labs.
 
 set -euo pipefail
-CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
 
 out="/tmp/p101-tool-playground-submit"
 lab_args=()

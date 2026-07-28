@@ -3,7 +3,7 @@
 set -u
 set -o pipefail
 
-CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" || exit 1
 
 lesson="all"
 out_dir=""
@@ -37,7 +37,7 @@ if [ -z "$out_dir" ]; then
 fi
 
 mkdir -p "$out_dir/logs"
-out_dir="$(CDPATH= cd -P "$out_dir" && pwd -P)"
+out_dir="$(CDPATH='' cd -P "$out_dir" && pwd -P)"
 summary="$out_dir/summary.md"
 failures=0
 
@@ -45,7 +45,7 @@ find_tool() {
   env_name="$1"
   shift
 
-  eval "configured=\${$env_name:-}"
+  configured="$(printenv "$env_name" 2>/dev/null || true)"
   if [ -n "$configured" ]; then
     if [ -x "$configured" ] || command -v "$configured" >/dev/null 2>&1; then
       printf '%s\n' "$configured"
@@ -84,10 +84,12 @@ run_step() {
   "$@" >> "$log" 2>&1
   rc=$?
 
-  if [ "$expected_rc" = "*" ] || [ "$rc" -eq "$expected_rc" ]; then
-    printf '| PASS | %s | [log](./logs/%s) |\n' "$title" "$(basename "$log")" >> "$summary"
-    return 0
-  fi
+  for accepted_rc in $expected_rc; do
+    if [ "$rc" -eq "$accepted_rc" ]; then
+      printf '| PASS | %s | [log](./logs/%s) |\n' "$title" "$(basename "$log")" >> "$summary"
+      return 0
+    fi
+  done
 
   printf '| FAIL | %s expected exit %s, got %s | [log](./logs/%s) |\n' "$title" "$expected_rc" "$rc" "$(basename "$log")" >> "$summary"
   return 1
@@ -104,6 +106,25 @@ assert_contains() {
   fi
 
   printf '| FAIL | %s missing `%s` | [%s](./%s) |\n' "$title" "$pattern" "$(basename "$file")" "${file#"$out_dir"/}" >> "$summary"
+  return 1
+}
+
+assert_exists() {
+  title="$1"
+  path="$2"
+  if [ -d "$path" ]; then
+    if ! find "$path" -mindepth 1 -print -quit | grep -q .; then
+      printf '| FAIL | %s | empty directory `%s` |\n' "$title" "$path" >> "$summary"
+      return 1
+    fi
+  elif [ ! -e "$path" ]; then
+    printf '| FAIL | %s | missing `%s` |\n' "$title" "$path" >> "$summary"
+    return 1
+  fi
+  if [ -e "$path" ]; then
+    printf '| PASS | %s | [%s](./%s) |\n' "$title" "$(basename "$path")" "${path#"$out_dir"/}" >> "$summary"
+    return 0
+  fi
   return 1
 }
 
@@ -131,8 +152,9 @@ need_runtime_tools() {
 
 do_wrappers() {
   if [ -z "$wrapper_audit" ]; then
-    printf '| SKIP | wrapper boundary | p101-wrapper-audit not found |\n' >> "$summary"
-    return 0
+    printf '| FAIL | wrapper boundary | p101-wrapper-audit not found |\n' >> "$summary"
+    failures=1
+    return 1
   fi
   run_step "wrapper boundary audit" "$out_dir/logs/wrappers.log" 0 "$wrapper_audit" src include || failures=1
   assert_contains "wrapper audit produced a summary" "$out_dir/logs/wrappers.log" "p101-wrapper-audit summary" || failures=1
@@ -141,8 +163,9 @@ do_wrappers() {
 
 do_fd_leak() {
   if ! need_runtime_tools; then
-    printf '| SKIP | fd leak observation | runtime tools missing |\n' >> "$summary"
-    return 0
+    printf '| FAIL | fd leak observation | runtime tools missing |\n' >> "$summary"
+    failures=1
+    return 1
   fi
   run_step "fd leak observation" "$out_dir/logs/fd-leak.log" 1 "$observe" -o "$out_dir/fd-leak" -r "$tracker" -t "$trace" -p "$report" -- "$playground" -s fd-leak -o "$out_dir/fd-leak-output.txt" || failures=1
   assert_contains "fd leak is counted" "$out_dir/fd-leak/resource-report.json" "\"fd_leaks\"[[:space:]]*:[[:space:]]*[1-9]" || failures=1
@@ -150,18 +173,21 @@ do_fd_leak() {
 
 do_error_path() {
   if ! need_runtime_tools || [ -z "$walker" ]; then
-    printf '| SKIP | error path walk | runtime tools missing |\n' >> "$summary"
-    return 0
+    printf '| FAIL | error path walk | runtime tools missing |\n' >> "$summary"
+    failures=1
+    return 1
   fi
   mkdir -p "$out_dir/fault-walk"
-  run_step "error path walk" "$out_dir/logs/error-path.log" "*" "$walker" -n 8 -l "$out_dir/fault-walk/case" -O "$observe" -r "$tracker" -t "$trace" -p "$report" -- "$playground" -s fault-lab -o "$out_dir/fault-output.txt" || failures=1
+  run_step "error path walk" "$out_dir/logs/error-path.log" "0 1" "$walker" -n 8 -l "$out_dir/fault-walk/case" -O "$observe" -r "$tracker" -t "$trace" -p "$report" -- "$playground" -s fault-lab -o "$out_dir/fault-output.txt" || failures=1
   assert_contains "fault walk produced evidence" "$out_dir/logs/error-path.log" "fault|case|finding|leak" || failures=1
+  assert_exists "fault walk produced case artifacts" "$out_dir/fault-walk" || failures=1
 }
 
 do_module_split() {
   if [ -z "$module_map" ]; then
-    printf '| SKIP | module split map | p101-module-map not found |\n' >> "$summary"
-    return 0
+    printf '| FAIL | module split map | p101-module-map not found |\n' >> "$summary"
+    failures=1
+    return 1
   fi
   run_step "module split map" "$out_dir/logs/module-map.log" 0 "$module_map" -o "$out_dir/module-map.md" src include || failures=1
   assert_contains "module map has structure" "$out_dir/module-map.md" "Modules|Teaching notes" || failures=1
@@ -177,7 +203,6 @@ case "$lesson" in
   wrappers) do_wrappers ;;
   fd-leak) do_fd_leak ;;
   error-path) do_error_path ;;
-  module-split) do_module_split ;;
   *) echo "Unknown lesson: $lesson" >&2; usage; exit 2 ;;
 esac
 

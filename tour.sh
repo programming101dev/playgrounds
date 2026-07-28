@@ -7,11 +7,12 @@
 set -u
 set -o pipefail
 
-CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" || exit 1
 
 out_dir=""
 fuzz_secs=5
 fault_count=8
+cc="clang"
 do_quality=1
 do_coverage=1
 do_fuzz=1
@@ -27,6 +28,7 @@ Options:
                    Default: /tmp/p101-tool-playground-tour-<timestamp>-<pid>
   -t <seconds>    Fuzz smoke budget. Default: 5.
   -n <count>      Fault-injection cases for p101-error-path-walk. Default: 8.
+  -c <cc>         C compiler used by quality/coverage builds. Default: clang.
   --skip-quality  Skip build/test/fuzz/coverage and only run runtime demos.
   --skip-coverage Skip coverage generation.
   --skip-fuzz     Skip fuzz smoke.
@@ -45,6 +47,7 @@ while [ $# -gt 0 ]; do
     -o) out_dir="${2:?}"; shift 2 ;;
     -t) fuzz_secs="${2:?}"; shift 2 ;;
     -n) fault_count="${2:?}"; shift 2 ;;
+    -c) cc="${2:?}"; shift 2 ;;
     --skip-quality) do_quality=0; shift ;;
     --skip-coverage) do_coverage=0; shift ;;
     --skip-fuzz) do_fuzz=0; shift ;;
@@ -58,7 +61,7 @@ if [ -z "$out_dir" ]; then
 fi
 
 mkdir -p "$out_dir"
-out_dir="$(CDPATH= cd -P "$out_dir" && pwd -P)"
+out_dir="$(CDPATH='' cd -P "$out_dir" && pwd -P)"
 log_dir="$out_dir/logs"
 mkdir -p "$log_dir"
 
@@ -95,7 +98,7 @@ find_tool() {
   env_name="$1"
   shift
 
-  eval "configured=\${$env_name:-}"
+  configured="$(printenv "$env_name" 2>/dev/null || true)"
   if [ -n "$configured" ]; then
     if [ -x "$configured" ] || command -v "$configured" >/dev/null 2>&1; then
       printf '%s\n' "$configured"
@@ -166,9 +169,17 @@ run_logged() {
 }
 
 copy_coverage_report() {
-  if [ -d coverage-clang ]; then
+  coverage_dir=""
+  if [ -f .last-build-dir ]; then
+    build_dir="$(cat .last-build-dir)"
+    case "$build_dir" in
+      build-*) coverage_dir="coverage-${build_dir#build-}" ;;
+      *) coverage_dir="coverage" ;;
+    esac
+  fi
+  if [ -n "$coverage_dir" ] && [ -d "$coverage_dir" ]; then
     rm -rf "$out_dir/coverage"
-    cp -R coverage-clang "$out_dir/coverage"
+    cp -R "$coverage_dir" "$out_dir/coverage"
   fi
 }
 
@@ -299,28 +310,28 @@ write_summary_header
 echo "p101-tool-playground tour output: $out_dir"
 
 if [ "$do_quality" -eq 1 ]; then
-  run_logged "configure clang build" "$log_dir/configure.log" "0" ./change-compiler.sh -c clang || true
+  run_logged "configure quality build" "$log_dir/configure.log" "0" ./change-compiler.sh -c "$cc" || true
   run_logged "strict build" "$log_dir/build.log" "0" ./build.sh -q || true
   run_logged "unit tests" "$log_dir/tests.log" "0" ./test.sh || true
 
   if [ "$do_fuzz" -eq 1 ] && [ -x ./fuzz.sh ] && ./fuzz.sh --can-fuzz >/dev/null 2>&1; then
     run_logged "fuzz smoke" "$log_dir/fuzz.log" "0" ./fuzz.sh -t "$fuzz_secs" || true
   elif [ "$do_fuzz" -eq 1 ]; then
-    record "SKIP" "fuzz smoke" "no fuzzer-capable clang found"
+    record "FAIL" "fuzz smoke" "no fuzzer-capable clang found"
   else
     record "SKIP" "fuzz smoke" "--skip-fuzz"
   fi
 
   if [ "$do_coverage" -eq 1 ] && [ -x ./coverage-report.sh ] && command -v gcovr >/dev/null 2>&1; then
-    run_logged "configure coverage build" "$log_dir/configure-coverage.log" "0" ./change-compiler.sh -c clang --coverage || true
+    run_logged "configure coverage build" "$log_dir/configure-coverage.log" "0" ./change-compiler.sh -c "$cc" --coverage || true
     run_logged "coverage build" "$log_dir/build-coverage.log" "0" ./build.sh -q || true
     run_logged "coverage tests" "$log_dir/tests-coverage.log" "0" ./test.sh --coverage || true
     run_logged "coverage report" "$log_dir/coverage.log" "0" ./coverage-report.sh --no-open --min 1 -- -s tour || true
     copy_coverage_report
   elif [ "$do_coverage" -eq 1 ] && [ ! -x ./coverage-report.sh ]; then
-    record "SKIP" "coverage report" "coverage-report.sh not executable"
+    record "FAIL" "coverage report" "coverage-report.sh not executable"
   elif [ "$do_coverage" -eq 1 ]; then
-    record "SKIP" "coverage report" "gcovr not found"
+    record "FAIL" "coverage report" "gcovr not found"
   else
     record "SKIP" "coverage report" "--skip-coverage"
   fi
@@ -342,7 +353,7 @@ doctor="$(find_tool P101_DOCTOR "$(last_build_tool ../programs/p101-doctor p101-
 if [ -z "$playground" ]; then
   record "FAIL" "locate playground binary" "run ./build.sh first"
 elif [ -z "$observe" ] || [ -z "$tracker" ] || [ -z "$trace" ] || [ -z "$report" ]; then
-  record "SKIP" "observed runtime demos" "missing: $(missing_tools p101-observe "$observe" p101-resource-tracker "$tracker" p101-trace "$trace" p101-report "$report")"
+  record "FAIL" "observed runtime demos" "missing: $(missing_tools p101-observe "$observe" p101-resource-tracker "$tracker" p101-trace "$trace" p101-report "$report")"
 else
   reset_child_dir "$out_dir/observed-tour"
   reset_child_dir "$out_dir/observed-fd-leak"
@@ -355,7 +366,7 @@ else
 fi
 
 if [ -z "$playground" ] || [ -z "$walker" ] || [ -z "$observe" ] || [ -z "$tracker" ] || [ -z "$trace" ] || [ -z "$report" ]; then
-  record "SKIP" "fault walk" "missing: $(missing_tools p101-tool-playground "$playground" p101-error-path-walk "$walker" p101-observe "$observe" p101-resource-tracker "$tracker" p101-trace "$trace" p101-report "$report")"
+  record "FAIL" "fault walk" "missing: $(missing_tools p101-tool-playground "$playground" p101-error-path-walk "$walker" p101-observe "$observe" p101-resource-tracker "$tracker" p101-trace "$trace" p101-report "$report")"
 else
   reset_child_dir "$out_dir/fault-walk"
   mkdir -p "$out_dir/fault-walk"
@@ -363,7 +374,7 @@ else
 fi
 
 if [ -z "$playground" ] || [ -z "$doctor" ] || [ -z "$wrapper_audit" ] || [ -z "$error_contract" ] || [ -z "$module_map" ] || [ -z "$observe" ] || [ -z "$walker" ] || [ -z "$tracker" ] || [ -z "$trace" ] || [ -z "$report" ]; then
-  record "SKIP" "doctor full source audit" "missing: $(missing_tools p101-tool-playground "$playground" p101-doctor "$doctor" p101-wrapper-audit "$wrapper_audit" p101-error-contract "$error_contract" p101-module-map "$module_map" p101-observe "$observe" p101-error-path-walk "$walker" p101-resource-tracker "$tracker" p101-trace "$trace" p101-report "$report")"
+  record "FAIL" "doctor full source audit" "missing: $(missing_tools p101-tool-playground "$playground" p101-doctor "$doctor" p101-wrapper-audit "$wrapper_audit" p101-error-contract "$error_contract" p101-module-map "$module_map" p101-observe "$observe" p101-error-path-walk "$walker" p101-resource-tracker "$tracker" p101-trace "$trace" p101-report "$report")"
 else
   reset_child_dir "$out_dir/doctor"
   run_logged "doctor full source audit" "$log_dir/doctor.log" "0 1" "$doctor" -o "$out_dir/doctor" -s src -n "$fault_count" -A "$wrapper_audit" -E "$error_contract" -M "$module_map" -O "$observe" -W "$walker" -r "$tracker" -t "$trace" -p "$report" -- "$playground" -s clean-file -o "$out_dir/doctor-target-output.txt" || true
