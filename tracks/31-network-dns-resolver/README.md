@@ -4,7 +4,7 @@
 
 Track number: `31`
 
-Wrapper count: `33`
+Wrapper count: `0`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -24,7 +24,6 @@ Resolver state, DNS message parsing/packing, compressed names, and resolver vali
 
 ## Domains
 
-- `network/dns-resolver` (33 wrappers)
 
 ## Suggested lesson arc
 
@@ -35,39 +34,3 @@ Resolver state, DNS message parsing/packing, compressed names, and resolver vali
 5. Add one regression test or corpus expectation before moving on.
 
 ## Wrapper inventory
-
-### `network/dns-resolver`
-
-- `p101_b64_ntop`
-- `p101_b64_pton`
-- `p101_dn_comp`
-- `p101_dn_expand`
-- `p101_dn_skipname`
-- `p101_ns_get16`
-- `p101_ns_get32`
-- `p101_ns_initparse`
-- `p101_ns_msg_getflag`
-- `p101_ns_name_compress`
-- `p101_ns_name_ntol`
-- `p101_ns_name_ntop`
-- `p101_ns_name_pack`
-- `p101_ns_name_pton`
-- `p101_ns_name_rollback`
-- `p101_ns_name_skip`
-- `p101_ns_name_uncompress`
-- `p101_ns_name_unpack`
-- `p101_ns_parserr`
-- `p101_ns_put16`
-- `p101_ns_put32`
-- `p101_ns_skiprr`
-- `p101_res_dnok`
-- `p101_res_hnok`
-- `p101_res_mailok`
-- `p101_res_nclose`
-- `p101_res_ninit`
-- `p101_res_nmkquery`
-- `p101_res_nquery`
-- `p101_res_nquerydomain`
-- `p101_res_nsearch`
-- `p101_res_nsend`
-- `p101_res_ownok`

@@ -6,27 +6,25 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const char *const wrapper_functions[] = {
-    "p101_fgetc",
-    "p101_fgets",
-    "p101_fputc",
-    "p101_fputs",
-    "p101_getc",
-    "p101_getchar",
-    "p101_putc",
-    "p101_putchar",
-    "p101_puts",
-    "p101_ungetc",
-    "p101_getc_unlocked",
-    "p101_getchar_unlocked",
-    "p101_putc_unlocked",
-    "p101_putchar_unlocked",
-    "p101_clearerr",
-    "p101_feof",
-    "p101_ferror",
-    "p101_fflush",
-    "p101_setvbuf"
-};
+static const char *const wrapper_functions[] = {"p101_fgetc",
+                                                "p101_fgets",
+                                                "p101_fputc",
+                                                "p101_fputs",
+                                                "p101_getc",
+                                                "p101_getchar",
+                                                "p101_putc",
+                                                "p101_putchar",
+                                                "p101_puts",
+                                                "p101_ungetc",
+                                                "p101_getc_unlocked",
+                                                "p101_getchar_unlocked",
+                                                "p101_putc_unlocked",
+                                                "p101_putchar_unlocked",
+                                                "p101_clearerr",
+                                                "p101_feof",
+                                                "p101_ferror",
+                                                "p101_fflush",
+                                                "p101_setvbuf"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 

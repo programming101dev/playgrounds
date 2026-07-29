@@ -6,20 +6,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const char *const wrapper_functions[] = {
-    "p101_cexp",
-    "p101_cexpf",
-    "p101_cexpl",
-    "p101_clog",
-    "p101_clogf",
-    "p101_clogl",
-    "p101_cpow",
-    "p101_cpowf",
-    "p101_cpowl",
-    "p101_csqrt",
-    "p101_csqrtf",
-    "p101_csqrtl"
-};
+static const char *const wrapper_functions[] = {"p101_cexp", "p101_cexpf", "p101_cexpl", "p101_clog", "p101_clogf", "p101_clogl", "p101_cpow", "p101_cpowf", "p101_cpowl", "p101_csqrt", "p101_csqrtf", "p101_csqrtl"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 

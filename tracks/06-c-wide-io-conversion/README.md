@@ -4,7 +4,7 @@
 
 Track number: `06`
 
-Wrapper count: `33`
+Wrapper count: `39`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -26,7 +26,7 @@ Wide-character I/O, multibyte conversion state, numeric conversion, and locale-s
 
 - `c/wide-conversion` (16 wrappers)
 - `c/wide-conversion-extensions` (2 wrappers)
-- `c/wide-stdio` (15 wrappers)
+- `c/wide-stdio` (21 wrappers)
 
 ## Suggested lesson arc
 
@@ -68,10 +68,14 @@ Wide-character I/O, multibyte conversion state, numeric conversion, and locale-s
 - `p101_fgetws`
 - `p101_fputwc`
 - `p101_fputws`
+- `p101_fwprintf`
+- `p101_fwscanf`
 - `p101_getwc`
 - `p101_getwchar`
 - `p101_putwc`
 - `p101_putwchar`
+- `p101_swprintf`
+- `p101_swscanf`
 - `p101_ungetwc`
 - `p101_vfwprintf`
 - `p101_vfwscanf`
@@ -79,3 +83,5 @@ Wide-character I/O, multibyte conversion state, numeric conversion, and locale-s
 - `p101_vswscanf`
 - `p101_vwprintf`
 - `p101_vwscanf`
+- `p101_wprintf`
+- `p101_wscanf`

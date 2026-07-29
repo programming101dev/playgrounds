@@ -6,42 +6,9 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const char *const wrapper_functions[] = {
-    "p101_wmemchr",
-    "p101_wmemcmp",
-    "p101_wmemcpy",
-    "p101_wmemmove",
-    "p101_wmemset",
-    "p101_fwide",
-    "p101_wcscat",
-    "p101_wcschr",
-    "p101_wcscmp",
-    "p101_wcscoll",
-    "p101_wcscpy",
-    "p101_wcscspn",
-    "p101_wcsftime",
-    "p101_wcslen",
-    "p101_wcsncat",
-    "p101_wcsncmp",
-    "p101_wcsncpy",
-    "p101_wcspbrk",
-    "p101_wcsrchr",
-    "p101_wcsspn",
-    "p101_wcsstr",
-    "p101_wcsxfrm",
-    "p101_open_wmemstream",
-    "p101_wcpcpy",
-    "p101_wcpncpy",
-    "p101_wcscasecmp",
-    "p101_wcscasecmp_l",
-    "p101_wcscoll_l",
-    "p101_wcsdup",
-    "p101_wcsncasecmp",
-    "p101_wcsnlen",
-    "p101_wcswidth",
-    "p101_wcsxfrm_l",
-    "p101_wcwidth"
-};
+static const char *const wrapper_functions[] = {"p101_wmemchr", "p101_wmemcmp",    "p101_wmemcpy",   "p101_wmemmove", "p101_wmemset",     "p101_fwide",   "p101_wcschr",   "p101_wcscmp",    "p101_wcscoll", "p101_wcscspn",         "p101_wcsftime",
+                                                "p101_wcslen",  "p101_wcsncat",    "p101_wcsncmp",   "p101_wcsncpy",  "p101_wcspbrk",     "p101_wcsrchr", "p101_wcsspn",   "p101_wcsstr",    "p101_wcsxfrm", "p101_open_wmemstream", "p101_wcpcpy",
+                                                "p101_wcpncpy", "p101_wcscasecmp", "p101_wcscoll_l", "p101_wcsdup",   "p101_wcsncasecmp", "p101_wcsnlen", "p101_wcswidth", "p101_wcsxfrm_l", "p101_wcwidth"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 

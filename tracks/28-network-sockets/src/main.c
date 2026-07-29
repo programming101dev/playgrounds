@@ -6,20 +6,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const char *const wrapper_functions[] = {
-    "p101_accept",
-    "p101_bind",
-    "p101_connect",
-    "p101_getpeername",
-    "p101_getsockname",
-    "p101_getsockopt",
-    "p101_listen",
-    "p101_setsockopt",
-    "p101_shutdown",
-    "p101_sockatmark",
-    "p101_socket",
-    "p101_socketpair"
-};
+static const char *const wrapper_functions[] = {"p101_accept", "p101_bind", "p101_connect", "p101_getpeername", "p101_getsockname", "p101_getsockopt", "p101_listen", "p101_setsockopt", "p101_shutdown", "p101_sockatmark", "p101_socket", "p101_socketpair"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 

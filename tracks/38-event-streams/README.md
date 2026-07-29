@@ -4,7 +4,7 @@
 
 Track number: `38`
 
-Wrapper count: `49`
+Wrapper count: `30`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -24,10 +24,9 @@ Resource events, call tracing, fault injection, event-log formatting, and observ
 
 ## Domains
 
-- `support/call-tracing` (15 wrappers)
-- `support/event-log-format` (5 wrappers)
-- `support/fault-injection` (7 wrappers)
-- `support/resource-events` (22 wrappers)
+- `support/call-tracing` (12 wrappers)
+- `support/fault-injection` (3 wrappers)
+- `support/resource-events` (15 wrappers)
 
 ## Suggested lesson arc
 
@@ -41,9 +40,6 @@ Resource events, call tracing, fault injection, event-log formatting, and observ
 
 ### `support/call-tracing`
 
-- `p101_env_call_log_observer`
-- `p101_env_call_notify`
-- `p101_env_configure_call_log_from_environment`
 - `p101_env_get_exit_tracer`
 - `p101_env_get_tracer`
 - `p101_env_get_tracer_data`
@@ -57,36 +53,15 @@ Resource events, call tracing, fault injection, event-log formatting, and observ
 - `p101_env_trace_call_exit`
 - `p101_env_trace_exit`
 
-### `support/event-log-format`
-
-- `p101_env_close_owned_resource_log`
-- `p101_env_log_append_char`
-- `p101_env_log_append_field`
-- `p101_env_log_append_text`
-- `p101_env_open_log_from_environment`
-
 ### `support/fault-injection`
 
 - `p101_env_check_fault`
-- `p101_env_configure_fault_from_environment`
 - `p101_env_default_tracer`
-- `p101_env_environment_fault_injector`
-- `p101_env_fault_state_destroy`
-- `p101_env_log_fault_hit`
 - `p101_env_set_fault_injector`
 
 ### `support/resource-events`
 
-- `p101_env_alloc_event_name`
-- `p101_env_alloc_log_observer`
-- `p101_env_alloc_notify`
-- `p101_env_configure_fd_log_from_environment`
 - `p101_env_enable_fd_tracking`
-- `p101_env_exec_fd_log`
-- `p101_env_exec_scan_limit`
-- `p101_env_fd_log_observer`
-- `p101_env_fd_notify`
-- `p101_env_fork_log`
 - `p101_env_report_leaks`
 - `p101_env_set_alloc_log`
 - `p101_env_set_alloc_observer`
@@ -95,7 +70,9 @@ Resource events, call tracing, fault injection, event-log formatting, and observ
 - `p101_env_track_alloc`
 - `p101_env_track_close`
 - `p101_env_track_exec`
+- `p101_env_track_exec_failure`
 - `p101_env_track_fork`
 - `p101_env_track_free`
 - `p101_env_track_open`
 - `p101_env_track_realloc`
+- `p101_env_track_spawn`

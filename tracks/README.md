@@ -8,7 +8,7 @@ areas while still covering every p101 wrapper exactly once.
 
 ## Coverage
 
-- Wrappers covered: `1185`
+- Wrappers covered: `1171`
 - Uncovered wrappers/domains: `0`
 - Track count: `40`
 - Orientation pre-track: `00-p101-orientation`
@@ -19,17 +19,17 @@ areas while still covering every p101 wrapper exactly once.
 | # | Track | Wrappers | Purpose |
 | ---: | --- | ---: | --- |
 | 00 | [`p101-orientation`](00-p101-orientation/README.md) | 0 | Hand-authored pre-track for env, err, wrappers, and tools. |
-| 01 | [`c-memory-runtime`](01-c-memory-runtime/README.md) | 55 | Allocation, process termination, environment variables, sorting/searching helpers, and common stdlib extensions. |
-| 02 | [`c-memory-bytes`](02-c-memory-bytes/README.md) | 7 | Raw byte memory operations and the difference between object bytes and strings. |
+| 01 | [`c-memory-runtime`](01-c-memory-runtime/README.md) | 57 | Allocation, process termination, environment variables, sorting/searching helpers, and common stdlib extensions. |
+| 02 | [`c-memory-bytes`](02-c-memory-bytes/README.md) | 23 | Raw byte memory operations and the difference between object bytes and strings. |
 | 03 | [`c-byte-strings`](03-c-byte-strings/README.md) | 32 | NUL-terminated byte strings, comparisons, searching, collation, and common string extensions. |
 | 04 | [`c-char-classification`](04-c-char-classification/README.md) | 28 | Character classification, case mapping, locale-sensitive predicates, and signed-char pitfalls. |
-| 05 | [`c-wide-strings`](05-c-wide-strings/README.md) | 34 | Wide string copying, comparison, searching, transformation, and wide-memory operations. |
-| 06 | [`c-wide-io-conversion`](06-c-wide-io-conversion/README.md) | 33 | Wide-character I/O, multibyte conversion state, numeric conversion, and locale-sensitive text boundaries. |
+| 05 | [`c-wide-strings`](05-c-wide-strings/README.md) | 31 | Wide string copying, comparison, searching, transformation, and wide-memory operations. |
+| 06 | [`c-wide-io-conversion`](06-c-wide-io-conversion/README.md) | 39 | Wide-character I/O, multibyte conversion state, numeric conversion, and locale-sensitive text boundaries. |
 | 07 | [`c-wide-classification`](07-c-wide-classification/README.md) | 36 | Wide character classification, mapping, and locale-aware wide-character predicates. |
 | 08 | [`c-stdio-streams`](08-c-stdio-streams/README.md) | 30 | Opening, closing, positioning, reading, writing, renaming, temporary files, and stream ownership. |
 | 09 | [`c-stdio-formatted`](09-c-stdio-formatted/README.md) | 13 | printf/scanf families, varargs wrappers, format checking, and formatted conversion hazards. |
 | 10 | [`c-stdio-character-buffering`](10-c-stdio-character-buffering/README.md) | 19 | Character/line I/O, pushback, EOF/error state, flushing, and buffering mode. |
-| 11 | [`c-conversion-parsing`](11-c-conversion-parsing/README.md) | 41 | Integer parsing, inttypes helpers, option parsing, and defensive conversion practice. |
+| 11 | [`c-conversion-parsing`](11-c-conversion-parsing/README.md) | 45 | Integer parsing, inttypes helpers, option parsing, and defensive conversion practice. |
 | 12 | [`c-math-trig`](12-c-math-trig/README.md) | 39 | Trigonometric and hyperbolic math families, including float/double/long double variants. |
 | 13 | [`c-math-exp-log-power`](13-c-math-exp-log-power/README.md) | 48 | Exponentials, logarithms, roots, powers, and gamma/error-function families. |
 | 14 | [`c-math-rounding`](14-c-math-rounding/README.md) | 54 | Rounding, remainder, scaling, decomposition, and integer-result math APIs. |
@@ -37,28 +37,28 @@ areas while still covering every p101 wrapper exactly once.
 | 16 | [`c-complex-components`](16-c-complex-components/README.md) | 18 | Complex absolute value, phase, real/imaginary access, conjugation, and projection helpers. |
 | 17 | [`c-complex-trig`](17-c-complex-trig/README.md) | 30 | Complex trigonometric and hyperbolic function families. |
 | 18 | [`c-complex-exp-log-power`](18-c-complex-exp-log-power/README.md) | 12 | Complex exponentials, logarithms, powers, and square roots. |
-| 19 | [`c-time-locale-control`](19-c-time-locale-control/README.md) | 34 | Time, locale, atomics, setjmp/signal-style control flow, and their common extensions. |
+| 19 | [`c-time-locale-control`](19-c-time-locale-control/README.md) | 51 | Time, locale, atomics, setjmp/signal-style control flow, and their common extensions. |
 | 20 | [`file-io`](20-file-io/README.md) | 26 | File descriptors, open/read/write/close, vectored I/O, short reads/writes, async I/O, descriptor ownership, and cleanup. |
 | 21 | [`filesystem-paths`](21-filesystem-paths/README.md) | 34 | Paths, permissions, stat, links, directories-as-filesystem-objects, timestamps, and filesystem mutation. |
 | 22 | [`directories-patterns`](22-directories-patterns/README.md) | 19 | Directory traversal, glob/fnmatch/wordexp, path decomposition, and tree walking. |
-| 23 | [`processes-signals`](23-processes-signals/README.md) | 51 | fork, exec, wait, spawn, signals, inherited resources, CLOEXEC, and process failure paths. |
+| 23 | [`processes-signals`](23-processes-signals/README.md) | 50 | fork, exec, wait, spawn, signals, inherited resources, CLOEXEC, and process failure paths. |
 | 24 | [`thread-lifecycle`](24-thread-lifecycle/README.md) | 30 | Thread creation, joining, detaching, identity, scheduling hooks, and basic lifecycle ownership. |
 | 25 | [`thread-synchronization`](25-thread-synchronization/README.md) | 38 | Mutexes, condition variables, read/write locks, and synchronization cleanup rules. |
 | 26 | [`thread-state-cancellation`](26-thread-state-cancellation/README.md) | 9 | Thread-local storage, once initialization, cancellation state, cancellation points, and cleanup hazards. |
-| 27 | [`ipc`](27-ipc/README.md) | 21 | POSIX and XSI IPC: message queues, semaphores, shared memory, keys, readiness, cleanup, and permissions. |
+| 27 | [`ipc`](27-ipc/README.md) | 22 | POSIX and XSI IPC: message queues, semaphores, shared memory, keys, readiness, cleanup, and permissions. |
 | 28 | [`network-sockets`](28-network-sockets/README.md) | 12 | socket, bind, listen, accept, connect, socketpair, shutdown, socket options, and socket metadata. |
-| 29 | [`network-io-addresses`](29-network-io-addresses/README.md) | 21 | send/recv families, byte order, inet conversion, and network address helper functions. |
+| 29 | [`network-io-addresses`](29-network-io-addresses/README.md) | 23 | send/recv families, byte order, inet conversion, and network address helper functions. |
 | 30 | [`network-names-interfaces`](30-network-names-interfaces/README.md) | 23 | getaddrinfo/getnameinfo, protocol/service databases, interface enumeration, and Ethernet helpers. |
-| 31 | [`network-dns-resolver`](31-network-dns-resolver/README.md) | 33 | Resolver state, DNS message parsing/packing, compressed names, and resolver validation helpers. |
-| 32 | [`terminals-users`](32-terminals-users/README.md) | 46 | Terminal control, user/group lookup, identity APIs, tty databases, utmpx records, and interactive program boundaries. |
-| 33 | [`resources-platform`](33-resources-platform/README.md) | 37 | Resource limits, priorities, clocks/time, memory mapping/locking, sysctl, mounts, fstab, host/system configuration, and platform administration APIs. |
+| 31 | [`network-dns-resolver`](31-network-dns-resolver/README.md) | 0 | Resolver state, DNS message parsing/packing, compressed names, and resolver validation helpers. |
+| 32 | [`terminals-users`](32-terminals-users/README.md) | 42 | Terminal control, user/group lookup, identity APIs, tty databases, utmpx records, and interactive program boundaries. |
+| 33 | [`resources-platform`](33-resources-platform/README.md) | 28 | Resource limits, priorities, clocks/time, memory mapping/locking, host/system configuration, and portable platform administration APIs. |
 | 34 | [`logging-diagnostics`](34-logging-diagnostics/README.md) | 12 | syslog, err/warn-style diagnostics, formatted messages, and teachable logging/error-reporting practice. |
 | 35 | [`runtime-services`](35-runtime-services/README.md) | 36 | Dynamic loading, regex, iconv, locale/message catalogs, legacy DBM, and libc search structures. |
-| 36 | [`error-handling`](36-error-handling/README.md) | 47 | Error objects, errno mapping, assertions/check helpers, reporting, and failure-aware control flow. |
-| 37 | [`environment-lifecycle`](37-environment-lifecycle/README.md) | 10 | Creating, configuring, labeling, duplicating, and destroying p101 environments. |
-| 38 | [`event-streams`](38-event-streams/README.md) | 49 | Resource events, call tracing, fault injection, event-log formatting, and observer configuration. |
+| 36 | [`error-handling`](36-error-handling/README.md) | 50 | Error objects, errno mapping, assertions/check helpers, reporting, and failure-aware control flow. |
+| 37 | [`environment-lifecycle`](37-environment-lifecycle/README.md) | 14 | Creating, configuring, labeling, duplicating, and destroying p101 environments. |
+| 38 | [`event-streams`](38-event-streams/README.md) | 30 | Resource events, call tracing, fault injection, event-log formatting, and observer configuration. |
 | 39 | [`fsm`](39-fsm/README.md) | 17 | Finite-state-machine structure, state transitions, callbacks, invalid transitions, and lifecycle ownership. |
-| 40 | [`tool-building`](40-tool-building/README.md) | 4 | C facts, small analyzers, support utilities, and writing tools that reason about p101 projects. |
+| 40 | [`tool-building`](40-tool-building/README.md) | 4 | C facts, small analyzers, and writing tools that reason about p101 projects. |
 
 ## How to use this
 

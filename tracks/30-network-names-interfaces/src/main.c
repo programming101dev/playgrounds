@@ -6,31 +6,9 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const char *const wrapper_functions[] = {
-    "p101_ether_aton",
-    "p101_ether_hostton",
-    "p101_ether_line",
-    "p101_ether_ntoa",
-    "p101_ether_ntohost",
-    "p101_freeifaddrs",
-    "p101_getifaddrs",
-    "p101_if_freenameindex",
-    "p101_if_indextoname",
-    "p101_if_nameindex",
-    "p101_if_nametoindex",
-    "p101_endhostent",
-    "p101_endnetent",
-    "p101_endprotoent",
-    "p101_endservent",
-    "p101_freeaddrinfo",
-    "p101_gai_strerror",
-    "p101_getaddrinfo",
-    "p101_getnameinfo",
-    "p101_sethostent",
-    "p101_setnetent",
-    "p101_setprotoent",
-    "p101_setservent"
-};
+static const char *const wrapper_functions[] = {"p101_ether_aton",     "p101_ether_hostton", "p101_ether_line",     "p101_ether_ntoa", "p101_ether_ntohost", "p101_freeifaddrs", "p101_getifaddrs", "p101_if_freenameindex",
+                                                "p101_if_indextoname", "p101_if_nameindex",  "p101_if_nametoindex", "p101_endhostent", "p101_endnetent",     "p101_endprotoent", "p101_endservent", "p101_freeaddrinfo",
+                                                "p101_gai_strerror",   "p101_getaddrinfo",   "p101_getnameinfo",    "p101_sethostent", "p101_setnetent",     "p101_setprotoent", "p101_setservent"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 

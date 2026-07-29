@@ -6,38 +6,9 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const char *const wrapper_functions[] = {
-    "p101_cacos",
-    "p101_cacosf",
-    "p101_cacosh",
-    "p101_cacoshf",
-    "p101_cacoshl",
-    "p101_cacosl",
-    "p101_casin",
-    "p101_casinf",
-    "p101_casinh",
-    "p101_casinhf",
-    "p101_casinhl",
-    "p101_casinl",
-    "p101_catan",
-    "p101_catanf",
-    "p101_catanh",
-    "p101_catanhf",
-    "p101_catanhl",
-    "p101_catanl",
-    "p101_ccos",
-    "p101_ccosf",
-    "p101_ccosh",
-    "p101_ccoshf",
-    "p101_csin",
-    "p101_csinf",
-    "p101_csinh",
-    "p101_csinhf",
-    "p101_ctan",
-    "p101_ctanf",
-    "p101_ctanh",
-    "p101_ctanhf"
-};
+static const char *const wrapper_functions[] = {"p101_cacos",   "p101_cacosf", "p101_cacosh", "p101_cacoshf", "p101_cacoshl", "p101_cacosl",  "p101_casin",   "p101_casinf", "p101_casinh", "p101_casinhf",
+                                                "p101_casinhl", "p101_casinl", "p101_catan",  "p101_catanf",  "p101_catanh",  "p101_catanhf", "p101_catanhl", "p101_catanl", "p101_ccos",   "p101_ccosf",
+                                                "p101_ccosh",   "p101_ccoshf", "p101_csin",   "p101_csinf",   "p101_csinh",   "p101_csinhf",  "p101_ctan",    "p101_ctanf",  "p101_ctanh",  "p101_ctanhf"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 

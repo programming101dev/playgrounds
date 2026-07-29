@@ -6,41 +6,10 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const char *const wrapper_functions[] = {
-    "p101_btowc",
-    "p101_mbrlen",
-    "p101_mbrtowc",
-    "p101_mbsinit",
-    "p101_mbsrtowcs",
-    "p101_wcrtomb",
-    "p101_wcsrtombs",
-    "p101_wcstod",
-    "p101_wcstof",
-    "p101_wcstok",
-    "p101_wcstol",
-    "p101_wcstold",
-    "p101_wcstoll",
-    "p101_wcstoul",
-    "p101_wcstoull",
-    "p101_wctob",
-    "p101_mbsnrtowcs",
-    "p101_wcsnrtombs",
-    "p101_fgetwc",
-    "p101_fgetws",
-    "p101_fputwc",
-    "p101_fputws",
-    "p101_getwc",
-    "p101_getwchar",
-    "p101_putwc",
-    "p101_putwchar",
-    "p101_ungetwc",
-    "p101_vfwprintf",
-    "p101_vfwscanf",
-    "p101_vswprintf",
-    "p101_vswscanf",
-    "p101_vwprintf",
-    "p101_vwscanf"
-};
+static const char *const wrapper_functions[] = {"p101_btowc",   "p101_mbrlen",    "p101_mbrtowc",  "p101_mbsinit",   "p101_mbsrtowcs", "p101_wcrtomb",  "p101_wcsrtombs",  "p101_wcstod",     "p101_wcstof",   "p101_wcstok",
+                                                "p101_wcstol",  "p101_wcstold",   "p101_wcstoll",  "p101_wcstoul",   "p101_wcstoull",  "p101_wctob",    "p101_mbsnrtowcs", "p101_wcsnrtombs", "p101_fgetwc",   "p101_fgetws",
+                                                "p101_fputwc",  "p101_fputws",    "p101_fwprintf", "p101_fwscanf",   "p101_getwc",     "p101_getwchar", "p101_putwc",      "p101_putwchar",   "p101_swprintf", "p101_swscanf",
+                                                "p101_ungetwc", "p101_vfwprintf", "p101_vfwscanf", "p101_vswprintf", "p101_vswscanf",  "p101_vwprintf", "p101_vwscanf",    "p101_wprintf",    "p101_wscanf"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 

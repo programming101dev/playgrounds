@@ -3,26 +3,19 @@
   "title": "resources platform",
   "order": 33,
   "generated": true,
-  "wrapper_count": 37,
-  "purpose": "Resource limits, priorities, clocks/time, memory mapping/locking, sysctl, mounts, fstab, host/system configuration, and platform administration APIs.",
+  "wrapper_count": 28,
+  "purpose": "Resource limits, priorities, clocks/time, memory mapping/locking, host/system configuration, and portable platform administration APIs.",
   "domains": [
     {
       "name": "systems/platform-admin",
-      "function_count": 8,
+      "function_count": 1,
       "functions": [
-        "p101_endfsent",
-        "p101_getfsent",
-        "p101_getfsfile",
-        "p101_getfsspec",
-        "p101_setfsent",
-        "p101_sysctl",
-        "p101_uname",
-        "p101_unmount"
+        "p101_uname"
       ]
     },
     {
       "name": "systems/resource-time-memory",
-      "function_count": 19,
+      "function_count": 17,
       "functions": [
         "p101_getpriority",
         "p101_getrlimit",
@@ -35,8 +28,6 @@
         "p101_munlock",
         "p101_munlockall",
         "p101_munmap",
-        "p101_ntp_adjtime",
-        "p101_ntp_gettime",
         "p101_posix_madvise",
         "p101_setpriority",
         "p101_setrlimit",

@@ -8,7 +8,7 @@
 enum
 {
     P101_TRACK_INDEX         = 5,
-    P101_TRACK_WRAPPER_COUNT = 34
+    P101_TRACK_WRAPPER_COUNT = 31
 };
 
 #endif /* P101_TRACK_05_C_WIDE_STRINGS_INFO_H */

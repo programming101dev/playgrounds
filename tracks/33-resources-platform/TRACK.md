@@ -4,7 +4,7 @@
 
 ## Goal
 
-Resource limits, priorities, clocks/time, memory mapping/locking, sysctl, mounts, fstab, host/system configuration, and platform administration APIs.
+Resource limits, priorities, clocks/time, memory mapping/locking, host/system configuration, and portable platform administration APIs.
 
 ## Student workflow
 

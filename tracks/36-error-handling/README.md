@@ -4,7 +4,7 @@
 
 Track number: `36`
 
-Wrapper count: `47`
+Wrapper count: `50`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -24,7 +24,7 @@ Error objects, errno mapping, assertions/check helpers, reporting, and failure-a
 
 ## Domains
 
-- `support/assertions` (22 wrappers)
+- `support/assertions` (25 wrappers)
 - `support/error-codes` (1 wrappers)
 - `support/error-core` (24 wrappers)
 
@@ -47,14 +47,17 @@ Error objects, errno mapping, assertions/check helpers, reporting, and failure-a
 - `p101_check_greater_than_double`
 - `p101_check_greater_than_int`
 - `p101_check_greater_than_intmax`
+- `p101_check_greater_than_long_double`
 - `p101_check_greater_than_uintmax`
 - `p101_check_in_range_double`
 - `p101_check_in_range_int`
 - `p101_check_in_range_intmax`
+- `p101_check_in_range_long_double`
 - `p101_check_in_range_uintmax`
 - `p101_check_less_than_double`
 - `p101_check_less_than_int`
 - `p101_check_less_than_intmax`
+- `p101_check_less_than_long_double`
 - `p101_check_less_than_uintmax`
 - `p101_check_not_equals_int`
 - `p101_check_not_equals_intmax`

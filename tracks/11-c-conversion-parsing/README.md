@@ -4,7 +4,7 @@
 
 Track number: `11`
 
-Wrapper count: `41`
+Wrapper count: `45`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -25,7 +25,7 @@ Integer parsing, inttypes helpers, option parsing, and defensive conversion prac
 ## Domains
 
 - `c/cli-parsing` (3 wrappers)
-- `c/conversion` (32 wrappers)
+- `c/conversion` (36 wrappers)
 - `c/inttypes` (6 wrappers)
 
 ## Suggested lesson arc
@@ -50,28 +50,32 @@ Integer parsing, inttypes helpers, option parsing, and defensive conversion prac
 - `p101_parse_int`
 - `p101_parse_int16_t`
 - `p101_parse_int32_t`
+- `p101_parse_int64_t`
 - `p101_parse_int8_t`
 - `p101_parse_long`
 - `p101_parse_long_long`
 - `p101_parse_negative_char`
 - `p101_parse_negative_int`
-- `p101_parse_negative_int16_t_short`
-- `p101_parse_negative_int32_t_int`
-- `p101_parse_negative_int8_t_char`
+- `p101_parse_negative_int16_t`
+- `p101_parse_negative_int32_t`
+- `p101_parse_negative_int64_t`
+- `p101_parse_negative_int8_t`
 - `p101_parse_negative_long`
 - `p101_parse_negative_long_long`
 - `p101_parse_negative_short`
 - `p101_parse_positive_char`
 - `p101_parse_positive_int`
-- `p101_parse_positive_int16_t_short`
-- `p101_parse_positive_int32_t_int`
-- `p101_parse_positive_int8_t_char`
+- `p101_parse_positive_int16_t`
+- `p101_parse_positive_int32_t`
+- `p101_parse_positive_int64_t`
+- `p101_parse_positive_int8_t`
 - `p101_parse_positive_long`
 - `p101_parse_positive_long_long`
 - `p101_parse_positive_short`
 - `p101_parse_short`
 - `p101_parse_uint16_t`
 - `p101_parse_uint32_t`
+- `p101_parse_uint64_t`
 - `p101_parse_uint8_t`
 - `p101_parse_unsigned_char`
 - `p101_parse_unsigned_int`

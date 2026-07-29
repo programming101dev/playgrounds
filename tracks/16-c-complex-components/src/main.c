@@ -6,26 +6,8 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const char *const wrapper_functions[] = {
-    "p101_cabs",
-    "p101_cabsf",
-    "p101_cabsl",
-    "p101_carg",
-    "p101_cargf",
-    "p101_cargl",
-    "p101_cimag",
-    "p101_cimagf",
-    "p101_cimagl",
-    "p101_conj",
-    "p101_conjf",
-    "p101_conjl",
-    "p101_cproj",
-    "p101_cprojf",
-    "p101_cprojl",
-    "p101_creal",
-    "p101_crealf",
-    "p101_creall"
-};
+static const char *const wrapper_functions[] =
+    {"p101_cabs", "p101_cabsf", "p101_cabsl", "p101_carg", "p101_cargf", "p101_cargl", "p101_cimag", "p101_cimagf", "p101_cimagl", "p101_conj", "p101_conjf", "p101_conjl", "p101_cproj", "p101_cprojf", "p101_cprojl", "p101_creal", "p101_crealf", "p101_creall"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 

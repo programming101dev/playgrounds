@@ -3,7 +3,7 @@
   "title": "c wide io conversion",
   "order": 6,
   "generated": true,
-  "wrapper_count": 33,
+  "wrapper_count": 39,
   "purpose": "Wide-character I/O, multibyte conversion state, numeric conversion, and locale-sensitive text boundaries.",
   "domains": [
     {
@@ -38,23 +38,29 @@
     },
     {
       "name": "c/wide-stdio",
-      "function_count": 15,
+      "function_count": 21,
       "functions": [
         "p101_fgetwc",
         "p101_fgetws",
         "p101_fputwc",
         "p101_fputws",
+        "p101_fwprintf",
+        "p101_fwscanf",
         "p101_getwc",
         "p101_getwchar",
         "p101_putwc",
         "p101_putwchar",
+        "p101_swprintf",
+        "p101_swscanf",
         "p101_ungetwc",
         "p101_vfwprintf",
         "p101_vfwscanf",
         "p101_vswprintf",
         "p101_vswscanf",
         "p101_vwprintf",
-        "p101_vwscanf"
+        "p101_vwscanf",
+        "p101_wprintf",
+        "p101_wscanf"
       ]
     }
   ],

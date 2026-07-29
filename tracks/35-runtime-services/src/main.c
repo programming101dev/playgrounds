@@ -6,44 +6,10 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const char *const wrapper_functions[] = {
-    "p101_dlclose",
-    "p101_dlerror",
-    "p101_dlopen",
-    "p101_dlsym",
-    "p101_dbm_clearerr",
-    "p101_dbm_close",
-    "p101_dbm_delete",
-    "p101_dbm_error",
-    "p101_dbm_fetch",
-    "p101_dbm_firstkey",
-    "p101_dbm_nextkey",
-    "p101_dbm_open",
-    "p101_dbm_store",
-    "p101_catclose",
-    "p101_catgets",
-    "p101_catopen",
-    "p101_iconv",
-    "p101_iconv_close",
-    "p101_iconv_open",
-    "p101_nl_langinfo",
-    "p101_nl_langinfo_l",
-    "p101_hcreate",
-    "p101_hdestroy",
-    "p101_hsearch",
-    "p101_insque",
-    "p101_lfind",
-    "p101_lsearch",
-    "p101_remque",
-    "p101_tdelete",
-    "p101_tfind",
-    "p101_tsearch",
-    "p101_twalk",
-    "p101_regcomp",
-    "p101_regerror",
-    "p101_regexec",
-    "p101_regfree"
-};
+static const char *const wrapper_functions[] = {"p101_dlclose",      "p101_dlerror",     "p101_dlopen",        "p101_dlsym",     "p101_dbm_clearerr", "p101_dbm_close", "p101_dbm_delete", "p101_dbm_error", "p101_dbm_fetch",
+                                                "p101_dbm_firstkey", "p101_dbm_nextkey", "p101_dbm_open",      "p101_dbm_store", "p101_catclose",     "p101_catgets",   "p101_catopen",    "p101_iconv",     "p101_iconv_close",
+                                                "p101_iconv_open",   "p101_nl_langinfo", "p101_nl_langinfo_l", "p101_hcreate",   "p101_hdestroy",     "p101_hsearch",   "p101_insque",     "p101_lfind",     "p101_lsearch",
+                                                "p101_remque",       "p101_tdelete",     "p101_tfind",         "p101_tsearch",   "p101_twalk",        "p101_regcomp",   "p101_regerror",   "p101_regexec",   "p101_regfree"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 

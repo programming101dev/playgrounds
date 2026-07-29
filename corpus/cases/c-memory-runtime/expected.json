@@ -13,7 +13,7 @@
   "expected_findings": [],
   "fault_count": 0,
   "expected_output_contains": [
-    "c-memory-runtime: exercised 55 wrappers"
+    "c-memory-runtime: exercised 57 wrappers"
   ],
   "fix_goal": "Keep every c-memory-runtime wrapper compiling, linking, running, and visible to p101 observation.",
   "fix_steps": [
@@ -22,5 +22,5 @@
     "If it fails, identify the wrapper family named by the scenario output or compiler diagnostic.",
     "Fix the wrapper use or portability guard without removing the wrapper from the track inventory."
   ],
-  "lesson": "The first track has 55 wrappers; this smoke scenario exists to prove the whole wrapper family is usable before students work the broken ownership labs."
+  "lesson": "The first track has 57 wrappers; this smoke scenario exists to prove the whole wrapper family is usable before students work the broken ownership labs."
 }

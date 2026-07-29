@@ -3,7 +3,7 @@
 
 #define P101_TRACK_SLUG "tool-building"
 #define P101_TRACK_TITLE "tool building"
-#define P101_TRACK_PURPOSE "C facts, small analyzers, support utilities, and writing tools that reason about p101 projects."
+#define P101_TRACK_PURPOSE "C facts, small analyzers, and writing tools that reason about p101 projects."
 
 enum
 {

@@ -6,40 +6,9 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const char *const wrapper_functions[] = {
-    "p101_strchr",
-    "p101_strcmp",
-    "p101_strcoll",
-    "p101_strcspn",
-    "p101_strerror",
-    "p101_strlen",
-    "p101_strncat",
-    "p101_strncmp",
-    "p101_strncpy",
-    "p101_strpbrk",
-    "p101_strrchr",
-    "p101_strspn",
-    "p101_strstr",
-    "p101_strxfrm",
-    "p101_ffs",
-    "p101_stpcpy",
-    "p101_stpncpy",
-    "p101_strcasecmp",
-    "p101_strcasecmp_l",
-    "p101_strcasestr",
-    "p101_strchrnul",
-    "p101_strcoll_l",
-    "p101_strdup",
-    "p101_strerror_r",
-    "p101_strncasecmp",
-    "p101_strncasecmp_l",
-    "p101_strndup",
-    "p101_strnlen",
-    "p101_strsep",
-    "p101_strsignal",
-    "p101_strtok_r",
-    "p101_strxfrm_l"
-};
+static const char *const wrapper_functions[] = {"p101_strchr", "p101_strcmp",     "p101_strcoll",     "p101_strcspn",       "p101_strerror", "p101_strlen",  "p101_strncat",    "p101_strncmp",      "p101_strncpy",    "p101_strpbrk",   "p101_strrchr",
+                                                "p101_strspn", "p101_strstr",     "p101_strxfrm",     "p101_ffs",           "p101_stpcpy",   "p101_stpncpy", "p101_strcasecmp", "p101_strcasecmp_l", "p101_strcasestr", "p101_strchrnul", "p101_strcoll_l",
+                                                "p101_strdup", "p101_strerror_r", "p101_strncasecmp", "p101_strncasecmp_l", "p101_strndup",  "p101_strnlen", "p101_strsep",     "p101_strsignal",    "p101_strtok_r",   "p101_strxfrm_l"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 

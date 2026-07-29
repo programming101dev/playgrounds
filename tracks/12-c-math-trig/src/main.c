@@ -6,47 +6,9 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const char *const wrapper_functions[] = {
-    "p101_acos",
-    "p101_acosf",
-    "p101_acosh",
-    "p101_acoshf",
-    "p101_acoshl",
-    "p101_acosl",
-    "p101_asin",
-    "p101_asinf",
-    "p101_asinh",
-    "p101_asinhf",
-    "p101_asinhl",
-    "p101_asinl",
-    "p101_atan",
-    "p101_atan2",
-    "p101_atan2f",
-    "p101_atan2l",
-    "p101_atanf",
-    "p101_atanh",
-    "p101_atanhf",
-    "p101_atanhl",
-    "p101_atanl",
-    "p101_cos",
-    "p101_cosf",
-    "p101_cosh",
-    "p101_coshf",
-    "p101_coshl",
-    "p101_cosl",
-    "p101_sin",
-    "p101_sinf",
-    "p101_sinh",
-    "p101_sinhf",
-    "p101_sinhl",
-    "p101_sinl",
-    "p101_tan",
-    "p101_tanf",
-    "p101_tanh",
-    "p101_tanhf",
-    "p101_tanhl",
-    "p101_tanl"
-};
+static const char *const wrapper_functions[] = {"p101_acos",  "p101_acosf",  "p101_acosh",  "p101_acoshf", "p101_acoshl", "p101_acosl",  "p101_asin",   "p101_asinf", "p101_asinh", "p101_asinhf", "p101_asinhl", "p101_asinl", "p101_atan",
+                                                "p101_atan2", "p101_atan2f", "p101_atan2l", "p101_atanf",  "p101_atanh",  "p101_atanhf", "p101_atanhl", "p101_atanl", "p101_cos",   "p101_cosf",   "p101_cosh",   "p101_coshf", "p101_coshl",
+                                                "p101_cosl",  "p101_sin",    "p101_sinf",   "p101_sinh",   "p101_sinhf",  "p101_sinhl",  "p101_sinl",   "p101_tan",   "p101_tanf",  "p101_tanh",   "p101_tanhf",  "p101_tanhl", "p101_tanl"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 

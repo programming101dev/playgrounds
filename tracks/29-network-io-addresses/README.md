@@ -4,7 +4,7 @@
 
 Track number: `29`
 
-Wrapper count: `21`
+Wrapper count: `23`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -25,6 +25,7 @@ send/recv families, byte order, inet conversion, and network address helper func
 ## Domains
 
 - `network/address-conversion` (15 wrappers)
+- `network/conversion` (2 wrappers)
 - `network/io` (6 wrappers)
 
 ## Suggested lesson arc
@@ -54,6 +55,11 @@ send/recv families, byte order, inet conversion, and network address helper func
 - `p101_inet_pton`
 - `p101_ntohl`
 - `p101_ntohs`
+
+### `network/conversion`
+
+- `p101_convert_address`
+- `p101_parse_in_port_t`
 
 ### `network/io`
 

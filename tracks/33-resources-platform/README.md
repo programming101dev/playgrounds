@@ -4,7 +4,7 @@
 
 Track number: `33`
 
-Wrapper count: `37`
+Wrapper count: `28`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -20,12 +20,12 @@ Curated lesson guide: [TRACK.md](./TRACK.md).
 
 ## Purpose
 
-Resource limits, priorities, clocks/time, memory mapping/locking, sysctl, mounts, fstab, host/system configuration, and platform administration APIs.
+Resource limits, priorities, clocks/time, memory mapping/locking, host/system configuration, and portable platform administration APIs.
 
 ## Domains
 
-- `systems/platform-admin` (8 wrappers)
-- `systems/resource-time-memory` (19 wrappers)
+- `systems/platform-admin` (1 wrappers)
+- `systems/resource-time-memory` (17 wrappers)
 - `systems/security-legacy` (1 wrappers)
 - `systems/system-configuration` (9 wrappers)
 
@@ -41,14 +41,7 @@ Resource limits, priorities, clocks/time, memory mapping/locking, sysctl, mounts
 
 ### `systems/platform-admin`
 
-- `p101_endfsent`
-- `p101_getfsent`
-- `p101_getfsfile`
-- `p101_getfsspec`
-- `p101_setfsent`
-- `p101_sysctl`
 - `p101_uname`
-- `p101_unmount`
 
 ### `systems/resource-time-memory`
 
@@ -63,8 +56,6 @@ Resource limits, priorities, clocks/time, memory mapping/locking, sysctl, mounts
 - `p101_munlock`
 - `p101_munlockall`
 - `p101_munmap`
-- `p101_ntp_adjtime`
-- `p101_ntp_gettime`
 - `p101_posix_madvise`
 - `p101_setpriority`
 - `p101_setrlimit`

@@ -3,16 +3,13 @@
   "title": "event streams",
   "order": 38,
   "generated": true,
-  "wrapper_count": 49,
+  "wrapper_count": 30,
   "purpose": "Resource events, call tracing, fault injection, event-log formatting, and observer configuration.",
   "domains": [
     {
       "name": "support/call-tracing",
-      "function_count": 15,
+      "function_count": 12,
       "functions": [
-        "p101_env_call_log_observer",
-        "p101_env_call_notify",
-        "p101_env_configure_call_log_from_environment",
         "p101_env_get_exit_tracer",
         "p101_env_get_tracer",
         "p101_env_get_tracer_data",
@@ -28,43 +25,19 @@
       ]
     },
     {
-      "name": "support/event-log-format",
-      "function_count": 5,
-      "functions": [
-        "p101_env_close_owned_resource_log",
-        "p101_env_log_append_char",
-        "p101_env_log_append_field",
-        "p101_env_log_append_text",
-        "p101_env_open_log_from_environment"
-      ]
-    },
-    {
       "name": "support/fault-injection",
-      "function_count": 7,
+      "function_count": 3,
       "functions": [
         "p101_env_check_fault",
-        "p101_env_configure_fault_from_environment",
         "p101_env_default_tracer",
-        "p101_env_environment_fault_injector",
-        "p101_env_fault_state_destroy",
-        "p101_env_log_fault_hit",
         "p101_env_set_fault_injector"
       ]
     },
     {
       "name": "support/resource-events",
-      "function_count": 22,
+      "function_count": 15,
       "functions": [
-        "p101_env_alloc_event_name",
-        "p101_env_alloc_log_observer",
-        "p101_env_alloc_notify",
-        "p101_env_configure_fd_log_from_environment",
         "p101_env_enable_fd_tracking",
-        "p101_env_exec_fd_log",
-        "p101_env_exec_scan_limit",
-        "p101_env_fd_log_observer",
-        "p101_env_fd_notify",
-        "p101_env_fork_log",
         "p101_env_report_leaks",
         "p101_env_set_alloc_log",
         "p101_env_set_alloc_observer",
@@ -73,10 +46,12 @@
         "p101_env_track_alloc",
         "p101_env_track_close",
         "p101_env_track_exec",
+        "p101_env_track_exec_failure",
         "p101_env_track_fork",
         "p101_env_track_free",
         "p101_env_track_open",
-        "p101_env_track_realloc"
+        "p101_env_track_realloc",
+        "p101_env_track_spawn"
       ]
     }
   ],

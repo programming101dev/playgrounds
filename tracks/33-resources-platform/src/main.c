@@ -6,45 +6,9 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const char *const wrapper_functions[] = {
-    "p101_endfsent",
-    "p101_getfsent",
-    "p101_getfsfile",
-    "p101_getfsspec",
-    "p101_setfsent",
-    "p101_sysctl",
-    "p101_uname",
-    "p101_unmount",
-    "p101_getpriority",
-    "p101_getrlimit",
-    "p101_getrusage",
-    "p101_mlock",
-    "p101_mlockall",
-    "p101_mmap",
-    "p101_mprotect",
-    "p101_msync",
-    "p101_munlock",
-    "p101_munlockall",
-    "p101_munmap",
-    "p101_ntp_adjtime",
-    "p101_ntp_gettime",
-    "p101_posix_madvise",
-    "p101_setpriority",
-    "p101_setrlimit",
-    "p101_shm_open",
-    "p101_shm_unlink",
-    "p101_times",
-    "p101_crypt",
-    "p101_confstr",
-    "p101_fpathconf",
-    "p101_getcwd",
-    "p101_getdomainname",
-    "p101_gethostid",
-    "p101_gethostname",
-    "p101_pathconf",
-    "p101_setdomainname",
-    "p101_sysconf"
-};
+static const char *const wrapper_functions[] = {"p101_uname",      "p101_getpriority", "p101_getrlimit",     "p101_getrusage",   "p101_mlock",       "p101_mlockall", "p101_mmap",          "p101_mprotect", "p101_msync", "p101_munlock",
+                                                "p101_munlockall", "p101_munmap",      "p101_posix_madvise", "p101_setpriority", "p101_setrlimit",   "p101_shm_open", "p101_shm_unlink",    "p101_times",    "p101_crypt", "p101_confstr",
+                                                "p101_fpathconf",  "p101_getcwd",      "p101_getdomainname", "p101_gethostid",   "p101_gethostname", "p101_pathconf", "p101_setdomainname", "p101_sysconf"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 

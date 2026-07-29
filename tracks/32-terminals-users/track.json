@@ -3,7 +3,7 @@
   "title": "terminals users",
   "order": 32,
   "generated": true,
-  "wrapper_count": 46,
+  "wrapper_count": 42,
   "purpose": "Terminal control, user/group lookup, identity APIs, tty databases, utmpx records, and interactive program boundaries.",
   "domains": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "name": "systems/users-terminals",
-      "function_count": 31,
+      "function_count": 27,
       "functions": [
         "p101_cfgetispeed",
         "p101_cfgetospeed",
@@ -37,20 +37,16 @@
         "p101_cfsetispeed",
         "p101_cfsetospeed",
         "p101_cfsetspeed",
-        "p101_endttyent",
         "p101_endutxent",
         "p101_getgrgid_r",
         "p101_getgrnam_r",
         "p101_getpwnam_r",
         "p101_getpwuid_r",
-        "p101_getttyent",
-        "p101_getttynam",
         "p101_getutxent",
         "p101_getutxid",
         "p101_getutxline",
         "p101_isatty",
         "p101_pututxline",
-        "p101_setttyent",
         "p101_setutxent",
         "p101_tcdrain",
         "p101_tcflow",

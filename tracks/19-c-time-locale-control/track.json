@@ -3,17 +3,35 @@
   "title": "c time locale control",
   "order": 19,
   "generated": true,
-  "wrapper_count": 34,
+  "wrapper_count": 51,
   "purpose": "Time, locale, atomics, setjmp/signal-style control flow, and their common extensions.",
   "domains": [
     {
       "name": "c/atomics",
-      "function_count": 8,
+      "function_count": 26,
       "functions": [
+        "p101_atomic_flag_clear",
+        "p101_atomic_flag_clear_explicit",
+        "p101_atomic_flag_test_and_set",
+        "p101_atomic_flag_test_and_set_explicit",
+        "p101_atomic_signal_fence",
+        "p101_atomic_thread_fence",
+        "p101_atomic_uint_compare_exchange_strong",
+        "p101_atomic_uint_compare_exchange_strong_explicit",
+        "p101_atomic_uint_compare_exchange_weak",
+        "p101_atomic_uint_compare_exchange_weak_explicit",
+        "p101_atomic_uint_exchange",
+        "p101_atomic_uint_exchange_explicit",
         "p101_atomic_uint_fetch_add",
         "p101_atomic_uint_fetch_add_explicit",
+        "p101_atomic_uint_fetch_and",
+        "p101_atomic_uint_fetch_and_explicit",
+        "p101_atomic_uint_fetch_or",
+        "p101_atomic_uint_fetch_or_explicit",
         "p101_atomic_uint_fetch_sub",
         "p101_atomic_uint_fetch_sub_explicit",
+        "p101_atomic_uint_fetch_xor",
+        "p101_atomic_uint_fetch_xor_explicit",
         "p101_atomic_uint_load",
         "p101_atomic_uint_load_explicit",
         "p101_atomic_uint_store",
@@ -22,20 +40,18 @@
     },
     {
       "name": "c/control-flow",
-      "function_count": 4,
+      "function_count": 3,
       "functions": [
         "p101_longjmp",
         "p101_raise",
-        "p101_setjmp",
         "p101_signal"
       ]
     },
     {
       "name": "c/control-flow-extensions",
-      "function_count": 2,
+      "function_count": 1,
       "functions": [
-        "p101_siglongjmp",
-        "p101_sigsetjmp"
+        "p101_siglongjmp"
       ]
     },
     {
@@ -58,13 +74,14 @@
     },
     {
       "name": "c/time",
-      "function_count": 5,
+      "function_count": 6,
       "functions": [
         "p101_clock",
         "p101_difftime",
         "p101_mktime",
         "p101_strftime",
-        "p101_time"
+        "p101_time",
+        "p101_timespec_get"
       ]
     },
     {

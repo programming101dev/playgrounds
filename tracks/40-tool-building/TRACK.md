@@ -4,7 +4,7 @@
 
 ## Goal
 
-C facts, small analyzers, support utilities, and writing tools that reason about p101 projects.
+C facts, small analyzers, and writing tools that reason about p101 projects.
 
 ## Student workflow
 

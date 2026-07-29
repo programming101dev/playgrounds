@@ -3,13 +3,29 @@
   "title": "c memory bytes",
   "order": 2,
   "generated": true,
-  "wrapper_count": 7,
+  "wrapper_count": 23,
   "purpose": "Raw byte memory operations and the difference between object bytes and strings.",
   "domains": [
     {
       "name": "c/byte-utility",
-      "function_count": 1,
+      "function_count": 17,
       "functions": [
+        "p101_be16toh",
+        "p101_be32toh",
+        "p101_be64toh",
+        "p101_bswap16",
+        "p101_bswap32",
+        "p101_bswap64",
+        "p101_htobe16",
+        "p101_htobe32",
+        "p101_htobe64",
+        "p101_htole16",
+        "p101_htole32",
+        "p101_htole64",
+        "p101_is_little_endian",
+        "p101_le16toh",
+        "p101_le32toh",
+        "p101_le64toh",
         "p101_swab"
       ]
     },

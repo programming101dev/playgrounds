@@ -4,7 +4,7 @@
 
 Track number: `01`
 
-Wrapper count: `55`
+Wrapper count: `57`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -24,7 +24,7 @@ Allocation, process termination, environment variables, sorting/searching helper
 
 ## Domains
 
-- `c/stdlib` (31 wrappers)
+- `c/stdlib` (33 wrappers)
 - `c/stdlib-extensions` (24 wrappers)
 
 ## Suggested lesson arc
@@ -41,6 +41,8 @@ Allocation, process termination, environment variables, sorting/searching helper
 
 - `p101_abort`
 - `p101_abs`
+- `p101_aligned_alloc`
+- `p101_at_quick_exit`
 - `p101_atexit`
 - `p101_bsearch`
 - `p101_calloc`
@@ -57,8 +59,8 @@ Allocation, process termination, environment variables, sorting/searching helper
 - `p101_mblen`
 - `p101_mbstowcs`
 - `p101_mbtowc`
-- `p101_pointer_value_for_log`
 - `p101_qsort`
+- `p101_quick_exit`
 - `p101_realloc`
 - `p101_strtod`
 - `p101_strtof`

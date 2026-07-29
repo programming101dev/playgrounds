@@ -6,25 +6,23 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const char *const wrapper_functions[] = {
-    "p101_fsm_exit_immediately",
-    "p101_fsm_info_create",
-    "p101_fsm_info_default_bad_change_state_handler",
-    "p101_fsm_info_default_bad_change_state_notifier",
-    "p101_fsm_info_default_did_change_state_notifier",
-    "p101_fsm_info_default_will_change_state_notifier",
-    "p101_fsm_info_destroy",
-    "p101_fsm_info_get_bad_change_state_handler",
-    "p101_fsm_info_get_bad_change_state_notifier",
-    "p101_fsm_info_get_did_change_state_notifier",
-    "p101_fsm_info_get_name",
-    "p101_fsm_info_get_will_change_state_notifier",
-    "p101_fsm_info_set_bad_change_state_handler",
-    "p101_fsm_info_set_bad_change_state_notifier",
-    "p101_fsm_info_set_did_change_state_notifier",
-    "p101_fsm_info_set_will_change_state_notifier",
-    "p101_fsm_run"
-};
+static const char *const wrapper_functions[] = {"p101_fsm_exit_immediately",
+                                                "p101_fsm_info_create",
+                                                "p101_fsm_info_default_bad_change_state_handler",
+                                                "p101_fsm_info_default_bad_change_state_notifier",
+                                                "p101_fsm_info_default_did_change_state_notifier",
+                                                "p101_fsm_info_default_will_change_state_notifier",
+                                                "p101_fsm_info_destroy",
+                                                "p101_fsm_info_get_bad_change_state_handler",
+                                                "p101_fsm_info_get_bad_change_state_notifier",
+                                                "p101_fsm_info_get_did_change_state_notifier",
+                                                "p101_fsm_info_get_name",
+                                                "p101_fsm_info_get_will_change_state_notifier",
+                                                "p101_fsm_info_set_bad_change_state_handler",
+                                                "p101_fsm_info_set_bad_change_state_notifier",
+                                                "p101_fsm_info_set_did_change_state_notifier",
+                                                "p101_fsm_info_set_will_change_state_notifier",
+                                                "p101_fsm_run"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 

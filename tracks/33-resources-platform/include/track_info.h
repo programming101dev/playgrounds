@@ -3,12 +3,12 @@
 
 #define P101_TRACK_SLUG "resources-platform"
 #define P101_TRACK_TITLE "resources platform"
-#define P101_TRACK_PURPOSE "Resource limits, priorities, clocks/time, memory mapping/locking, sysctl, mounts, fstab, host/system configuration, and platform administration APIs."
+#define P101_TRACK_PURPOSE "Resource limits, priorities, clocks/time, memory mapping/locking, host/system configuration, and portable platform administration APIs."
 
 enum
 {
     P101_TRACK_INDEX         = 33,
-    P101_TRACK_WRAPPER_COUNT = 37
+    P101_TRACK_WRAPPER_COUNT = 28
 };
 
 #endif /* P101_TRACK_33_RESOURCES_PLATFORM_INFO_H */

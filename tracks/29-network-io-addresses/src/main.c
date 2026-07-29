@@ -6,29 +6,9 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const char *const wrapper_functions[] = {
-    "p101_htonl",
-    "p101_htons",
-    "p101_inet_addr",
-    "p101_inet_aton",
-    "p101_inet_lnaof",
-    "p101_inet_makeaddr",
-    "p101_inet_net_ntop",
-    "p101_inet_net_pton",
-    "p101_inet_netof",
-    "p101_inet_network",
-    "p101_inet_ntoa",
-    "p101_inet_ntop",
-    "p101_inet_pton",
-    "p101_ntohl",
-    "p101_ntohs",
-    "p101_recv",
-    "p101_recvfrom",
-    "p101_recvmsg",
-    "p101_send",
-    "p101_sendmsg",
-    "p101_sendto"
-};
+static const char *const wrapper_functions[] = {"p101_htonl",           "p101_htons",        "p101_inet_addr", "p101_inet_aton", "p101_inet_lnaof", "p101_inet_makeaddr", "p101_inet_net_ntop", "p101_inet_net_pton",
+                                                "p101_inet_netof",      "p101_inet_network", "p101_inet_ntoa", "p101_inet_ntop", "p101_inet_pton",  "p101_ntohl",         "p101_ntohs",         "p101_convert_address",
+                                                "p101_parse_in_port_t", "p101_recv",         "p101_recvfrom",  "p101_recvmsg",   "p101_send",       "p101_sendmsg",       "p101_sendto"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 

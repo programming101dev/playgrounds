@@ -20,12 +20,11 @@ Curated lesson guide: [TRACK.md](./TRACK.md).
 
 ## Purpose
 
-C facts, small analyzers, support utilities, and writing tools that reason about p101 projects.
+C facts, small analyzers, and writing tools that reason about p101 projects.
 
 ## Domains
 
-- `support/util` (1 wrappers)
-- `tooling/c-facts` (3 wrappers)
+- `tooling/c-facts` (4 wrappers)
 
 ## Suggested lesson arc
 
@@ -37,12 +36,9 @@ C facts, small analyzers, support utilities, and writing tools that reason about
 
 ## Wrapper inventory
 
-### `support/util`
-
-- `p101_is_little_endian`
-
 ### `tooling/c-facts`
 
 - `p101_c_fact_kind_name`
 - `p101_c_fact_parse_line`
 - `p101_c_fact_status_name`
+- `p101_c_facts_find_clang_compile_database`

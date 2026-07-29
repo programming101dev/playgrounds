@@ -4,7 +4,7 @@
 
 Track number: `32`
 
-Wrapper count: `46`
+Wrapper count: `42`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -25,7 +25,7 @@ Terminal control, user/group lookup, identity APIs, tty databases, utmpx records
 ## Domains
 
 - `systems/users-identity` (15 wrappers)
-- `systems/users-terminals` (31 wrappers)
+- `systems/users-terminals` (27 wrappers)
 
 ## Suggested lesson arc
 
@@ -63,20 +63,16 @@ Terminal control, user/group lookup, identity APIs, tty databases, utmpx records
 - `p101_cfsetispeed`
 - `p101_cfsetospeed`
 - `p101_cfsetspeed`
-- `p101_endttyent`
 - `p101_endutxent`
 - `p101_getgrgid_r`
 - `p101_getgrnam_r`
 - `p101_getpwnam_r`
 - `p101_getpwuid_r`
-- `p101_getttyent`
-- `p101_getttynam`
 - `p101_getutxent`
 - `p101_getutxid`
 - `p101_getutxline`
 - `p101_isatty`
 - `p101_pututxline`
-- `p101_setttyent`
 - `p101_setutxent`
 - `p101_tcdrain`
 - `p101_tcflow`

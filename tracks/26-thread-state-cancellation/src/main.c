@@ -6,17 +6,8 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const char *const wrapper_functions[] = {
-    "p101_pthread_cancel",
-    "p101_pthread_setcancelstate",
-    "p101_pthread_setcanceltype",
-    "p101_pthread_testcancel",
-    "p101_pthread_getspecific",
-    "p101_pthread_key_create",
-    "p101_pthread_key_delete",
-    "p101_pthread_once",
-    "p101_pthread_setspecific"
-};
+static const char *const wrapper_functions[] =
+    {"p101_pthread_cancel", "p101_pthread_setcancelstate", "p101_pthread_setcanceltype", "p101_pthread_testcancel", "p101_pthread_getspecific", "p101_pthread_key_create", "p101_pthread_key_delete", "p101_pthread_once", "p101_pthread_setspecific"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 

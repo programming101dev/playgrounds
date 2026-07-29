@@ -3,7 +3,7 @@
   "title": "network io addresses",
   "order": 29,
   "generated": true,
-  "wrapper_count": 21,
+  "wrapper_count": 23,
   "purpose": "send/recv families, byte order, inet conversion, and network address helper functions.",
   "domains": [
     {
@@ -25,6 +25,14 @@
         "p101_inet_pton",
         "p101_ntohl",
         "p101_ntohs"
+      ]
+    },
+    {
+      "name": "network/conversion",
+      "function_count": 2,
+      "functions": [
+        "p101_convert_address",
+        "p101_parse_in_port_t"
       ]
     },
     {

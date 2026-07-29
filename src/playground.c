@@ -27,6 +27,7 @@
 enum child_exit_mode
 {
     CHILD_EXIT_NORMAL,
+    CHILD_EXIT_QUICK,
     CHILD_EXIT_IMMEDIATE,
     CHILD_EXIT_ABORT
 };
@@ -60,6 +61,7 @@ enum c_memory_runtime_demo_constants
     C_MEMORY_ARC4RANDOM_UPPER_BOUND = 10,
     C_MEMORY_LOADAVG_COUNT          = 3,
     C_MEMORY_EXIT_STATUS            = 17,
+    C_MEMORY_QUICK_EXIT_STATUS      = 18,
     C_MEMORY_IMMEDIATE_EXIT_STATUS  = 19
 };
 
@@ -506,6 +508,7 @@ static int run_c_memory_runtime_demo(const struct p101_env *env, struct p101_err
     char          *previous_state;
     const char    *active_state;
     void          *aligned;
+    void          *c_aligned;
     const int      key = C_MEMORY_SEARCH_KEY;
     const int     *found;
     char           mb_output[MB_LEN_MAX];
@@ -538,6 +541,7 @@ static int run_c_memory_runtime_demo(const struct p101_env *env, struct p101_err
     previous_state = NULL;
     active_state   = NULL;
     aligned        = NULL;
+    c_aligned      = NULL;
     option_cursor  = option_text;
     option_value   = NULL;
     temp_fd        = -1;
@@ -592,9 +596,9 @@ static int run_c_memory_runtime_demo(const struct p101_env *env, struct p101_err
      */
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Waggregate-return"
-    div_result   = p101_div(env, C_MEMORY_DIV_NUMERATOR, C_MEMORY_DIV_DENOMINATOR);
-    ldiv_result  = p101_ldiv(env, C_MEMORY_DIV_NUMERATOR, C_MEMORY_DIV_DENOMINATOR);
-    lldiv_result = p101_lldiv(env, C_MEMORY_DIV_NUMERATOR, C_MEMORY_DIV_DENOMINATOR);
+    div_result   = p101_div(env, err, C_MEMORY_DIV_NUMERATOR, C_MEMORY_DIV_DENOMINATOR);
+    ldiv_result  = p101_ldiv(env, err, C_MEMORY_DIV_NUMERATOR, C_MEMORY_DIV_DENOMINATOR);
+    lldiv_result = p101_lldiv(env, err, C_MEMORY_DIV_NUMERATOR, C_MEMORY_DIV_DENOMINATOR);
 #pragma GCC diagnostic pop
     if(div_result.quot != C_MEMORY_EXPECTED_QUOTIENT || ldiv_result.rem != C_MEMORY_EXPECTED_REMAINDER || lldiv_result.quot != C_MEMORY_EXPECTED_QUOTIENT)
     {
@@ -701,7 +705,7 @@ static int run_c_memory_runtime_demo(const struct p101_env *env, struct p101_err
         goto done;
     }
 
-    if(p101_getsubopt(env, err, &option_cursor, option_keys, &option_value) != 0 || option_value == NULL || p101_error_has_error(err))
+    if(p101_getsubopt(env, &option_cursor, option_keys, &option_value) != 0 || option_value == NULL)
     {
         goto done;
     }
@@ -738,6 +742,11 @@ static int run_c_memory_runtime_demo(const struct p101_env *env, struct p101_err
     }
 
     if(p101_posix_memalign(env, err, &aligned, sizeof(void *) * C_MEMORY_ALIGNMENT_MULTIPLIER, C_MEMORY_ALIGNED_BYTES) != 0 || aligned == NULL || p101_error_has_error(err))
+    {
+        goto done;
+    }
+    c_aligned = p101_aligned_alloc(env, err, sizeof(void *) * C_MEMORY_ALIGNMENT_MULTIPLIER, C_MEMORY_ALIGNED_BYTES);
+    if(c_aligned == NULL || p101_error_has_error(err))
     {
         goto done;
     }
@@ -798,7 +807,8 @@ static int run_c_memory_runtime_demo(const struct p101_env *env, struct p101_err
         }
     }
 
-    if(run_child_exit_wrapper(env, err, CHILD_EXIT_NORMAL) != EXIT_SUCCESS || run_child_exit_wrapper(env, err, CHILD_EXIT_IMMEDIATE) != EXIT_SUCCESS || run_child_exit_wrapper(env, err, CHILD_EXIT_ABORT) != EXIT_SUCCESS)
+    if(run_child_exit_wrapper(env, err, CHILD_EXIT_NORMAL) != EXIT_SUCCESS || run_child_exit_wrapper(env, err, CHILD_EXIT_QUICK) != EXIT_SUCCESS || run_child_exit_wrapper(env, err, CHILD_EXIT_IMMEDIATE) != EXIT_SUCCESS ||
+       run_child_exit_wrapper(env, err, CHILD_EXIT_ABORT) != EXIT_SUCCESS)
     {
         goto done;
     }
@@ -808,12 +818,12 @@ static int run_c_memory_runtime_demo(const struct p101_env *env, struct p101_err
         goto done;
     }
 
-    p101_printf(env, err, "c-memory-runtime: exercised 55 wrappers\n");
+    p101_printf(env, err, "c-memory-runtime: exercised 57 wrappers\n");
     if(p101_error_has_error(err))
     {
         goto done;
     }
-    if(write_text_output(env, err, args, "c-memory-runtime: exercised 55 wrappers\n") != EXIT_SUCCESS)
+    if(write_text_output(env, err, args, "c-memory-runtime: exercised 57 wrappers\n") != EXIT_SUCCESS)
     {
         goto done;
     }
@@ -825,6 +835,7 @@ static int run_c_memory_runtime_demo(const struct p101_env *env, struct p101_err
 done:
     close_fd_preserving_error(env, err, &pty_fd);
     close_fd_preserving_error(env, err, &temp_fd);
+    p101_free(env, c_aligned);
     p101_free(env, aligned);
     p101_free(env, putenv_value);
     p101_free(env, zeroed);
@@ -1800,6 +1811,11 @@ static int run_child_exit_wrapper(const struct p101_env *env, struct p101_error 
             (void)p101_atexit(env, err, c_memory_runtime_atexit_hook);
             p101_exit(env, C_MEMORY_EXIT_STATUS);
         }
+        if(mode == CHILD_EXIT_QUICK)
+        {
+            (void)p101_at_quick_exit(env, err, c_memory_runtime_atexit_hook);
+            p101_quick_exit(env, C_MEMORY_QUICK_EXIT_STATUS);
+        }
         if(mode == CHILD_EXIT_IMMEDIATE)
         {
             p101_exit_immediately(env, C_MEMORY_IMMEDIATE_EXIT_STATUS);
@@ -1824,6 +1840,15 @@ static int run_child_exit_wrapper(const struct p101_env *env, struct p101_error 
     if(mode == CHILD_EXIT_NORMAL)
     {
         if(WIFEXITED(status) && WEXITSTATUS(status) == C_MEMORY_EXIT_STATUS)
+        {
+            return EXIT_SUCCESS;
+        }
+        return EXIT_FAILURE;
+    }
+
+    if(mode == CHILD_EXIT_QUICK)
+    {
+        if(WIFEXITED(status) && WEXITSTATUS(status) == C_MEMORY_QUICK_EXIT_STATUS)
         {
             return EXIT_SUCCESS;
         }

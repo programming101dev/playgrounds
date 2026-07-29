@@ -4,7 +4,7 @@
 
 Track number: `19`
 
-Wrapper count: `34`
+Wrapper count: `51`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -24,12 +24,12 @@ Time, locale, atomics, setjmp/signal-style control flow, and their common extens
 
 ## Domains
 
-- `c/atomics` (8 wrappers)
-- `c/control-flow` (4 wrappers)
-- `c/control-flow-extensions` (2 wrappers)
+- `c/atomics` (26 wrappers)
+- `c/control-flow` (3 wrappers)
+- `c/control-flow-extensions` (1 wrappers)
 - `c/locale` (2 wrappers)
 - `c/locale-extensions` (4 wrappers)
-- `c/time` (5 wrappers)
+- `c/time` (6 wrappers)
 - `c/time-extensions` (9 wrappers)
 
 ## Suggested lesson arc
@@ -44,10 +44,28 @@ Time, locale, atomics, setjmp/signal-style control flow, and their common extens
 
 ### `c/atomics`
 
+- `p101_atomic_flag_clear`
+- `p101_atomic_flag_clear_explicit`
+- `p101_atomic_flag_test_and_set`
+- `p101_atomic_flag_test_and_set_explicit`
+- `p101_atomic_signal_fence`
+- `p101_atomic_thread_fence`
+- `p101_atomic_uint_compare_exchange_strong`
+- `p101_atomic_uint_compare_exchange_strong_explicit`
+- `p101_atomic_uint_compare_exchange_weak`
+- `p101_atomic_uint_compare_exchange_weak_explicit`
+- `p101_atomic_uint_exchange`
+- `p101_atomic_uint_exchange_explicit`
 - `p101_atomic_uint_fetch_add`
 - `p101_atomic_uint_fetch_add_explicit`
+- `p101_atomic_uint_fetch_and`
+- `p101_atomic_uint_fetch_and_explicit`
+- `p101_atomic_uint_fetch_or`
+- `p101_atomic_uint_fetch_or_explicit`
 - `p101_atomic_uint_fetch_sub`
 - `p101_atomic_uint_fetch_sub_explicit`
+- `p101_atomic_uint_fetch_xor`
+- `p101_atomic_uint_fetch_xor_explicit`
 - `p101_atomic_uint_load`
 - `p101_atomic_uint_load_explicit`
 - `p101_atomic_uint_store`
@@ -57,13 +75,11 @@ Time, locale, atomics, setjmp/signal-style control flow, and their common extens
 
 - `p101_longjmp`
 - `p101_raise`
-- `p101_setjmp`
 - `p101_signal`
 
 ### `c/control-flow-extensions`
 
 - `p101_siglongjmp`
-- `p101_sigsetjmp`
 
 ### `c/locale`
 
@@ -84,6 +100,7 @@ Time, locale, atomics, setjmp/signal-style control flow, and their common extens
 - `p101_mktime`
 - `p101_strftime`
 - `p101_time`
+- `p101_timespec_get`
 
 ### `c/time-extensions`
 

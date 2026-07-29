@@ -6,12 +6,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const char *const wrapper_functions[] = {
-    "p101_is_little_endian",
-    "p101_c_fact_kind_name",
-    "p101_c_fact_parse_line",
-    "p101_c_fact_status_name"
-};
+static const char *const wrapper_functions[] = {"p101_c_fact_kind_name", "p101_c_fact_parse_line", "p101_c_fact_status_name", "p101_c_facts_find_clang_compile_database"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 

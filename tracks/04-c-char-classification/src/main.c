@@ -6,36 +6,9 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const char *const wrapper_functions[] = {
-    "p101_isalnum",
-    "p101_isalpha",
-    "p101_isblank",
-    "p101_iscntrl",
-    "p101_isdigit",
-    "p101_isgraph",
-    "p101_islower",
-    "p101_isprint",
-    "p101_ispunct",
-    "p101_isspace",
-    "p101_isupper",
-    "p101_isxdigit",
-    "p101_tolower",
-    "p101_toupper",
-    "p101_isalnum_l",
-    "p101_isalpha_l",
-    "p101_isblank_l",
-    "p101_iscntrl_l",
-    "p101_isdigit_l",
-    "p101_isgraph_l",
-    "p101_islower_l",
-    "p101_isprint_l",
-    "p101_ispunct_l",
-    "p101_isspace_l",
-    "p101_isupper_l",
-    "p101_isxdigit_l",
-    "p101_tolower_l",
-    "p101_toupper_l"
-};
+static const char *const wrapper_functions[] = {"p101_isalnum",   "p101_isalpha",   "p101_isblank",   "p101_iscntrl",   "p101_isdigit",   "p101_isgraph",    "p101_islower",   "p101_isprint",   "p101_ispunct",   "p101_isspace",
+                                                "p101_isupper",   "p101_isxdigit",  "p101_tolower",   "p101_toupper",   "p101_isalnum_l", "p101_isalpha_l",  "p101_isblank_l", "p101_iscntrl_l", "p101_isdigit_l", "p101_isgraph_l",
+                                                "p101_islower_l", "p101_isprint_l", "p101_ispunct_l", "p101_isspace_l", "p101_isupper_l", "p101_isxdigit_l", "p101_tolower_l", "p101_toupper_l"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 

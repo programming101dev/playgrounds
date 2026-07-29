@@ -43,7 +43,7 @@ the actual wrapper surface:
 
 - 40 tracks;
 - 1 orientation pre-track;
-- 1,185 wrappers assigned to one primary track;
+- 1,150 wrappers assigned to one primary track;
 - 0 uncovered domains;
 - no `misc` bucket.
 
@@ -74,7 +74,7 @@ Options:
 | --- | --- | --- |
 | `tour` | Clean file, realloc, pipe, and fork path | clean |
 | `orientation` | First p101 tour: env, err, wrappers, and tools | clean |
-| `c-memory-runtime` | Clean smoke test for all 55 Track 01 wrappers | clean |
+| `c-memory-runtime` | Clean smoke test for all 57 Track 01 wrappers | clean |
 | `clean-file` | Open/write/close/free | clean |
 | `realloc` | Allocate, grow, and free | clean |
 | `pipe` | Create/read/write/close pipe fds | clean |

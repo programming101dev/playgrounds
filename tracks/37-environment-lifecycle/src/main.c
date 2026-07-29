@@ -6,18 +6,20 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const char *const wrapper_functions[] = {
-    "p101_env_configure_from_environment",
-    "p101_env_create",
-    "p101_env_destroy",
-    "p101_env_dup",
-    "p101_env_flag_on",
-    "p101_env_get_label",
-    "p101_env_init",
-    "p101_env_parse_int_environment",
-    "p101_env_parse_unsigned_environment",
-    "p101_env_set_label"
-};
+static const char *const wrapper_functions[] = {"p101_env_create",
+                                                "p101_env_destroy",
+                                                "p101_env_dup",
+                                                "p101_env_event_line_is_ours",
+                                                "p101_env_event_parse_size_field",
+                                                "p101_env_event_parse_status_name",
+                                                "p101_env_event_split",
+                                                "p101_env_event_unescape_field",
+                                                "p101_env_get_event_log_version",
+                                                "p101_env_get_label",
+                                                "p101_env_parse_event_line",
+                                                "p101_env_read_event_line",
+                                                "p101_env_set_event_log_version",
+                                                "p101_env_set_label"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 

@@ -43,7 +43,7 @@ if [[ "$reconfigure" -eq 1 || ! -f .last-build-dir ]]; then
     ./change-compiler.sh -c "$compiler"
 fi
 
-./build.sh "${build_args[@]}"
+./build.sh ${build_args[@]+"${build_args[@]}"}
 
 IFS= read -r build_dir < .last-build-dir || {
     echo "Error: could not read .last-build-dir." >&2
@@ -58,4 +58,4 @@ program="$track_dir/$build_dir/$program_name"
     printf 'Error: track executable was not produced: %s\n' "$program" >&2
     exit 1
 }
-exec "$program" "${program_args[@]}"
+exec "$program" ${program_args[@]+"${program_args[@]}"}

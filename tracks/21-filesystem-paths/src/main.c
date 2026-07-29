@@ -6,42 +6,9 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const char *const wrapper_functions[] = {
-    "p101_access",
-    "p101_chdir",
-    "p101_chmod",
-    "p101_chown",
-    "p101_faccessat",
-    "p101_fchdir",
-    "p101_fchmod",
-    "p101_fchmodat",
-    "p101_fchown",
-    "p101_fchownat",
-    "p101_fstat",
-    "p101_fstatat",
-    "p101_fstatvfs",
-    "p101_futimens",
-    "p101_lchown",
-    "p101_link",
-    "p101_linkat",
-    "p101_lstat",
-    "p101_mkdir",
-    "p101_mkdirat",
-    "p101_mkfifo",
-    "p101_mknod",
-    "p101_readlink",
-    "p101_readlinkat",
-    "p101_rmdir",
-    "p101_stat",
-    "p101_statvfs",
-    "p101_symlink",
-    "p101_symlinkat",
-    "p101_truncate",
-    "p101_umask",
-    "p101_unlink",
-    "p101_unlinkat",
-    "p101_utimensat"
-};
+static const char *const wrapper_functions[] = {"p101_access",   "p101_chdir",    "p101_chmod",   "p101_chown",   "p101_faccessat", "p101_fchdir",   "p101_fchmod", "p101_fchmodat", "p101_fchown",   "p101_fchownat", "p101_fstat",    "p101_fstatat",
+                                                "p101_fstatvfs", "p101_futimens", "p101_lchown",  "p101_link",    "p101_linkat",    "p101_lstat",    "p101_mkdir",  "p101_mkdirat",  "p101_mkfifo",   "p101_mknod",    "p101_readlink", "p101_readlinkat",
+                                                "p101_rmdir",    "p101_stat",     "p101_statvfs", "p101_symlink", "p101_symlinkat", "p101_truncate", "p101_umask",  "p101_unlink",   "p101_unlinkat", "p101_utimensat"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 

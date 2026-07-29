@@ -1,20 +1,15 @@
 #include "track_info.h"
+#include <inttypes.h>
 #include <p101_c/p101_stdio.h>
 #include <p101_c/p101_stdlib.h>
 #include <p101_env/env.h>
 #include <p101_error/error.h>
+#include <p101_util/endian.h>
 #include <stddef.h>
 #include <stdlib.h>
 
-static const char *const wrapper_functions[] = {
-    "p101_swab",
-    "p101_memchr",
-    "p101_memcmp",
-    "p101_memcpy",
-    "p101_memmove",
-    "p101_memset",
-    "p101_memccpy"
-};
+static const char *const wrapper_functions[] = {"p101_be16toh",          "p101_be32toh", "p101_be64toh", "p101_bswap16", "p101_bswap32", "p101_bswap64", "p101_htobe16", "p101_htobe32", "p101_htobe64", "p101_htole16", "p101_htole32", "p101_htole64",
+                                                "p101_is_little_endian", "p101_le16toh", "p101_le32toh", "p101_le64toh", "p101_swab",    "p101_memchr",  "p101_memcmp",  "p101_memcpy",  "p101_memmove", "p101_memset",  "p101_memccpy"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 
@@ -46,6 +41,22 @@ static int write_wrapper_inventory(const struct p101_env *env, struct p101_error
     }
 
     return ret_val;
+}
+
+static int write_endian_demo(const struct p101_env *env, struct p101_error *err)
+{
+    const uint32_t host_value = UINT32_C(0x12345678);
+    uint32_t       wire_value;
+    uint32_t       round_trip;
+
+    wire_value = p101_htobe32(env, host_value);
+    round_trip = p101_be32toh(env, wire_value);
+    if(p101_fprintf(env, err, stdout, "Endian round trip: 0x%08" PRIx32 " -> 0x%08" PRIx32 " -> 0x%08" PRIx32 "\n", host_value, wire_value, round_trip) < 0 || p101_error_has_error(err))
+    {
+        return EXIT_FAILURE;
+    }
+
+    return (round_trip == host_value) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
 int main(void)
@@ -84,6 +95,11 @@ int main(void)
         goto done;
     }
     if(write_wrapper_inventory(env, err) != EXIT_SUCCESS)
+    {
+        goto done;
+    }
+
+    if(write_endian_demo(env, err) != EXIT_SUCCESS)
     {
         goto done;
     }

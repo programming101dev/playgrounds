@@ -11,7 +11,9 @@ from __future__ import annotations
 import json
 import os
 import re
+import shutil
 import stat
+import subprocess
 from pathlib import Path
 from typing import Any
 
@@ -70,6 +72,14 @@ def write_executable(path: Path, text: str) -> None:
     write(path, text)
     mode = path.stat().st_mode
     path.chmod(mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+
+
+def format_c(path: Path) -> None:
+    formatter_name = os.environ.get("CLANG_FORMAT", "clang-format")
+    formatter = shutil.which(formatter_name)
+    if formatter is None:
+        raise RuntimeError(f"could not find C formatter: {formatter_name}")
+    subprocess.run([formatter, "-i", str(path)], check=True)
 
 
 def ensure_symlink(path: Path, target: str) -> None:
@@ -620,6 +630,39 @@ def track_main(graph: dict[str, Any], track: dict[str, Any], index: int) -> str:
     if not functions:
         functions = ["none"]
     function_lines = ",\n".join(f"    {c_string(function)}" for function in functions)
+    extra_includes: list[str] = []
+    demo_function: list[str] = []
+    demo_call: list[str] = []
+    if track["track"] == "c-memory-bytes":
+        extra_includes = [
+            "#include <inttypes.h>",
+            "#include <p101_util/endian.h>",
+        ]
+        demo_function = [
+            "",
+            "static int write_endian_demo(const struct p101_env *env, struct p101_error *err)",
+            "{",
+            "    const uint32_t host_value = UINT32_C(0x12345678);",
+            "    uint32_t       wire_value;",
+            "    uint32_t       round_trip;",
+            "",
+            "    wire_value = p101_htobe32(env, host_value);",
+            "    round_trip = p101_be32toh(env, wire_value);",
+            "    if(p101_fprintf(env, err, stdout, \"Endian round trip: 0x%08\" PRIx32 \" -> 0x%08\" PRIx32 \" -> 0x%08\" PRIx32 \"\\n\", host_value, wire_value, round_trip) < 0 || p101_error_has_error(err))",
+            "    {",
+            "        return EXIT_FAILURE;",
+            "    }",
+            "",
+            "    return (round_trip == host_value) ? EXIT_SUCCESS : EXIT_FAILURE;",
+            "}",
+        ]
+        demo_call = [
+            "    if(write_endian_demo(env, err) != EXIT_SUCCESS)",
+            "    {",
+            "        goto done;",
+            "    }",
+            "",
+        ]
     return "\n".join(
         [
             '#include "track_info.h"',
@@ -627,6 +670,7 @@ def track_main(graph: dict[str, Any], track: dict[str, Any], index: int) -> str:
             "#include <p101_c/p101_stdlib.h>",
             "#include <p101_env/env.h>",
             "#include <p101_error/error.h>",
+            *extra_includes,
             "#include <stddef.h>",
             "#include <stdlib.h>",
             "",
@@ -665,6 +709,7 @@ def track_main(graph: dict[str, Any], track: dict[str, Any], index: int) -> str:
             "",
             "    return ret_val;",
             "}",
+            *demo_function,
             "",
             "int main(void)",
             "{",
@@ -706,6 +751,7 @@ def track_main(graph: dict[str, Any], track: dict[str, Any], index: int) -> str:
             "        goto done;",
             "    }",
             "",
+            *demo_call,
             "    ret_val = EXIT_SUCCESS;",
             "",
             "done:",
@@ -818,51 +864,6 @@ def track_test_cmake(track: dict[str, Any]) -> str:
     )
 
 
-def track_run_sh(track: dict[str, Any]) -> str:
-    binary_name = f"p101-track-{slug(track['track'])}"
-    return "\n".join(
-        [
-            "#!/usr/bin/env bash",
-            f"# Build and run the standalone {track['track']} playground track.",
-            "",
-            "set -euo pipefail",
-            "",
-            "track_dir=\"$(cd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\" && pwd)\"",
-            "cd -- \"${track_dir}\"",
-            "",
-            "compiler=\"${CC:-clang}\"",
-            "reconfigure=0",
-            "build_args=(-q)",
-            "program_args=()",
-            "",
-            "usage() {",
-            "    echo \"usage: $0 [-c compiler] [--reconfigure] [--] [track-args...]\" >&2",
-            "}",
-            "",
-            "while [[ $# -gt 0 ]]; do",
-            "    case \"$1\" in",
-            "        -h|--help) usage; exit 0 ;;",
-            "        -c|--compiler) compiler=\"${2:?}\"; shift 2 ;;",
-            "        --reconfigure) reconfigure=1; shift ;;",
-            "        --verbose-build) build_args=(); shift ;;",
-            "        --) shift; program_args=(\"$@\"); break ;;",
-            "        *) program_args+=(\"$1\"); shift ;;",
-            "    esac",
-            "done",
-            "",
-            "if [[ \"${reconfigure}\" -eq 1 || ! -f .last-build-dir ]]; then",
-            "    ./change-compiler.sh -c \"${compiler}\"",
-            "fi",
-            "",
-            "./build.sh \"${build_args[@]}\"",
-            "",
-            "build_dir=\"$(cat .last-build-dir)\"",
-            f"exec \"${{track_dir}}/${{build_dir}}/{binary_name}\" ${{program_args[@]+\"${{program_args[@]}}\"}}",
-            "",
-        ]
-    )
-
-
 def materialize_track_project(graph: dict[str, Any], track: dict[str, Any], index: int) -> None:
     track_dir = TRACKS / f"{index:02d}-{slug(track['track'])}"
     track_dir.mkdir(parents=True, exist_ok=True)
@@ -874,10 +875,12 @@ def materialize_track_project(graph: dict[str, Any], track: dict[str, Any], inde
     write(track_dir / "TRACK.md", track_lesson(track, index))
     write(track_dir / "track.json", track_json(graph, track, index))
     write(track_dir / "include" / "track_info.h", track_header(track, index))
-    write(track_dir / "src" / "main.c", track_main(graph, track, index))
+    main_source = track_dir / "src" / "main.c"
+    write(main_source, track_main(graph, track, index))
+    format_c(main_source)
     write(track_dir / "config.cmake", track_config(track, index))
     write(track_dir / "test" / "CMakeLists.txt", track_test_cmake(track))
-    write_executable(track_dir / "run.sh", track_run_sh(track))
+    write_executable(track_dir / "run.sh", (PLAYGROUND / "track-runner.sh").read_text(encoding="utf-8"))
 
 
 def tracks_index(graph: dict[str, Any], tracks: list[dict[str, Any]]) -> str:

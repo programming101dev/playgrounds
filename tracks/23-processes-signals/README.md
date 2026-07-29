@@ -4,7 +4,7 @@
 
 Track number: `23`
 
-Wrapper count: `51`
+Wrapper count: `50`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -24,7 +24,7 @@ fork, exec, wait, spawn, signals, inherited resources, CLOEXEC, and process fail
 
 ## Domains
 
-- `systems/process-control` (12 wrappers)
+- `systems/process-control` (11 wrappers)
 - `systems/process-signal` (35 wrappers)
 - `systems/scheduling-basics` (4 wrappers)
 
@@ -40,7 +40,6 @@ fork, exec, wait, spawn, signals, inherited resources, CLOEXEC, and process fail
 
 ### `systems/process-control`
 
-- `p101__exit`
 - `p101_execv`
 - `p101_execve`
 - `p101_execvp`

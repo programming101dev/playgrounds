@@ -6,21 +6,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const char *const wrapper_functions[] = {
-    "p101_fprintf",
-    "p101_fscanf",
-    "p101_printf",
-    "p101_scanf",
-    "p101_snprintf",
-    "p101_sscanf",
-    "p101_vfprintf",
-    "p101_vfscanf",
-    "p101_vprintf",
-    "p101_vscanf",
-    "p101_vsnprintf",
-    "p101_vsscanf",
-    "p101_vdprintf"
-};
+static const char *const wrapper_functions[] = {"p101_fprintf", "p101_fscanf", "p101_printf", "p101_scanf", "p101_snprintf", "p101_sscanf", "p101_vfprintf", "p101_vfscanf", "p101_vprintf", "p101_vscanf", "p101_vsnprintf", "p101_vsscanf", "p101_vdprintf"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 
