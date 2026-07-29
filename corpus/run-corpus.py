@@ -141,7 +141,7 @@ def fault_walk_has_findings(report_dir: Path) -> bool:
             data = read_json(path)
         except (OSError, json.JSONDecodeError, ValueError):
             continue
-        for key in ("fd_leaks", "allocation_leaks", "bad_releases", "exec_inheritances"):
+        for key in ("fd_leaks", "allocation_leaks", "bad_releases", "exec_inheritances", "generic_resource_leaks", "generic_bad_releases"):
             value = data.get(key)
             if isinstance(value, int) and value > 0:
                 return True
@@ -150,7 +150,7 @@ def fault_walk_has_findings(report_dir: Path) -> bool:
             return True
     for path in fault_dir.glob("*.observe/summary.txt"):
         text = path.read_text(encoding="utf-8", errors="replace")
-        if "fd_leaks=0 allocation_leaks=0 bad_releases=0" not in text:
+        if "fd_leaks=0 allocation_leaks=0 bad_releases=0" not in text or "generic_resource_leaks=0 generic_bad_releases=0" not in text:
             return True
     return False
 

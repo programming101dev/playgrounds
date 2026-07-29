@@ -189,7 +189,7 @@ do_module_split() {
     failures=1
     return 1
   fi
-  run_step "module split map" "$out_dir/logs/module-map.log" 0 "$module_map" -o "$out_dir/module-map.md" src include || failures=1
+  run_step "module split map" "$out_dir/logs/module-map.log" "0 1" "$module_map" -o "$out_dir/module-map.md" src include || failures=1
   assert_contains "module map has structure" "$out_dir/module-map.md" "Modules|Teaching notes" || failures=1
 }
 
