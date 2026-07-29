@@ -966,7 +966,7 @@ static int run_fork_demo(const struct p101_env *env, struct p101_error *err, con
             child_status = EXEC_FAILURE;
         }
 
-        p101_exit_immediately(env, child_status);
+        p101_posix_exit_immediately(env, child_status);
     }
 
     p101_close(env, err, fds[1]);

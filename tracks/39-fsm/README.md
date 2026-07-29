@@ -4,7 +4,7 @@
 
 Track number: `39`
 
-Wrapper count: `17`
+Wrapper count: `26`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -24,7 +24,7 @@ Finite-state-machine structure, state transitions, callbacks, invalid transition
 
 ## Domains
 
-- `support/fsm` (17 wrappers)
+- `support/fsm` (26 wrappers)
 
 ## Suggested lesson arc
 
@@ -38,6 +38,10 @@ Finite-state-machine structure, state transitions, callbacks, invalid transition
 
 ### `support/fsm`
 
+- `p101_fsm_decide_exit`
+- `p101_fsm_decide_pause`
+- `p101_fsm_decide_transition`
+- `p101_fsm_emit_effect`
 - `p101_fsm_exit_immediately`
 - `p101_fsm_info_create`
 - `p101_fsm_info_default_bad_change_state_handler`
@@ -47,11 +51,16 @@ Finite-state-machine structure, state transitions, callbacks, invalid transition
 - `p101_fsm_info_destroy`
 - `p101_fsm_info_get_bad_change_state_handler`
 - `p101_fsm_info_get_bad_change_state_notifier`
+- `p101_fsm_info_get_current_state`
 - `p101_fsm_info_get_did_change_state_notifier`
 - `p101_fsm_info_get_name`
+- `p101_fsm_info_get_step_sequence`
 - `p101_fsm_info_get_will_change_state_notifier`
+- `p101_fsm_info_is_terminal`
 - `p101_fsm_info_set_bad_change_state_handler`
 - `p101_fsm_info_set_bad_change_state_notifier`
 - `p101_fsm_info_set_did_change_state_notifier`
+- `p101_fsm_info_set_step_observer`
 - `p101_fsm_info_set_will_change_state_notifier`
 - `p101_fsm_run`
+- `p101_fsm_step`

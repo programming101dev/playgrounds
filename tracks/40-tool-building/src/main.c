@@ -6,7 +6,33 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const char *const wrapper_functions[] = {"p101_c_fact_kind_name", "p101_c_fact_parse_line", "p101_c_fact_status_name", "p101_c_facts_find_clang_compile_database"};
+static const char *const wrapper_functions[] = {"p101_c_fact_kind_name",
+                                                "p101_c_fact_parse_line",
+                                                "p101_c_fact_status_name",
+                                                "p101_c_facts_find_clang_compile_database",
+                                                "p101_tool_event_fingerprint_file",
+                                                "p101_tool_event_lifecycle_create",
+                                                "p101_tool_event_lifecycle_destroy",
+                                                "p101_tool_event_lifecycle_entry_at",
+                                                "p101_tool_event_lifecycle_entry_count",
+                                                "p101_tool_event_lifecycle_finding_at",
+                                                "p101_tool_event_lifecycle_finding_count",
+                                                "p101_tool_event_lifecycle_finish",
+                                                "p101_tool_event_lifecycle_ingest",
+                                                "p101_tool_event_line_is_ours",
+                                                "p101_tool_event_ownership_classify_release",
+                                                "p101_tool_event_ownership_classify_replace",
+                                                "p101_tool_event_ownership_exec_inherits",
+                                                "p101_tool_event_parse_json_size",
+                                                "p101_tool_event_parse_line",
+                                                "p101_tool_event_parse_resource_summary_json",
+                                                "p101_tool_event_parse_size_field",
+                                                "p101_tool_event_parse_status_name",
+                                                "p101_tool_event_read_line",
+                                                "p101_tool_event_resource_summary_finding_count",
+                                                "p101_tool_event_split",
+                                                "p101_tool_event_unescape_field",
+                                                "p101_tool_event_write"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 

@@ -9,7 +9,7 @@
     "purpose": "Hand-authored pre-track for env, err, wrappers, and tools."
   },
   "track_count": 40,
-  "covered_function_count": 1171,
+  "covered_function_count": 1206,
   "uncovered_function_count": 0,
   "tracks": [
     {
@@ -1937,27 +1937,26 @@
       "index": 37,
       "track": "environment-lifecycle",
       "directory": "37-environment-lifecycle",
-      "function_count": 14,
+      "function_count": 13,
       "purpose": "Creating, configuring, labeling, duplicating, and destroying p101 environments.",
       "domains": [
         {
           "name": "support/environment-lifecycle",
-          "function_count": 14,
+          "function_count": 13,
           "functions": [
+            "p101_env_clear_event_log_error",
             "p101_env_create",
             "p101_env_destroy",
             "p101_env_dup",
-            "p101_env_event_line_is_ours",
-            "p101_env_event_parse_size_field",
-            "p101_env_event_parse_status_name",
-            "p101_env_event_split",
-            "p101_env_event_unescape_field",
+            "p101_env_event_log_errno",
+            "p101_env_event_log_failed",
             "p101_env_get_event_log_version",
             "p101_env_get_label",
-            "p101_env_parse_event_line",
-            "p101_env_read_event_line",
+            "p101_env_pointer_resource_id",
             "p101_env_set_event_log_version",
-            "p101_env_set_label"
+            "p101_env_set_label",
+            "p101_env_set_resource_log",
+            "p101_env_set_resource_observer"
           ]
         }
       ]
@@ -1966,7 +1965,7 @@
       "index": 38,
       "track": "event-streams",
       "directory": "38-event-streams",
-      "function_count": 30,
+      "function_count": 34,
       "purpose": "Resource events, call tracing, fault injection, event-log formatting, and observer configuration.",
       "domains": [
         {
@@ -1989,16 +1988,17 @@
         },
         {
           "name": "support/fault-injection",
-          "function_count": 3,
+          "function_count": 4,
           "functions": [
             "p101_env_check_fault",
+            "p101_env_check_fault_action",
             "p101_env_default_tracer",
             "p101_env_set_fault_injector"
           ]
         },
         {
           "name": "support/resource-events",
-          "function_count": 15,
+          "function_count": 18,
           "functions": [
             "p101_env_enable_fd_tracking",
             "p101_env_report_leaks",
@@ -2012,8 +2012,11 @@
             "p101_env_track_exec_failure",
             "p101_env_track_fork",
             "p101_env_track_free",
+            "p101_env_track_integer_resource",
             "p101_env_track_open",
+            "p101_env_track_pointer_resource",
             "p101_env_track_realloc",
+            "p101_env_track_resource",
             "p101_env_track_spawn"
           ]
         }
@@ -2023,13 +2026,17 @@
       "index": 39,
       "track": "fsm",
       "directory": "39-fsm",
-      "function_count": 17,
+      "function_count": 26,
       "purpose": "Finite-state-machine structure, state transitions, callbacks, invalid transitions, and lifecycle ownership.",
       "domains": [
         {
           "name": "support/fsm",
-          "function_count": 17,
+          "function_count": 26,
           "functions": [
+            "p101_fsm_decide_exit",
+            "p101_fsm_decide_pause",
+            "p101_fsm_decide_transition",
+            "p101_fsm_emit_effect",
             "p101_fsm_exit_immediately",
             "p101_fsm_info_create",
             "p101_fsm_info_default_bad_change_state_handler",
@@ -2039,14 +2046,19 @@
             "p101_fsm_info_destroy",
             "p101_fsm_info_get_bad_change_state_handler",
             "p101_fsm_info_get_bad_change_state_notifier",
+            "p101_fsm_info_get_current_state",
             "p101_fsm_info_get_did_change_state_notifier",
             "p101_fsm_info_get_name",
+            "p101_fsm_info_get_step_sequence",
             "p101_fsm_info_get_will_change_state_notifier",
+            "p101_fsm_info_is_terminal",
             "p101_fsm_info_set_bad_change_state_handler",
             "p101_fsm_info_set_bad_change_state_notifier",
             "p101_fsm_info_set_did_change_state_notifier",
+            "p101_fsm_info_set_step_observer",
             "p101_fsm_info_set_will_change_state_notifier",
-            "p101_fsm_run"
+            "p101_fsm_run",
+            "p101_fsm_step"
           ]
         }
       ]
@@ -2055,7 +2067,7 @@
       "index": 40,
       "track": "tool-building",
       "directory": "40-tool-building",
-      "function_count": 4,
+      "function_count": 27,
       "purpose": "C facts, small analyzers, and writing tools that reason about p101 projects.",
       "domains": [
         {
@@ -2066,6 +2078,35 @@
             "p101_c_fact_parse_line",
             "p101_c_fact_status_name",
             "p101_c_facts_find_clang_compile_database"
+          ]
+        },
+        {
+          "name": "tooling/event-protocol",
+          "function_count": 23,
+          "functions": [
+            "p101_tool_event_fingerprint_file",
+            "p101_tool_event_lifecycle_create",
+            "p101_tool_event_lifecycle_destroy",
+            "p101_tool_event_lifecycle_entry_at",
+            "p101_tool_event_lifecycle_entry_count",
+            "p101_tool_event_lifecycle_finding_at",
+            "p101_tool_event_lifecycle_finding_count",
+            "p101_tool_event_lifecycle_finish",
+            "p101_tool_event_lifecycle_ingest",
+            "p101_tool_event_line_is_ours",
+            "p101_tool_event_ownership_classify_release",
+            "p101_tool_event_ownership_classify_replace",
+            "p101_tool_event_ownership_exec_inherits",
+            "p101_tool_event_parse_json_size",
+            "p101_tool_event_parse_line",
+            "p101_tool_event_parse_resource_summary_json",
+            "p101_tool_event_parse_size_field",
+            "p101_tool_event_parse_status_name",
+            "p101_tool_event_read_line",
+            "p101_tool_event_resource_summary_finding_count",
+            "p101_tool_event_split",
+            "p101_tool_event_unescape_field",
+            "p101_tool_event_write"
           ]
         }
       ]

@@ -8,7 +8,7 @@ areas while still covering every p101 wrapper exactly once.
 
 ## Coverage
 
-- Wrappers covered: `1171`
+- Wrappers covered: `1206`
 - Uncovered wrappers/domains: `0`
 - Track count: `40`
 - Orientation pre-track: `00-p101-orientation`
@@ -55,10 +55,10 @@ areas while still covering every p101 wrapper exactly once.
 | 34 | [`logging-diagnostics`](34-logging-diagnostics/README.md) | 12 | syslog, err/warn-style diagnostics, formatted messages, and teachable logging/error-reporting practice. |
 | 35 | [`runtime-services`](35-runtime-services/README.md) | 36 | Dynamic loading, regex, iconv, locale/message catalogs, legacy DBM, and libc search structures. |
 | 36 | [`error-handling`](36-error-handling/README.md) | 50 | Error objects, errno mapping, assertions/check helpers, reporting, and failure-aware control flow. |
-| 37 | [`environment-lifecycle`](37-environment-lifecycle/README.md) | 14 | Creating, configuring, labeling, duplicating, and destroying p101 environments. |
-| 38 | [`event-streams`](38-event-streams/README.md) | 30 | Resource events, call tracing, fault injection, event-log formatting, and observer configuration. |
-| 39 | [`fsm`](39-fsm/README.md) | 17 | Finite-state-machine structure, state transitions, callbacks, invalid transitions, and lifecycle ownership. |
-| 40 | [`tool-building`](40-tool-building/README.md) | 4 | C facts, small analyzers, and writing tools that reason about p101 projects. |
+| 37 | [`environment-lifecycle`](37-environment-lifecycle/README.md) | 13 | Creating, configuring, labeling, duplicating, and destroying p101 environments. |
+| 38 | [`event-streams`](38-event-streams/README.md) | 34 | Resource events, call tracing, fault injection, event-log formatting, and observer configuration. |
+| 39 | [`fsm`](39-fsm/README.md) | 26 | Finite-state-machine structure, state transitions, callbacks, invalid transitions, and lifecycle ownership. |
+| 40 | [`tool-building`](40-tool-building/README.md) | 27 | C facts, small analyzers, and writing tools that reason about p101 projects. |
 
 ## How to use this
 

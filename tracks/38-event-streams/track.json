@@ -3,7 +3,7 @@
   "title": "event streams",
   "order": 38,
   "generated": true,
-  "wrapper_count": 30,
+  "wrapper_count": 34,
   "purpose": "Resource events, call tracing, fault injection, event-log formatting, and observer configuration.",
   "domains": [
     {
@@ -26,16 +26,17 @@
     },
     {
       "name": "support/fault-injection",
-      "function_count": 3,
+      "function_count": 4,
       "functions": [
         "p101_env_check_fault",
+        "p101_env_check_fault_action",
         "p101_env_default_tracer",
         "p101_env_set_fault_injector"
       ]
     },
     {
       "name": "support/resource-events",
-      "function_count": 15,
+      "function_count": 18,
       "functions": [
         "p101_env_enable_fd_tracking",
         "p101_env_report_leaks",
@@ -49,8 +50,11 @@
         "p101_env_track_exec_failure",
         "p101_env_track_fork",
         "p101_env_track_free",
+        "p101_env_track_integer_resource",
         "p101_env_track_open",
+        "p101_env_track_pointer_resource",
         "p101_env_track_realloc",
+        "p101_env_track_resource",
         "p101_env_track_spawn"
       ]
     }

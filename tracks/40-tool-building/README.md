@@ -4,7 +4,7 @@
 
 Track number: `40`
 
-Wrapper count: `4`
+Wrapper count: `27`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -25,6 +25,7 @@ C facts, small analyzers, and writing tools that reason about p101 projects.
 ## Domains
 
 - `tooling/c-facts` (4 wrappers)
+- `tooling/event-protocol` (23 wrappers)
 
 ## Suggested lesson arc
 
@@ -42,3 +43,29 @@ C facts, small analyzers, and writing tools that reason about p101 projects.
 - `p101_c_fact_parse_line`
 - `p101_c_fact_status_name`
 - `p101_c_facts_find_clang_compile_database`
+
+### `tooling/event-protocol`
+
+- `p101_tool_event_fingerprint_file`
+- `p101_tool_event_lifecycle_create`
+- `p101_tool_event_lifecycle_destroy`
+- `p101_tool_event_lifecycle_entry_at`
+- `p101_tool_event_lifecycle_entry_count`
+- `p101_tool_event_lifecycle_finding_at`
+- `p101_tool_event_lifecycle_finding_count`
+- `p101_tool_event_lifecycle_finish`
+- `p101_tool_event_lifecycle_ingest`
+- `p101_tool_event_line_is_ours`
+- `p101_tool_event_ownership_classify_release`
+- `p101_tool_event_ownership_classify_replace`
+- `p101_tool_event_ownership_exec_inherits`
+- `p101_tool_event_parse_json_size`
+- `p101_tool_event_parse_line`
+- `p101_tool_event_parse_resource_summary_json`
+- `p101_tool_event_parse_size_field`
+- `p101_tool_event_parse_status_name`
+- `p101_tool_event_read_line`
+- `p101_tool_event_resource_summary_finding_count`
+- `p101_tool_event_split`
+- `p101_tool_event_unescape_field`
+- `p101_tool_event_write`

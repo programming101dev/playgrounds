@@ -27,6 +27,7 @@ TRACKS = PLAYGROUND / "tracks"
 P101_LIBRARIES = [
     "p101_error",
     "p101_env",
+    "p101_tool_event",
     "p101_c",
     "p101_posix",
     "p101_posix_optional",
