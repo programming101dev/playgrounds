@@ -3,7 +3,7 @@
   "title": "tool building",
   "order": 40,
   "generated": true,
-  "wrapper_count": 27,
+  "wrapper_count": 29,
   "purpose": "C facts, small analyzers, and writing tools that reason about p101 projects.",
   "domains": [
     {
@@ -18,7 +18,7 @@
     },
     {
       "name": "tooling/event-protocol",
-      "function_count": 23,
+      "function_count": 25,
       "functions": [
         "p101_tool_event_fingerprint_file",
         "p101_tool_event_lifecycle_create",
@@ -41,6 +41,8 @@
         "p101_tool_event_read_line",
         "p101_tool_event_resource_summary_finding_count",
         "p101_tool_event_split",
+        "p101_tool_event_stream_health_is_complete",
+        "p101_tool_event_stream_health_observe",
         "p101_tool_event_unescape_field",
         "p101_tool_event_write"
       ]

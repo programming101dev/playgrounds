@@ -18,9 +18,9 @@ usage() {
 Usage: ./lesson.sh [all|wrappers|fd-leak|error-path|module-split] [-o <dir>]
 
 Runs a focused teaching demo and writes a short summary. Tool paths may be
-overridden with P101_OBSERVE, P101_RESOURCE_TRACKER, P101_TRACE, P101_REPORT,
-P101_ERROR_PATH_WALK, P101_WRAPPER_AUDIT, P101_MODULE_MAP, and
-P101_TOOL_PLAYGROUND.
+overridden with P101_OBSERVE, P101_RESOURCE_TRACKER, P101_SYNC_CHECK,
+P101_TRACE, P101_REPORT, P101_ERROR_PATH_WALK, P101_WRAPPER_AUDIT,
+P101_MODULE_MAP, and P101_TOOL_PLAYGROUND.
 USAGE
 }
 
@@ -131,6 +131,7 @@ assert_exists() {
 playground="$(find_tool P101_TOOL_PLAYGROUND ./build-clang-22/p101-tool-playground ./build-clang/p101-tool-playground ./build-gcc-16/p101-tool-playground p101-tool-playground || true)"
 observe="$(find_tool P101_OBSERVE ../programs/p101-observe/build-clang-22/p101-observe ../programs/p101-observe/build-clang/p101-observe ../programs/p101-observe/build-gcc-16/p101-observe p101-observe || true)"
 tracker="$(find_tool P101_RESOURCE_TRACKER ../programs/p101-resource-tracker/build-clang-22/p101-resource-tracker ../programs/p101-resource-tracker/build-clang/p101-resource-tracker ../programs/p101-resource-tracker/build-gcc-16/p101-resource-tracker p101-resource-tracker || true)"
+concurrency="$(find_tool P101_SYNC_CHECK ../programs/p101-sync-check/build-clang-22/p101-sync-check ../programs/p101-sync-check/build-clang/p101-sync-check ../programs/p101-sync-check/build-gcc-16/p101-sync-check p101-sync-check || true)"
 trace="$(find_tool P101_TRACE ../programs/p101-trace/build-clang-22/p101-trace ../programs/p101-trace/build-clang/p101-trace ../programs/p101-trace/build-gcc-16/p101-trace p101-trace || true)"
 report="$(find_tool P101_REPORT ../programs/p101-report/build-clang-22/p101-report ../programs/p101-report/build-clang/p101-report ../programs/p101-report/build-gcc-16/p101-report p101-report || true)"
 walker="$(find_tool P101_ERROR_PATH_WALK ../programs/p101-error-path-walk/build-clang-22/p101-error-path-walk ../programs/p101-error-path-walk/build-clang/p101-error-path-walk ../programs/p101-error-path-walk/build-gcc-16/p101-error-path-walk p101-error-path-walk || true)"
@@ -147,7 +148,7 @@ Lesson: \`${lesson}\`
 EOF
 
 need_runtime_tools() {
-  [ -n "$playground" ] && [ -n "$observe" ] && [ -n "$tracker" ] && [ -n "$trace" ] && [ -n "$report" ]
+  [ -n "$playground" ] && [ -n "$observe" ] && [ -n "$tracker" ] && [ -n "$concurrency" ] && [ -n "$trace" ] && [ -n "$report" ]
 }
 
 do_wrappers() {
@@ -167,7 +168,7 @@ do_fd_leak() {
     failures=1
     return 1
   fi
-  run_step "fd leak observation" "$out_dir/logs/fd-leak.log" 1 "$observe" -o "$out_dir/fd-leak" -r "$tracker" -t "$trace" -p "$report" -- "$playground" -s fd-leak -o "$out_dir/fd-leak-output.txt" || failures=1
+  run_step "fd leak observation" "$out_dir/logs/fd-leak.log" 1 "$observe" -o "$out_dir/fd-leak" -r "$tracker" -d "$concurrency" -t "$trace" -p "$report" -- "$playground" -s fd-leak -o "$out_dir/fd-leak-output.txt" || failures=1
   assert_contains "fd leak is counted" "$out_dir/fd-leak/resource-report.json" "\"fd_leaks\"[[:space:]]*:[[:space:]]*[1-9]" || failures=1
 }
 
@@ -178,7 +179,7 @@ do_error_path() {
     return 1
   fi
   mkdir -p "$out_dir/fault-walk"
-  run_step "error path walk" "$out_dir/logs/error-path.log" "0 1" "$walker" -n 8 -l "$out_dir/fault-walk/case" -O "$observe" -r "$tracker" -t "$trace" -p "$report" -- "$playground" -s fault-lab -o "$out_dir/fault-output.txt" || failures=1
+  run_step "error path walk" "$out_dir/logs/error-path.log" "0 1" "$walker" -n 8 -l "$out_dir/fault-walk/case" -O "$observe" -r "$tracker" -d "$concurrency" -t "$trace" -p "$report" -- "$playground" -s fault-lab -o "$out_dir/fault-output.txt" || failures=1
   assert_contains "fault walk produced evidence" "$out_dir/logs/error-path.log" "fault|case|finding|leak" || failures=1
   assert_exists "fault walk produced case artifacts" "$out_dir/fault-walk" || failures=1
 }

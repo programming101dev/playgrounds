@@ -9,7 +9,7 @@
     "purpose": "Hand-authored pre-track for env, err, wrappers, and tools."
   },
   "track_count": 40,
-  "covered_function_count": 1206,
+  "covered_function_count": 1207,
   "uncovered_function_count": 0,
   "tracks": [
     {
@@ -1227,12 +1227,12 @@
       "index": 23,
       "track": "processes-signals",
       "directory": "23-processes-signals",
-      "function_count": 50,
+      "function_count": 51,
       "purpose": "fork, exec, wait, spawn, signals, inherited resources, CLOEXEC, and process failure paths.",
       "domains": [
         {
           "name": "systems/process-control",
-          "function_count": 11,
+          "function_count": 12,
           "functions": [
             "p101_execv",
             "p101_execve",
@@ -1243,6 +1243,7 @@
             "p101_getpid",
             "p101_getppid",
             "p101_getsid",
+            "p101_posix_exit_immediately",
             "p101_setpgid",
             "p101_setsid"
           ]
@@ -1937,12 +1938,12 @@
       "index": 37,
       "track": "environment-lifecycle",
       "directory": "37-environment-lifecycle",
-      "function_count": 13,
+      "function_count": 11,
       "purpose": "Creating, configuring, labeling, duplicating, and destroying p101 environments.",
       "domains": [
         {
           "name": "support/environment-lifecycle",
-          "function_count": 13,
+          "function_count": 11,
           "functions": [
             "p101_env_clear_event_log_error",
             "p101_env_create",
@@ -1950,10 +1951,8 @@
             "p101_env_dup",
             "p101_env_event_log_errno",
             "p101_env_event_log_failed",
-            "p101_env_get_event_log_version",
             "p101_env_get_label",
             "p101_env_pointer_resource_id",
-            "p101_env_set_event_log_version",
             "p101_env_set_label",
             "p101_env_set_resource_log",
             "p101_env_set_resource_observer"
@@ -2067,7 +2066,7 @@
       "index": 40,
       "track": "tool-building",
       "directory": "40-tool-building",
-      "function_count": 27,
+      "function_count": 29,
       "purpose": "C facts, small analyzers, and writing tools that reason about p101 projects.",
       "domains": [
         {
@@ -2082,7 +2081,7 @@
         },
         {
           "name": "tooling/event-protocol",
-          "function_count": 23,
+          "function_count": 25,
           "functions": [
             "p101_tool_event_fingerprint_file",
             "p101_tool_event_lifecycle_create",
@@ -2105,6 +2104,8 @@
             "p101_tool_event_read_line",
             "p101_tool_event_resource_summary_finding_count",
             "p101_tool_event_split",
+            "p101_tool_event_stream_health_is_complete",
+            "p101_tool_event_stream_health_observe",
             "p101_tool_event_unescape_field",
             "p101_tool_event_write"
           ]

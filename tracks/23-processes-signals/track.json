@@ -3,12 +3,12 @@
   "title": "processes signals",
   "order": 23,
   "generated": true,
-  "wrapper_count": 50,
+  "wrapper_count": 51,
   "purpose": "fork, exec, wait, spawn, signals, inherited resources, CLOEXEC, and process failure paths.",
   "domains": [
     {
       "name": "systems/process-control",
-      "function_count": 11,
+      "function_count": 12,
       "functions": [
         "p101_execv",
         "p101_execve",
@@ -19,6 +19,7 @@
         "p101_getpid",
         "p101_getppid",
         "p101_getsid",
+        "p101_posix_exit_immediately",
         "p101_setpgid",
         "p101_setsid"
       ]

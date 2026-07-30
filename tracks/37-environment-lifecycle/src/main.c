@@ -12,10 +12,8 @@ static const char *const wrapper_functions[] = {"p101_env_clear_event_log_error"
                                                 "p101_env_dup",
                                                 "p101_env_event_log_errno",
                                                 "p101_env_event_log_failed",
-                                                "p101_env_get_event_log_version",
                                                 "p101_env_get_label",
                                                 "p101_env_pointer_resource_id",
-                                                "p101_env_set_event_log_version",
                                                 "p101_env_set_label",
                                                 "p101_env_set_resource_log",
                                                 "p101_env_set_resource_observer"};

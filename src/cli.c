@@ -12,7 +12,7 @@
 
 void p101_tool_playground_arguments_init(const struct p101_env *env, struct arguments *args)
 {
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_memset(env, args, 0, sizeof(*args));
     args->scenario_str = DEFAULT_SCENARIO;
     args->output_path  = DEFAULT_OUTPUT_PATH;
@@ -24,7 +24,7 @@ void p101_tool_playground_parse_arguments(const struct p101_env *env, struct p10
 {
     int opt;
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     opterr = 0;
 
     while((opt = p101_getopt(env, argc, argv, ":hvs:o:b:r:")) != -1 && p101_error_has_no_error(err))
@@ -105,7 +105,7 @@ void p101_tool_playground_check_arguments(const struct p101_env *env, struct p10
 {
     bool ok;
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
 
     if(args->scenario_str == NULL || args->scenario_str[0] == '\0')
     {
@@ -146,7 +146,7 @@ void p101_tool_playground_convert_arguments(const struct p101_env *env, struct p
 {
     bool ok;
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     args->scenario = p101_tool_playground_scenario_from_name(env, args->scenario_str, &ok);
 
     if(!ok)

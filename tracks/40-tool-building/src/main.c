@@ -31,6 +31,8 @@ static const char *const wrapper_functions[] = {"p101_c_fact_kind_name",
                                                 "p101_tool_event_read_line",
                                                 "p101_tool_event_resource_summary_finding_count",
                                                 "p101_tool_event_split",
+                                                "p101_tool_event_stream_health_is_complete",
+                                                "p101_tool_event_stream_health_observe",
                                                 "p101_tool_event_unescape_field",
                                                 "p101_tool_event_write"};
 

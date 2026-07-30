@@ -35,9 +35,9 @@ Options:
   -h, --help      Show this help.
 
 Tool paths may be overridden with:
-  P101_OBSERVE, P101_RESOURCE_TRACKER, P101_TRACE, P101_REPORT,
-  P101_ERROR_PATH_WALK, P101_WRAPPER_AUDIT, P101_ERROR_CONTRACT,
-  P101_DOCTOR, P101_TOOL_PLAYGROUND
+  P101_OBSERVE, P101_RESOURCE_TRACKER, P101_SYNC_CHECK, P101_TRACE,
+  P101_REPORT, P101_ERROR_PATH_WALK, P101_WRAPPER_AUDIT,
+  P101_ERROR_CONTRACT, P101_DOCTOR, P101_TOOL_PLAYGROUND
 USAGE
 }
 
@@ -342,6 +342,7 @@ fi
 playground="$(find_tool P101_TOOL_PLAYGROUND "$(last_build_tool . p101-tool-playground)" ./build-clang-22/p101-tool-playground ./build-clang/p101-tool-playground ./build-gcc-16/p101-tool-playground p101-tool-playground)"
 observe="$(find_tool P101_OBSERVE "$(last_build_tool ../programs/p101-observe p101-observe)" ../programs/p101-observe/build-clang-22/p101-observe ../programs/p101-observe/build-clang/p101-observe ../programs/p101-observe/build-gcc-16/p101-observe p101-observe)"
 tracker="$(find_tool P101_RESOURCE_TRACKER "$(last_build_tool ../programs/p101-resource-tracker p101-resource-tracker)" ../programs/p101-resource-tracker/build-clang-22/p101-resource-tracker ../programs/p101-resource-tracker/build-clang/p101-resource-tracker ../programs/p101-resource-tracker/build-gcc-16/p101-resource-tracker ../programs/p101-resource-tracker/build-clang/resource-tracker p101-resource-tracker resource-tracker)"
+concurrency="$(find_tool P101_SYNC_CHECK "$(last_build_tool ../programs/p101-sync-check p101-sync-check)" ../programs/p101-sync-check/build-clang-22/p101-sync-check ../programs/p101-sync-check/build-clang/p101-sync-check ../programs/p101-sync-check/build-gcc-16/p101-sync-check p101-sync-check)"
 trace="$(find_tool P101_TRACE "$(last_build_tool ../programs/p101-trace p101-trace)" ../programs/p101-trace/build-clang-22/p101-trace ../programs/p101-trace/build-clang/p101-trace ../programs/p101-trace/build-gcc-16/p101-trace p101-trace)"
 report="$(find_tool P101_REPORT "$(last_build_tool ../programs/p101-report p101-report)" ../programs/p101-report/build-clang-22/p101-report ../programs/p101-report/build-clang/p101-report ../programs/p101-report/build-gcc-16/p101-report p101-report)"
 walker="$(find_tool P101_ERROR_PATH_WALK "$(last_build_tool ../programs/p101-error-path-walk p101-error-path-walk)" ../programs/p101-error-path-walk/build-clang-22/p101-error-path-walk ../programs/p101-error-path-walk/build-clang/p101-error-path-walk ../programs/p101-error-path-walk/build-gcc-16/p101-error-path-walk ../programs/p101-error-path-walk/build-clang/error-path-walk p101-error-path-walk error-path-walk)"
@@ -352,32 +353,32 @@ doctor="$(find_tool P101_DOCTOR "$(last_build_tool ../programs/p101-doctor p101-
 
 if [ -z "$playground" ]; then
   record "FAIL" "locate playground binary" "run ./build.sh first"
-elif [ -z "$observe" ] || [ -z "$tracker" ] || [ -z "$trace" ] || [ -z "$report" ]; then
-  record "FAIL" "observed runtime demos" "missing: $(missing_tools p101-observe "$observe" p101-resource-tracker "$tracker" p101-trace "$trace" p101-report "$report")"
+elif [ -z "$observe" ] || [ -z "$tracker" ] || [ -z "$concurrency" ] || [ -z "$trace" ] || [ -z "$report" ]; then
+  record "FAIL" "observed runtime demos" "missing: $(missing_tools p101-observe "$observe" p101-resource-tracker "$tracker" p101-sync-check "$concurrency" p101-trace "$trace" p101-report "$report")"
 else
   reset_child_dir "$out_dir/observed-tour"
   reset_child_dir "$out_dir/observed-fd-leak"
   reset_child_dir "$out_dir/observed-alloc-leak"
   reset_child_dir "$out_dir/observed-double-close"
-  run_logged "observe full clean tour" "$log_dir/observe-tour.log" "0" "$observe" -o "$out_dir/observed-tour" -r "$tracker" -t "$trace" -p "$report" -- "$playground" -s tour -o "$out_dir/tour-output.txt" || true
-  run_logged "observe fd leak" "$log_dir/observe-fd-leak.log" "0 1" "$observe" -o "$out_dir/observed-fd-leak" -r "$tracker" -t "$trace" -p "$report" -- "$playground" -s fd-leak -o "$out_dir/fd-leak-output.txt" || true
-  run_logged "observe allocation leak" "$log_dir/observe-alloc-leak.log" "0 1" "$observe" -o "$out_dir/observed-alloc-leak" -r "$tracker" -t "$trace" -p "$report" -- "$playground" -s alloc-leak -o "$out_dir/alloc-leak-output.txt" || true
-  run_logged "observe double close" "$log_dir/observe-double-close.log" "0 1" "$observe" -o "$out_dir/observed-double-close" -r "$tracker" -t "$trace" -p "$report" -- "$playground" -s double-close -o "$out_dir/double-close-output.txt" || true
+  run_logged "observe full clean tour" "$log_dir/observe-tour.log" "0" "$observe" -o "$out_dir/observed-tour" -r "$tracker" -d "$concurrency" -t "$trace" -p "$report" -- "$playground" -s tour -o "$out_dir/tour-output.txt" || true
+  run_logged "observe fd leak" "$log_dir/observe-fd-leak.log" "0 1" "$observe" -o "$out_dir/observed-fd-leak" -r "$tracker" -d "$concurrency" -t "$trace" -p "$report" -- "$playground" -s fd-leak -o "$out_dir/fd-leak-output.txt" || true
+  run_logged "observe allocation leak" "$log_dir/observe-alloc-leak.log" "0 1" "$observe" -o "$out_dir/observed-alloc-leak" -r "$tracker" -d "$concurrency" -t "$trace" -p "$report" -- "$playground" -s alloc-leak -o "$out_dir/alloc-leak-output.txt" || true
+  run_logged "observe double close" "$log_dir/observe-double-close.log" "0 1" "$observe" -o "$out_dir/observed-double-close" -r "$tracker" -d "$concurrency" -t "$trace" -p "$report" -- "$playground" -s double-close -o "$out_dir/double-close-output.txt" || true
 fi
 
-if [ -z "$playground" ] || [ -z "$walker" ] || [ -z "$observe" ] || [ -z "$tracker" ] || [ -z "$trace" ] || [ -z "$report" ]; then
-  record "FAIL" "fault walk" "missing: $(missing_tools p101-tool-playground "$playground" p101-error-path-walk "$walker" p101-observe "$observe" p101-resource-tracker "$tracker" p101-trace "$trace" p101-report "$report")"
+if [ -z "$playground" ] || [ -z "$walker" ] || [ -z "$observe" ] || [ -z "$tracker" ] || [ -z "$concurrency" ] || [ -z "$trace" ] || [ -z "$report" ]; then
+  record "FAIL" "fault walk" "missing: $(missing_tools p101-tool-playground "$playground" p101-error-path-walk "$walker" p101-observe "$observe" p101-resource-tracker "$tracker" p101-sync-check "$concurrency" p101-trace "$trace" p101-report "$report")"
 else
   reset_child_dir "$out_dir/fault-walk"
   mkdir -p "$out_dir/fault-walk"
-  run_logged "fault walk" "$log_dir/fault-walk.log" "0 1" "$walker" -n "$fault_count" -l "$out_dir/fault-walk/fault" -O "$observe" -r "$tracker" -t "$trace" -p "$report" -- "$playground" -s fault-lab -o "$out_dir/fault-lab-output.txt" || true
+  run_logged "fault walk" "$log_dir/fault-walk.log" "0 1" "$walker" -n "$fault_count" -l "$out_dir/fault-walk/fault" -O "$observe" -r "$tracker" -d "$concurrency" -t "$trace" -p "$report" -- "$playground" -s fault-lab -o "$out_dir/fault-lab-output.txt" || true
 fi
 
-if [ -z "$playground" ] || [ -z "$doctor" ] || [ -z "$wrapper_audit" ] || [ -z "$error_contract" ] || [ -z "$module_map" ] || [ -z "$observe" ] || [ -z "$walker" ] || [ -z "$tracker" ] || [ -z "$trace" ] || [ -z "$report" ]; then
-  record "FAIL" "doctor full source audit" "missing: $(missing_tools p101-tool-playground "$playground" p101-doctor "$doctor" p101-wrapper-audit "$wrapper_audit" p101-error-contract "$error_contract" p101-module-map "$module_map" p101-observe "$observe" p101-error-path-walk "$walker" p101-resource-tracker "$tracker" p101-trace "$trace" p101-report "$report")"
+if [ -z "$playground" ] || [ -z "$doctor" ] || [ -z "$wrapper_audit" ] || [ -z "$error_contract" ] || [ -z "$module_map" ] || [ -z "$observe" ] || [ -z "$walker" ] || [ -z "$tracker" ] || [ -z "$concurrency" ] || [ -z "$trace" ] || [ -z "$report" ]; then
+  record "FAIL" "doctor full source audit" "missing: $(missing_tools p101-tool-playground "$playground" p101-doctor "$doctor" p101-wrapper-audit "$wrapper_audit" p101-error-contract "$error_contract" p101-module-map "$module_map" p101-observe "$observe" p101-error-path-walk "$walker" p101-resource-tracker "$tracker" p101-sync-check "$concurrency" p101-trace "$trace" p101-report "$report")"
 else
   reset_child_dir "$out_dir/doctor"
-  run_logged "doctor full source audit" "$log_dir/doctor.log" "0 1" "$doctor" -o "$out_dir/doctor" -s src -n "$fault_count" -A "$wrapper_audit" -E "$error_contract" -M "$module_map" -O "$observe" -W "$walker" -r "$tracker" -t "$trace" -p "$report" -- "$playground" -s clean-file -o "$out_dir/doctor-target-output.txt" || true
+  run_logged "doctor full source audit" "$log_dir/doctor.log" "0 1" "$doctor" -o "$out_dir/doctor" -s src -n "$fault_count" -A "$wrapper_audit" -E "$error_contract" -M "$module_map" -O "$observe" -W "$walker" -r "$tracker" -d "$concurrency" -t "$trace" -p "$report" -- "$playground" -s clean-file -o "$out_dir/doctor-target-output.txt" || true
 fi
 
 append_summary_footer

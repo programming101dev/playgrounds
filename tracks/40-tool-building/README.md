@@ -4,7 +4,7 @@
 
 Track number: `40`
 
-Wrapper count: `27`
+Wrapper count: `29`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -25,7 +25,7 @@ C facts, small analyzers, and writing tools that reason about p101 projects.
 ## Domains
 
 - `tooling/c-facts` (4 wrappers)
-- `tooling/event-protocol` (23 wrappers)
+- `tooling/event-protocol` (25 wrappers)
 
 ## Suggested lesson arc
 
@@ -67,5 +67,7 @@ C facts, small analyzers, and writing tools that reason about p101 projects.
 - `p101_tool_event_read_line`
 - `p101_tool_event_resource_summary_finding_count`
 - `p101_tool_event_split`
+- `p101_tool_event_stream_health_is_complete`
+- `p101_tool_event_stream_health_observe`
 - `p101_tool_event_unescape_field`
 - `p101_tool_event_write`

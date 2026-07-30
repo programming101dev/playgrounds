@@ -132,7 +132,7 @@ int p101_tool_playground_run(const struct p101_env *env, struct p101_error *err,
 {
     int ret_val;
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "p101-tool-playground: scenario=%s output=%s bytes=%u repeats=%u\n", p101_tool_playground_scenario_name(args->scenario), args->output_path, args->bytes, args->repeats);
 
 #ifdef __clang__
@@ -456,7 +456,7 @@ static int run_orientation_demo(const struct p101_env *env, struct p101_error *e
     char             *message;
     int               ret_val;
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     message = NULL;
     ret_val = EXIT_FAILURE;
 
@@ -492,7 +492,7 @@ done:
 
 static int run_clean_file(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
 {
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "clean-file: write/close/free all resources\n");
     return write_demo_file(env, err, args, "clean-file", false, false);
 }
@@ -532,7 +532,7 @@ static int run_c_memory_runtime_demo(const struct p101_env *env, struct p101_err
     ldiv_t         ldiv_result;
     lldiv_t        lldiv_result;
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     (void)args;
     buffer         = NULL;
     grown          = NULL;
@@ -849,7 +849,7 @@ static int run_realloc_demo(const struct p101_env *env, struct p101_error *err, 
     char *grown;
     int   ret_val;
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     ret_val = EXIT_FAILURE;
     buffer  = make_buffer(env, err, args->bytes, 'r');
 
@@ -883,7 +883,7 @@ static int run_pipe_demo(const struct p101_env *env, struct p101_error *err, con
     char       buffer[READ_BUF_LEN];
     int        ret_val;
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     fds[0]  = -1;
     fds[1]  = -1;
     ret_val = EXIT_FAILURE;
@@ -929,7 +929,7 @@ static int run_fork_demo(const struct p101_env *env, struct p101_error *err, con
     int        status;
     int        ret_val;
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     (void)args;
     fds[0]  = -1;
     fds[1]  = -1;
@@ -998,14 +998,14 @@ done:
 
 static int run_fd_leak_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
 {
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "fd-leak: intentionally leaves the output descriptor open\n");
     return write_demo_file(env, err, args, "fd-leak", true, false);
 }
 
 static int run_alloc_leak_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
 {
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "alloc-leak: intentionally leaves one heap allocation live\n");
     return write_demo_file(env, err, args, "alloc-leak", false, true);
 }
@@ -1015,7 +1015,7 @@ static int run_double_close_demo(const struct p101_env *env, struct p101_error *
     int ret_val;
     int fd;
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     ret_val = EXIT_FAILURE;
     fd      = p101_open(env, err, args->output_path, O_WRONLY | O_CREAT | O_TRUNC, REPORT_FILE_MODE);
 
@@ -1040,7 +1040,7 @@ static int run_stray_close_demo(const struct p101_env *env, struct p101_error *e
 {
     int ret_val;
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_close(env, err, STRAY_CLOSE_FD);
     ret_val = EXIT_SUCCESS;
 
@@ -1059,7 +1059,7 @@ static int run_fault_lab(const struct p101_env *env, struct p101_error *err, con
     int   pipe_fds[2];
     char *buffer;
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     ret_val     = EXIT_FAILURE;
     pipe_fds[0] = -1;
     pipe_fds[1] = -1;
@@ -1140,7 +1140,7 @@ static int run_early_return_fd_leak_demo(const struct p101_env *env, struct p101
     int   fd;
     char *buffer;
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     buffer = NULL;
     p101_printf(env, err, "early-return-fd-leak: returns before descriptor cleanup\n");
 
@@ -1171,7 +1171,7 @@ static int run_early_return_alloc_leak_demo(const struct p101_env *env, struct p
 {
     const char *buffer;
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "early-return-alloc-leak: returns before allocation cleanup\n");
 
     buffer = make_buffer(env, err, args->bytes, 'a');
@@ -1189,7 +1189,7 @@ static int run_partial_cleanup_demo(const struct p101_env *env, struct p101_erro
     int         pipe_fds[2];
     const char *buffer;
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     buffer      = NULL;
     pipe_fds[0] = -1;
     pipe_fds[1] = -1;
@@ -1229,7 +1229,7 @@ static int run_realloc_leak_demo(const struct p101_env *env, struct p101_error *
     char *buffer;
     int   ret_val;
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     ret_val = EXIT_FAILURE;
     p101_printf(env, err, "realloc-leak: grows an allocation and intentionally forgets to free it\n");
 
@@ -1261,7 +1261,7 @@ static int run_exec_inherit_demo(const struct p101_env *env, struct p101_error *
     int         fd;
     int         ret_val;
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     ret_val = EXIT_FAILURE;
     p101_printf(env, err, "exec-inherit: opens a descriptor without FD_CLOEXEC and reaches exec\n");
 
@@ -1286,7 +1286,7 @@ static int run_double_free_demo(const struct p101_env *env, struct p101_error *e
 {
     char *buffer;
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "double-free: intentionally releases one allocation twice\n");
 
     buffer = make_buffer(env, err, args->bytes, 'd');
@@ -1306,7 +1306,7 @@ static int run_stray_free_demo(const struct p101_env *env, struct p101_error *er
     char *buffer;
     char *interior;
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "stray-free: intentionally frees an interior pointer\n");
 
     buffer = make_buffer(env, err, args->bytes, 's');
@@ -1327,7 +1327,7 @@ static int run_sizeof_pointer_demo(const struct p101_env *env, struct p101_error
     char *buffer;
     int   ret_val;
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     buffer  = NULL;
     ret_val = EXIT_FAILURE;
     p101_printf(env, err, "sizeof-pointer: writes sizeof(buffer) bytes instead of the requested byte count\n");
@@ -1374,7 +1374,7 @@ static int run_ignore_read_count_demo(const struct p101_env *env, struct p101_er
     bool       has_output_fd;
     int        ret_val;
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     pipe_fds[0]   = -1;
     pipe_fds[1]   = -1;
     has_output_fd = false;
@@ -1436,7 +1436,7 @@ static int run_unsafe_log_secret_demo(const struct p101_env *env, struct p101_er
 {
     const char log_text[] = "severity=warning event=login_failed user=student password=hunter2 outcome=denied\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "unsafe-log-secret: writes a secret directly into a log record\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1445,7 +1445,7 @@ static int run_log_injection_demo(const struct p101_env *env, struct p101_error 
 {
     const char log_text[] = "severity=warning event=login_failed user=mallory\nseverity=info event=admin_login outcome=success user=root\n outcome=denied\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "log-injection: untrusted text forges an extra log record\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1454,7 +1454,7 @@ static int run_missing_structured_log_demo(const struct p101_env *env, struct p1
 {
     const char log_text[] = "bad password\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "missing-structured-log: emits vague text without event, severity, or outcome fields\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1463,7 +1463,7 @@ static int run_input_validation_demo(const struct p101_env *env, struct p101_err
 {
     const char log_text[] = "severity=info event=file_export path=../../etc/passwd outcome=accepted\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "input-validation: accepts a path-shaped value that should be rejected at the boundary\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1472,7 +1472,7 @@ static int run_command_injection_demo(const struct p101_env *env, struct p101_er
 {
     const char log_text[] = "severity=warning event=command_preview command=\"tar -cf backup.tar playground; rm -rf /\" outcome=prepared\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "command-injection: builds a shell command by concatenating untrusted text\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1481,7 +1481,7 @@ static int run_predictable_temp_file_demo(const struct p101_env *env, struct p10
 {
     const char log_text[] = "severity=info event=tempfile_create path=/tmp/p101-tool-playground.tmp outcome=created\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "predictable-temp-file: uses a predictable temporary filename\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1492,7 +1492,7 @@ static int run_signed_conversion_demo(const struct p101_env *env, struct p101_er
     const int    parsed_count    = -1;
     const size_t converted_count = (size_t)parsed_count;
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_snprintf(env, err, log_text, sizeof(log_text), "severity=error event=count_parse parsed=%d converted=%zu outcome=accepted\n", parsed_count, converted_count);
     p101_printf(env, err, "signed-conversion: turns a negative count into a huge unsigned size\n");
     return write_text_output(env, err, args, log_text);
@@ -1505,7 +1505,7 @@ static int run_truncation_demo(const struct p101_env *env, struct p101_error *er
     unsigned int       stored_count;
     unsigned short     narrow_count;
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     narrow_count = (unsigned short)requested_count;
     stored_count = narrow_count;
     p101_snprintf(env, err, log_text, sizeof(log_text), "severity=error event=count_store requested=%u stored=%u outcome=accepted\n", requested_count, stored_count);
@@ -1517,7 +1517,7 @@ static int run_use_after_free_demo(const struct p101_env *env, struct p101_error
 {
     const char log_text[] = "severity=error event=use_after_free pointer_state=freed action=used outcome=accepted\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "use-after-free: records ownership use after free\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1526,7 +1526,7 @@ static int run_realloc_failure_demo(const struct p101_env *env, struct p101_erro
 {
     const char log_text[] = "severity=error event=realloc_failure original_pointer=lost outcome=leaked\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "realloc-failure: records losing the original pointer on failed grow\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1535,7 +1535,7 @@ static int run_out_of_bounds_write_demo(const struct p101_env *env, struct p101_
 {
     const char log_text[] = "severity=error event=bounds_check operation=write index=16 capacity=16 outcome=accepted\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "out-of-bounds-write: records accepting an index past the writable range\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1544,7 +1544,7 @@ static int run_out_of_bounds_read_demo(const struct p101_env *env, struct p101_e
 {
     const char log_text[] = "severity=error event=bounds_check operation=read index=16 valid=16 outcome=accepted\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "out-of-bounds-read: records accepting an index past the readable range\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1553,7 +1553,7 @@ static int run_buffer_overflow_demo(const struct p101_env *env, struct p101_erro
 {
     const char log_text[] = "severity=error event=copy_check source_bytes=32 destination_bytes=16 outcome=accepted\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "buffer-overflow: records accepting a copy that does not fit\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1562,7 +1562,7 @@ static int run_uninitialized_read_demo(const struct p101_env *env, struct p101_e
 {
     const char log_text[] = "severity=error event=state_read initialized=false outcome=used\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "uninitialized-read: records using a value before initialization\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1571,7 +1571,7 @@ static int run_null_dereference_demo(const struct p101_env *env, struct p101_err
 {
     const char log_text[] = "severity=error event=null_check pointer=null action=dereference outcome=accepted\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "null-dereference: records continuing after a NULL result\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1580,7 +1580,7 @@ static int run_integer_overflow_demo(const struct p101_env *env, struct p101_err
 {
     const char log_text[] = "severity=error event=size_multiply count=9223372036854775808 width=2 outcome=wrapped\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "integer-overflow: records an allocation size calculation that wrapped\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1589,7 +1589,7 @@ static int run_path_traversal_demo(const struct p101_env *env, struct p101_error
 {
     const char log_text[] = "severity=error event=path_check root=/safe path=/safe/../secret.txt outcome=accepted\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "path-traversal: records a path that escapes its intended root\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1598,7 +1598,7 @@ static int run_format_string_demo(const struct p101_env *env, struct p101_error 
 {
     const char log_text[] = "severity=error event=format_string format=%x%x%x source=user outcome=used_as_format\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "format-string: records user text treated as a printf format\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1607,7 +1607,7 @@ static int run_stale_secret_demo(const struct p101_env *env, struct p101_error *
 {
     const char log_text[] = "severity=error event=buffer_reuse old_secret=api-key-123 outcome=leaked\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "stale-secret: records reusing a buffer before clearing secret bytes\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1616,7 +1616,7 @@ static int run_resource_exhaustion_demo(const struct p101_env *env, struct p101_
 {
     const char log_text[] = "severity=error event=allocation_request requested=unbounded limit=none outcome=accepted\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "resource-exhaustion: records accepting an unbounded resource request\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1625,7 +1625,7 @@ static int run_toctou_demo(const struct p101_env *env, struct p101_error *err, c
 {
     const char log_text[] = "severity=error event=file_open pattern=check_then_use path=/tmp/p101-target outcome=accepted\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "toctou: records checking a path separately from using it\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1634,7 +1634,7 @@ static int run_data_race_demo(const struct p101_env *env, struct p101_error *err
 {
     const char log_text[] = "severity=error event=counter_update threads=2 synchronization=none outcome=accepted\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "data-race: records updating shared state without synchronization\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1643,7 +1643,7 @@ static int run_string_not_terminated_demo(const struct p101_env *env, struct p10
 {
     const char log_text[] = "severity=error event=string_copy copied=16 capacity=16 terminator=missing outcome=accepted\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "string-not-terminated: records treating unterminated bytes as a C string\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1652,7 +1652,7 @@ static int run_partial_write_demo(const struct p101_env *env, struct p101_error 
 {
     const char log_text[] = "severity=error event=write_loop requested=64 written=17 outcome=accepted\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "partial-write: records accepting a short write as complete\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1661,7 +1661,7 @@ static int run_interrupted_syscall_demo(const struct p101_env *env, struct p101_
 {
     const char log_text[] = "severity=error event=syscall_retry function=read errno=EINTR outcome=failed\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "interrupted-syscall: records treating EINTR as a final failure\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1670,7 +1670,7 @@ static int run_unsafe_file_mode_demo(const struct p101_env *env, struct p101_err
 {
     const char log_text[] = "severity=error event=file_create mode=0666 contains_secret=true outcome=accepted\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "unsafe-file-mode: records creating a sensitive file with broad permissions\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1679,7 +1679,7 @@ static int run_symlink_follow_demo(const struct p101_env *env, struct p101_error
 {
     const char log_text[] = "severity=error event=file_open path=/tmp/p101-link follows_symlink=true outcome=accepted\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "symlink-follow: records following a symlink for a sensitive file open\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1688,7 +1688,7 @@ static int run_trusted_environment_demo(const struct p101_env *env, struct p101_
 {
     const char log_text[] = "severity=error event=environment_lookup variable=PATH trust=untrusted outcome=used_for_exec\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "trusted-environment: records trusting an environment variable for execution\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1697,7 +1697,7 @@ static int run_unchecked_parse_demo(const struct p101_env *env, struct p101_erro
 {
     const char log_text[] = "severity=error event=parse_int input=123abc consumed=3 trailing=abc outcome=accepted\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "unchecked-parse: records accepting trailing junk after a numeric parse\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1706,7 +1706,7 @@ static int run_missing_authorization_demo(const struct p101_env *env, struct p10
 {
     const char log_text[] = "severity=error event=delete_project authenticated=true authorized=false outcome=accepted\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "missing-authorization: records authentication without an authorization check\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1715,7 +1715,7 @@ static int run_cleanup_order_demo(const struct p101_env *env, struct p101_error 
 {
     const char log_text[] = "severity=error event=cleanup_order parent=destroyed child=still_owned outcome=accepted\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "cleanup-order: records destroying parent state before child state\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1724,7 +1724,7 @@ static int run_thread_argument_lifetime_demo(const struct p101_env *env, struct 
 {
     const char log_text[] = "severity=error event=thread_argument storage=stack thread=running outcome=escaped\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "thread-argument-lifetime: records a thread using an expired argument\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1733,7 +1733,7 @@ static int run_short_read_demo(const struct p101_env *env, struct p101_error *er
 {
     const char log_text[] = "severity=error event=read_loop requested=64 read=17 object_complete=false outcome=accepted\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "short-read: records accepting a short read as a complete object\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1742,7 +1742,7 @@ static int run_read_eof_handling_demo(const struct p101_env *env, struct p101_er
 {
     const char log_text[] = "severity=error event=read_result result=0 meaning=error outcome=accepted\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "read-eof-handling: records treating EOF as an I/O error\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1751,7 +1751,7 @@ static int run_parser_fuzz_demo(const struct p101_env *env, struct p101_error *e
 {
     const char log_text[] = "severity=warning event=parser_boundary_check fuzz_target=missing outcome=untested\n";
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     p101_printf(env, err, "parser-fuzz: records boundary-heavy parsing without a fuzz target\n");
     return write_text_output(env, err, args, log_text);
 }
@@ -1760,7 +1760,7 @@ static void close_fd_preserving_error(const struct p101_env *env, struct p101_er
 {
     struct p101_error *cleanup_err;
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     if(fd == NULL || *fd == -1)
     {
         return;
@@ -1796,7 +1796,7 @@ static int run_child_exit_wrapper(const struct p101_env *env, struct p101_error 
     int   status;
     pid_t child;
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     status = 0;
     child  = p101_fork(env, err);
     if(child == -1 || p101_error_has_error(err))
@@ -1880,7 +1880,7 @@ static int write_demo_file(const struct p101_env *env, struct p101_error *err, c
     char *buffer;
     int   ret_val;
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     buffer  = NULL;
     ret_val = EXIT_FAILURE;
 
@@ -1926,7 +1926,7 @@ static int write_text_output(const struct p101_env *env, struct p101_error *err,
     size_t length;
     int    ret_val;
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     ret_val = EXIT_FAILURE;
     fd      = p101_open(env, err, args->output_path, O_WRONLY | O_CREAT | O_TRUNC, REPORT_FILE_MODE);
     if(p101_error_has_error(err))
@@ -1954,7 +1954,7 @@ static char *make_buffer(const struct p101_env *env, struct p101_error *err, siz
 {
     char *buffer;
 
-    P101_TRACE(env);
+    P101_TRACE_SCOPE(env);
     buffer = (char *)p101_malloc(env, err, bytes);
 
     if(buffer != NULL)

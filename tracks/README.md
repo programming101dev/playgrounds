@@ -8,7 +8,7 @@ areas while still covering every p101 wrapper exactly once.
 
 ## Coverage
 
-- Wrappers covered: `1206`
+- Wrappers covered: `1207`
 - Uncovered wrappers/domains: `0`
 - Track count: `40`
 - Orientation pre-track: `00-p101-orientation`
@@ -41,7 +41,7 @@ areas while still covering every p101 wrapper exactly once.
 | 20 | [`file-io`](20-file-io/README.md) | 26 | File descriptors, open/read/write/close, vectored I/O, short reads/writes, async I/O, descriptor ownership, and cleanup. |
 | 21 | [`filesystem-paths`](21-filesystem-paths/README.md) | 34 | Paths, permissions, stat, links, directories-as-filesystem-objects, timestamps, and filesystem mutation. |
 | 22 | [`directories-patterns`](22-directories-patterns/README.md) | 19 | Directory traversal, glob/fnmatch/wordexp, path decomposition, and tree walking. |
-| 23 | [`processes-signals`](23-processes-signals/README.md) | 50 | fork, exec, wait, spawn, signals, inherited resources, CLOEXEC, and process failure paths. |
+| 23 | [`processes-signals`](23-processes-signals/README.md) | 51 | fork, exec, wait, spawn, signals, inherited resources, CLOEXEC, and process failure paths. |
 | 24 | [`thread-lifecycle`](24-thread-lifecycle/README.md) | 30 | Thread creation, joining, detaching, identity, scheduling hooks, and basic lifecycle ownership. |
 | 25 | [`thread-synchronization`](25-thread-synchronization/README.md) | 38 | Mutexes, condition variables, read/write locks, and synchronization cleanup rules. |
 | 26 | [`thread-state-cancellation`](26-thread-state-cancellation/README.md) | 9 | Thread-local storage, once initialization, cancellation state, cancellation points, and cleanup hazards. |
@@ -55,10 +55,10 @@ areas while still covering every p101 wrapper exactly once.
 | 34 | [`logging-diagnostics`](34-logging-diagnostics/README.md) | 12 | syslog, err/warn-style diagnostics, formatted messages, and teachable logging/error-reporting practice. |
 | 35 | [`runtime-services`](35-runtime-services/README.md) | 36 | Dynamic loading, regex, iconv, locale/message catalogs, legacy DBM, and libc search structures. |
 | 36 | [`error-handling`](36-error-handling/README.md) | 50 | Error objects, errno mapping, assertions/check helpers, reporting, and failure-aware control flow. |
-| 37 | [`environment-lifecycle`](37-environment-lifecycle/README.md) | 13 | Creating, configuring, labeling, duplicating, and destroying p101 environments. |
+| 37 | [`environment-lifecycle`](37-environment-lifecycle/README.md) | 11 | Creating, configuring, labeling, duplicating, and destroying p101 environments. |
 | 38 | [`event-streams`](38-event-streams/README.md) | 34 | Resource events, call tracing, fault injection, event-log formatting, and observer configuration. |
 | 39 | [`fsm`](39-fsm/README.md) | 26 | Finite-state-machine structure, state transitions, callbacks, invalid transitions, and lifecycle ownership. |
-| 40 | [`tool-building`](40-tool-building/README.md) | 27 | C facts, small analyzers, and writing tools that reason about p101 projects. |
+| 40 | [`tool-building`](40-tool-building/README.md) | 29 | C facts, small analyzers, and writing tools that reason about p101 projects. |
 
 ## How to use this
 
