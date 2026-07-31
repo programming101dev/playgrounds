@@ -6,25 +6,8 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const char *const wrapper_functions[] = {"p101_alphasort",
-                                                "p101_basename",
-                                                "p101_closedir",
-                                                "p101_dirfd",
-                                                "p101_dirname",
-                                                "p101_fdopendir",
-                                                "p101_fnmatch",
-                                                "p101_ftw",
-                                                "p101_glob",
-                                                "p101_globfree",
-                                                "p101_nftw",
-                                                "p101_opendir",
-                                                "p101_readdir",
-                                                "p101_rewinddir",
-                                                "p101_scandir",
-                                                "p101_seekdir",
-                                                "p101_telldir",
-                                                "p101_wordexp",
-                                                "p101_wordfree"};
+static const char *const wrapper_functions[] = {"p101_alphasort", "p101_basename", "p101_closedir", "p101_dirfd",   "p101_dirname",  "p101_fdopendir", "p101_fnmatch",   "p101_ftw",     "p101_glob",    "p101_globfree", "p101_mkdtemp",
+                                                "p101_mkstemp",   "p101_nftw",     "p101_opendir",  "p101_readdir", "p101_realpath", "p101_renameat",  "p101_rewinddir", "p101_scandir", "p101_seekdir", "p101_telldir"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 

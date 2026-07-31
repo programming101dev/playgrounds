@@ -6,8 +6,8 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const char *const wrapper_functions[] = {"p101_poll",        "p101_pselect",    "p101_select",   "p101_ftok",   "p101_msgctl",     "p101_msgget", "p101_msgrcv", "p101_msgsnd", "p101_sem_close", "p101_sem_open", "p101_sem_post",
-                                                "p101_sem_trywait", "p101_sem_unlink", "p101_sem_wait", "p101_semctl", "p101_semctl_arg", "p101_semget", "p101_semop",  "p101_shmat",  "p101_shmctl",    "p101_shmdt",    "p101_shmget"};
+static const char *const wrapper_functions[] = {"p101_poll",   "p101_pselect",    "p101_select", "p101_ftok",  "p101_mkfifo",   "p101_msgctl",     "p101_msgget", "p101_msgrcv", "p101_msgsnd", "p101_pipe",
+                                                "p101_semctl", "p101_semctl_arg", "p101_semget", "p101_semop", "p101_shm_open", "p101_shm_unlink", "p101_shmat",  "p101_shmctl", "p101_shmdt",  "p101_shmget"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 

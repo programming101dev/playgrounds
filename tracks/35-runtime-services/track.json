@@ -3,7 +3,7 @@
   "title": "runtime services",
   "order": 35,
   "generated": true,
-  "wrapper_count": 36,
+  "wrapper_count": 40,
   "purpose": "Dynamic loading, regex, iconv, locale/message catalogs, legacy DBM, and libc search structures.",
   "domains": [
     {
@@ -33,16 +33,20 @@
     },
     {
       "name": "systems/localization-conversion",
-      "function_count": 8,
+      "function_count": 12,
       "functions": [
         "p101_catclose",
         "p101_catgets",
         "p101_catopen",
+        "p101_duplocale",
+        "p101_freelocale",
         "p101_iconv",
         "p101_iconv_close",
         "p101_iconv_open",
+        "p101_newlocale",
         "p101_nl_langinfo",
-        "p101_nl_langinfo_l"
+        "p101_nl_langinfo_l",
+        "p101_uselocale"
       ]
     },
     {

@@ -3,7 +3,7 @@
   "title": "file io",
   "order": 20,
   "generated": true,
-  "wrapper_count": 26,
+  "wrapper_count": 25,
   "purpose": "File descriptors, open/read/write/close, vectored I/O, short reads/writes, async I/O, descriptor ownership, and cleanup.",
   "domains": [
     {
@@ -22,7 +22,7 @@
     },
     {
       "name": "systems/fd-io",
-      "function_count": 18,
+      "function_count": 17,
       "functions": [
         "p101_close",
         "p101_creat",
@@ -34,7 +34,6 @@
         "p101_lseek",
         "p101_open",
         "p101_openat",
-        "p101_pipe",
         "p101_pread",
         "p101_pwrite",
         "p101_read",

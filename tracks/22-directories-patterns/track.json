@@ -3,12 +3,12 @@
   "title": "directories patterns",
   "order": 22,
   "generated": true,
-  "wrapper_count": 19,
+  "wrapper_count": 21,
   "purpose": "Directory traversal, glob/fnmatch/wordexp, path decomposition, and tree walking.",
   "domains": [
     {
       "name": "systems/directories-patterns",
-      "function_count": 19,
+      "function_count": 21,
       "functions": [
         "p101_alphasort",
         "p101_basename",
@@ -20,15 +20,17 @@
         "p101_ftw",
         "p101_glob",
         "p101_globfree",
+        "p101_mkdtemp",
+        "p101_mkstemp",
         "p101_nftw",
         "p101_opendir",
         "p101_readdir",
+        "p101_realpath",
+        "p101_renameat",
         "p101_rewinddir",
         "p101_scandir",
         "p101_seekdir",
-        "p101_telldir",
-        "p101_wordexp",
-        "p101_wordfree"
+        "p101_telldir"
       ]
     }
   ],

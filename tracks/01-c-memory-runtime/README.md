@@ -4,7 +4,7 @@
 
 Track number: `01`
 
-Wrapper count: `57`
+Wrapper count: `41`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -24,8 +24,8 @@ Allocation, process termination, environment variables, sorting/searching helper
 
 ## Domains
 
+- `c/random` (8 wrappers)
 - `c/stdlib` (33 wrappers)
-- `c/stdlib-extensions` (24 wrappers)
 
 ## Suggested lesson arc
 
@@ -36,6 +36,17 @@ Allocation, process termination, environment variables, sorting/searching helper
 5. Add one regression test or corpus expectation before moving on.
 
 ## Wrapper inventory
+
+### `c/random`
+
+- `p101_arc4random`
+- `p101_arc4random_buf`
+- `p101_arc4random_uniform`
+- `p101_initstate`
+- `p101_seed48`
+- `p101_setstate`
+- `p101_srand48`
+- `p101_srandom`
 
 ### `c/stdlib`
 
@@ -72,30 +83,3 @@ Allocation, process termination, environment variables, sorting/searching helper
 - `p101_system`
 - `p101_wcstombs`
 - `p101_wctomb`
-
-### `c/stdlib-extensions`
-
-- `p101_a64l`
-- `p101_arc4random`
-- `p101_arc4random_buf`
-- `p101_arc4random_uniform`
-- `p101_getloadavg`
-- `p101_getsubopt`
-- `p101_grantpt`
-- `p101_initstate`
-- `p101_l64a`
-- `p101_mkdtemp`
-- `p101_mkstemp`
-- `p101_posix_memalign`
-- `p101_posix_openpt`
-- `p101_ptsname`
-- `p101_putenv`
-- `p101_realpath`
-- `p101_rpmatch`
-- `p101_seed48`
-- `p101_setenv`
-- `p101_setstate`
-- `p101_srand48`
-- `p101_srandom`
-- `p101_unlockpt`
-- `p101_unsetenv`

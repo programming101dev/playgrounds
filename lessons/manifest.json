@@ -1,8 +1,13 @@
 {
-  "schema": "p101-finding-lesson-catalog-v1",
+  "schema": "p101-finding-lesson-catalog-v2",
   "url_base": "https://github.com/programming101dev/playgrounds/blob/main/",
   "case_glob": "../corpus/cases/*/expected.json",
   "case_prerequisite_mode": "previous-in-track",
+  "default_platforms": [
+    "macos",
+    "linux",
+    "freebsd"
+  ],
   "ignored_diagnostic_ids": [
     "P101-SYNC-000",
     "P101-UNKNOWN-000",
@@ -32,6 +37,7 @@
         "P101-WFORM-008",
         "P101-WFORM-900"
       ],
+      "acceptance_profile": "wrapper-audit",
       "verification": "p101 audit --strict-external <source-path>"
     },
     {
@@ -50,6 +56,7 @@
         "P101-ERR-005",
         "P101-ERR-006"
       ],
+      "acceptance_profile": "error-contract",
       "verification": "p101 doctor -s <source-path>"
     },
     {
@@ -75,6 +82,7 @@
         "P101-MOD-012",
         "P101-MOD-013"
       ],
+      "acceptance_profile": "module-map",
       "verification": "p101 module-map <source-path>"
     },
     {
@@ -94,6 +102,7 @@
         "P101-RESOURCE-004",
         "P101-RESOURCE-005"
       ],
+      "acceptance_profile": "runtime-resource",
       "verification": "p101 check -- <command>"
     },
     {
@@ -111,6 +120,7 @@
         "P101-SYNC-900",
         "P101-SYNC-901"
       ],
+      "acceptance_profile": "runtime-synchronization",
       "verification": "p101 check -- <multithreaded-command>"
     },
     {
@@ -126,6 +136,7 @@
         "P101-TRACE-002",
         "P101-TRACE-003"
       ],
+      "acceptance_profile": "runtime-trace",
       "verification": "p101 run -- <command>"
     },
     {
@@ -139,6 +150,7 @@
       "finding_ids": [
         "P101-MUTATION-001"
       ],
+      "acceptance_profile": "mutation-check",
       "verification": "p101 mutation-check --test-command '<test-command>' <source-path>"
     },
     {
@@ -154,7 +166,233 @@
         "P101-POLICY-RESOURCE-002",
         "P101-POLICY-RESOURCE-003"
       ],
+      "acceptance_profile": "policy-rules",
       "verification": "p101 verify -e <expectations.txt> <analysis-directory>"
+    }
+  ],
+  "acceptance_profiles": [
+    {
+      "profile_id": "wrapper-audit",
+      "kind": "native-tool-suite",
+      "description": "The wrapper audit suite exercises direct, indirect, external, portability, wrapper-form, and malformed-contract findings.",
+      "finding_ids": [
+        "P101-WRAP-001",
+        "P101-WRAP-002",
+        "P101-WRAP-003",
+        "P101-WRAP-004",
+        "P101-WRAP-900",
+        "P101-WFORM-002",
+        "P101-WFORM-003",
+        "P101-WFORM-004",
+        "P101-WFORM-005",
+        "P101-WFORM-006",
+        "P101-WFORM-007",
+        "P101-WFORM-008",
+        "P101-WFORM-900"
+      ],
+      "command": [
+        "./test.sh"
+      ],
+      "cwd": "programs/p101-wrapper-audit",
+      "evidence_paths": [
+        "programs/p101-wrapper-audit/p101_wrapper_audit.py",
+        "programs/p101-wrapper-audit/test"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "freebsd"
+      ],
+      "quick": false
+    },
+    {
+      "profile_id": "error-contract",
+      "kind": "native-tool-suite",
+      "description": "One Clang-facts fixture emits every error/environment ownership diagnostic and a clean fact stream remains clean.",
+      "finding_ids": [
+        "P101-ERR-001",
+        "P101-ERR-002",
+        "P101-ERR-003",
+        "P101-ERR-004",
+        "P101-ERR-005",
+        "P101-ERR-006"
+      ],
+      "command": [
+        "./test.sh"
+      ],
+      "cwd": "programs/p101-error-contract",
+      "evidence_paths": [
+        "programs/p101-error-contract/src/contract.c",
+        "programs/p101-error-contract/test/contract_fixture.c",
+        "programs/p101-error-contract/test/test_cli.sh"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "freebsd"
+      ],
+      "quick": true
+    },
+    {
+      "profile_id": "module-map",
+      "kind": "native-tool-suite",
+      "description": "The canonical P101FACT fixture exercises all module-boundary policies and a minimal fact stream remains clean.",
+      "finding_ids": [
+        "P101-MOD-001",
+        "P101-MOD-002",
+        "P101-MOD-003",
+        "P101-MOD-004",
+        "P101-MOD-005",
+        "P101-MOD-006",
+        "P101-MOD-007",
+        "P101-MOD-008",
+        "P101-MOD-009",
+        "P101-MOD-010",
+        "P101-MOD-011",
+        "P101-MOD-012",
+        "P101-MOD-013"
+      ],
+      "command": [
+        "./test.sh"
+      ],
+      "cwd": "programs/p101-module-map",
+      "evidence_paths": [
+        "programs/p101-module-map/src/report.c",
+        "programs/p101-module-map/test/test_cli.sh"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "freebsd"
+      ],
+      "quick": false
+    },
+    {
+      "profile_id": "runtime-resource",
+      "kind": "native-policy-suite",
+      "description": "Canonical causal models exercise every descriptor, allocation, and generic-resource lifecycle finding.",
+      "finding_ids": [
+        "P101-ALLOC-004",
+        "P101-RESOURCE-001",
+        "P101-RESOURCE-002",
+        "P101-RESOURCE-003",
+        "P101-RESOURCE-004",
+        "P101-RESOURCE-005"
+      ],
+      "command": [
+        "python3",
+        "scripts/test-p101-runtime.py"
+      ],
+      "cwd": ".",
+      "evidence_paths": [
+        "scripts/p101_runtime.py",
+        "scripts/test-p101-runtime.py"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "freebsd"
+      ],
+      "quick": true
+    },
+    {
+      "profile_id": "runtime-synchronization",
+      "kind": "native-policy-suite",
+      "description": "Canonical event graphs and the sync-check suite exercise lock, wait, join, stream-integrity, and capacity findings.",
+      "finding_ids": [
+        "P101-SYNC-001",
+        "P101-SYNC-002",
+        "P101-SYNC-003",
+        "P101-SYNC-900",
+        "P101-SYNC-901"
+      ],
+      "command": [
+        "./test.sh"
+      ],
+      "cwd": "programs/p101-sync-check",
+      "evidence_paths": [
+        "programs/p101-sync-check/src/concurrency_finding.c",
+        "programs/p101-sync-check/test"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "freebsd"
+      ],
+      "quick": false
+    },
+    {
+      "profile_id": "runtime-trace",
+      "kind": "native-policy-suite",
+      "description": "Canonical call models exercise unmatched exits, mismatched exits, and unterminated calls.",
+      "finding_ids": [
+        "P101-TRACE-001",
+        "P101-TRACE-002",
+        "P101-TRACE-003"
+      ],
+      "command": [
+        "python3",
+        "scripts/test-p101-runtime.py"
+      ],
+      "cwd": ".",
+      "evidence_paths": [
+        "scripts/p101_runtime.py",
+        "scripts/test-p101-runtime.py"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "freebsd"
+      ],
+      "quick": true
+    },
+    {
+      "profile_id": "mutation-check",
+      "kind": "native-tool-suite",
+      "description": "A deliberately weak test permits a mutant to survive; the strengthened test kills it.",
+      "finding_ids": [
+        "P101-MUTATION-001"
+      ],
+      "command": [
+        "./test.sh"
+      ],
+      "cwd": "programs/p101-mutation-check",
+      "evidence_paths": [
+        "programs/p101-mutation-check/p101-mutation-check",
+        "programs/p101-mutation-check/test"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "freebsd"
+      ],
+      "quick": false
+    },
+    {
+      "profile_id": "policy-rules",
+      "kind": "native-policy-suite",
+      "description": "Clean and violating models exercise each resource expectation rule.",
+      "finding_ids": [
+        "P101-POLICY-RESOURCE-001",
+        "P101-POLICY-RESOURCE-002",
+        "P101-POLICY-RESOURCE-003"
+      ],
+      "command": [
+        "python3",
+        "scripts/test-p101-model.py"
+      ],
+      "cwd": ".",
+      "evidence_paths": [
+        "scripts/p101-model.py",
+        "scripts/rules/resource-clean.json",
+        "scripts/test-p101-model.py"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "freebsd"
+      ],
+      "quick": true
     }
   ]
 }

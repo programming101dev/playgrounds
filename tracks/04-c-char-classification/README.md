@@ -4,7 +4,7 @@
 
 Track number: `04`
 
-Wrapper count: `28`
+Wrapper count: `14`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -25,7 +25,6 @@ Character classification, case mapping, locale-sensitive predicates, and signed-
 ## Domains
 
 - `c/char-classification` (14 wrappers)
-- `c/char-classification-extensions` (14 wrappers)
 
 ## Suggested lesson arc
 
@@ -53,20 +52,3 @@ Character classification, case mapping, locale-sensitive predicates, and signed-
 - `p101_isxdigit`
 - `p101_tolower`
 - `p101_toupper`
-
-### `c/char-classification-extensions`
-
-- `p101_isalnum_l`
-- `p101_isalpha_l`
-- `p101_isblank_l`
-- `p101_iscntrl_l`
-- `p101_isdigit_l`
-- `p101_isgraph_l`
-- `p101_islower_l`
-- `p101_isprint_l`
-- `p101_ispunct_l`
-- `p101_isspace_l`
-- `p101_isupper_l`
-- `p101_isxdigit_l`
-- `p101_tolower_l`
-- `p101_toupper_l`

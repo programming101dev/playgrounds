@@ -4,7 +4,7 @@
 
 Track number: `21`
 
-Wrapper count: `34`
+Wrapper count: `33`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -24,7 +24,7 @@ Paths, permissions, stat, links, directories-as-filesystem-objects, timestamps, 
 
 ## Domains
 
-- `systems/filesystem-paths` (34 wrappers)
+- `systems/filesystem-paths` (33 wrappers)
 
 ## Suggested lesson arc
 
@@ -58,7 +58,6 @@ Paths, permissions, stat, links, directories-as-filesystem-objects, timestamps, 
 - `p101_lstat`
 - `p101_mkdir`
 - `p101_mkdirat`
-- `p101_mkfifo`
 - `p101_mknod`
 - `p101_readlink`
 - `p101_readlinkat`

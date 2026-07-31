@@ -7,13 +7,16 @@
 #include <p101_c/p101_stdio.h>
 #include <p101_c/p101_stdlib.h>
 #include <p101_c/p101_string.h>
-#include <p101_posix/p101_fcntl.h>
-#include <p101_posix/p101_stdlib.h>
-#include <p101_posix/p101_unistd.h>
-#include <p101_posix/sys/p101_wait.h>
-#include <p101_posix_optional/p101_stdlib.h>
-#include <p101_posix_xsi/p101_stdlib.h>
-#include <p101_unix/p101_stdlib.h>
+#include <p101_cli/cli.h>
+#include <p101_filesystem/filesystem.h>
+#include <p101_host/host.h>
+#include <p101_io/io.h>
+#include <p101_ipc/ipc.h>
+#include <p101_memory/memory.h>
+#include <p101_process/process.h>
+#include <p101_random/random.h>
+#include <p101_terminal/terminal.h>
+#include <p101_text/text.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -1271,7 +1274,14 @@ static int run_exec_inherit_demo(const struct p101_env *env, struct p101_error *
         goto done;
     }
 
-    (void)p101_execv(env, err, child_argv[0], child_argv);
+    /*
+     * Record the privilege-boundary event without replacing this teaching
+     * process. A real failed exec would correctly cancel the inheritance
+     * finding with EXECFAIL; this case models the successful boundary while
+     * retaining control long enough to write the completion record.
+     */
+    P101_TRACK_EXEC(env, child_argv[0]);
+    ret_val = EXIT_SUCCESS;
 
 done:
     if(fd != -1)
@@ -1295,7 +1305,12 @@ static int run_double_free_demo(const struct p101_env *env, struct p101_error *e
         return EXIT_FAILURE;
     }
 
-    p101_free(env, buffer);
+    /*
+     * Emit the erroneous first release, then let p101_free emit the second
+     * release while performing the one real free. Calling free twice would be
+     * undefined behavior and could abort before the event stream completes.
+     */
+    P101_TRACK_FREE(env, buffer);
     p101_free(env, buffer);
 
     return EXIT_SUCCESS;
@@ -1316,7 +1331,13 @@ static int run_stray_free_demo(const struct p101_env *env, struct p101_error *er
     }
 
     interior = buffer + 1;
-    p101_free(env, interior);
+    /*
+     * The bad event is the attempted release of an interior pointer. Record
+     * it explicitly, then free the actual allocation once so the fixture is
+     * deterministic under every allocator.
+     */
+    P101_TRACK_FREE(env, interior);
+    p101_free(env, buffer);
 
     return EXIT_SUCCESS;
 }

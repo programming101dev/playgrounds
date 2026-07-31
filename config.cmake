@@ -50,10 +50,27 @@ set(main_LINK_LIBRARIES
         p101_env
         p101_tool_event
         p101_c
-        p101_posix
-        p101_posix_optional
-        p101_posix_xsi
-        p101_unix
+        p101_cli
+        p101_database
+        p101_diagnostics
+        p101_dynamic_linking
+        p101_filesystem
+        p101_host
+        p101_identity
+        p101_io
+        p101_ipc
+        p101_locale
+        p101_math
+        p101_memory
+        p101_network
+        p101_process
+        p101_random
+        p101_search
+        p101_sync
+        p101_terminal
+        p101_text
+        p101_thread
+        p101_time
         p101_convert
         m
 )

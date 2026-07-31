@@ -4,7 +4,7 @@
 
 Track number: `33`
 
-Wrapper count: `28`
+Wrapper count: `30`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -24,10 +24,9 @@ Resource limits, priorities, clocks/time, memory mapping/locking, host/system co
 
 ## Domains
 
-- `systems/platform-admin` (1 wrappers)
-- `systems/resource-time-memory` (17 wrappers)
-- `systems/security-legacy` (1 wrappers)
-- `systems/system-configuration` (9 wrappers)
+- `systems/platform-admin` (8 wrappers)
+- `systems/resource-time-memory` (19 wrappers)
+- `systems/system-configuration` (3 wrappers)
 
 ## Suggested lesson arc
 
@@ -41,13 +40,22 @@ Resource limits, priorities, clocks/time, memory mapping/locking, host/system co
 
 ### `systems/platform-admin`
 
+- `p101_confstr`
+- `p101_getdomainname`
+- `p101_gethostid`
+- `p101_gethostname`
+- `p101_getloadavg`
+- `p101_setdomainname`
+- `p101_sysconf`
 - `p101_uname`
 
 ### `systems/resource-time-memory`
 
-- `p101_getpriority`
-- `p101_getrlimit`
-- `p101_getrusage`
+- `p101_clock_getres`
+- `p101_clock_gettime`
+- `p101_clock_settime`
+- `p101_gmtime_r`
+- `p101_localtime_r`
 - `p101_mlock`
 - `p101_mlockall`
 - `p101_mmap`
@@ -56,25 +64,15 @@ Resource limits, priorities, clocks/time, memory mapping/locking, host/system co
 - `p101_munlock`
 - `p101_munlockall`
 - `p101_munmap`
+- `p101_nanosleep`
 - `p101_posix_madvise`
-- `p101_setpriority`
-- `p101_setrlimit`
-- `p101_shm_open`
-- `p101_shm_unlink`
-- `p101_times`
-
-### `systems/security-legacy`
-
-- `p101_crypt`
+- `p101_posix_memalign`
+- `p101_strftime_l`
+- `p101_strptime`
+- `p101_tzset`
 
 ### `systems/system-configuration`
 
-- `p101_confstr`
 - `p101_fpathconf`
 - `p101_getcwd`
-- `p101_getdomainname`
-- `p101_gethostid`
-- `p101_gethostname`
 - `p101_pathconf`
-- `p101_setdomainname`
-- `p101_sysconf`

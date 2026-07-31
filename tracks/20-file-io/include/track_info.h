@@ -8,7 +8,7 @@
 enum
 {
     P101_TRACK_INDEX         = 20,
-    P101_TRACK_WRAPPER_COUNT = 26
+    P101_TRACK_WRAPPER_COUNT = 25
 };
 
 #endif /* P101_TRACK_20_FILE_IO_INFO_H */

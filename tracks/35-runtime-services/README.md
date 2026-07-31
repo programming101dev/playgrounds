@@ -4,7 +4,7 @@
 
 Track number: `35`
 
-Wrapper count: `36`
+Wrapper count: `40`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -26,7 +26,7 @@ Dynamic loading, regex, iconv, locale/message catalogs, legacy DBM, and libc sea
 
 - `systems/dynamic-loading` (4 wrappers)
 - `systems/legacy-database` (9 wrappers)
-- `systems/localization-conversion` (8 wrappers)
+- `systems/localization-conversion` (12 wrappers)
 - `systems/search-structures` (11 wrappers)
 - `systems/text-patterns` (4 wrappers)
 
@@ -64,11 +64,15 @@ Dynamic loading, regex, iconv, locale/message catalogs, legacy DBM, and libc sea
 - `p101_catclose`
 - `p101_catgets`
 - `p101_catopen`
+- `p101_duplocale`
+- `p101_freelocale`
 - `p101_iconv`
 - `p101_iconv_close`
 - `p101_iconv_open`
+- `p101_newlocale`
 - `p101_nl_langinfo`
 - `p101_nl_langinfo_l`
+- `p101_uselocale`
 
 ### `systems/search-structures`
 

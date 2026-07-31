@@ -4,7 +4,7 @@
 
 Track number: `05`
 
-Wrapper count: `31`
+Wrapper count: `20`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -26,7 +26,6 @@ Wide string copying, comparison, searching, transformation, and wide-memory oper
 
 - `c/wide-memory` (5 wrappers)
 - `c/wide-strings` (15 wrappers)
-- `c/wide-strings-extensions` (11 wrappers)
 
 ## Suggested lesson arc
 
@@ -63,17 +62,3 @@ Wide string copying, comparison, searching, transformation, and wide-memory oper
 - `p101_wcsspn`
 - `p101_wcsstr`
 - `p101_wcsxfrm`
-
-### `c/wide-strings-extensions`
-
-- `p101_open_wmemstream`
-- `p101_wcpcpy`
-- `p101_wcpncpy`
-- `p101_wcscasecmp`
-- `p101_wcscoll_l`
-- `p101_wcsdup`
-- `p101_wcsncasecmp`
-- `p101_wcsnlen`
-- `p101_wcswidth`
-- `p101_wcsxfrm_l`
-- `p101_wcwidth`

@@ -7,6 +7,7 @@
 #include <stdlib.h>
 
 static const char *const wrapper_functions[] = {"p101_env_clear_event_log_error",
+                                                "p101_env_complete_event_streams",
                                                 "p101_env_create",
                                                 "p101_env_destroy",
                                                 "p101_env_dup",

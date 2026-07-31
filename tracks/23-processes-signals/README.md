@@ -4,7 +4,7 @@
 
 Track number: `23`
 
-Wrapper count: `51`
+Wrapper count: `64`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -24,9 +24,7 @@ fork, exec, wait, spawn, signals, inherited resources, CLOEXEC, and process fail
 
 ## Domains
 
-- `systems/process-control` (12 wrappers)
-- `systems/process-signal` (35 wrappers)
-- `systems/scheduling-basics` (4 wrappers)
+- `systems/process-signal` (64 wrappers)
 
 ## Suggested lesson arc
 
@@ -38,8 +36,9 @@ fork, exec, wait, spawn, signals, inherited resources, CLOEXEC, and process fail
 
 ## Wrapper inventory
 
-### `systems/process-control`
+### `systems/process-signal`
 
+- `p101_alarm`
 - `p101_execv`
 - `p101_execve`
 - `p101_execvp`
@@ -48,15 +47,17 @@ fork, exec, wait, spawn, signals, inherited resources, CLOEXEC, and process fail
 - `p101_getpgrp`
 - `p101_getpid`
 - `p101_getppid`
+- `p101_getpriority`
+- `p101_getrlimit`
+- `p101_getrusage`
 - `p101_getsid`
-- `p101_posix_exit_immediately`
-- `p101_setpgid`
-- `p101_setsid`
-
-### `systems/process-signal`
-
 - `p101_kill`
 - `p101_killpg`
+- `p101_nice`
+- `p101_pause`
+- `p101_pclose`
+- `p101_popen`
+- `p101_posix_exit_immediately`
 - `p101_posix_spawn`
 - `p101_posix_spawn_file_actions_addclose`
 - `p101_posix_spawn_file_actions_adddup2`
@@ -74,8 +75,15 @@ fork, exec, wait, spawn, signals, inherited resources, CLOEXEC, and process fail
 - `p101_posix_spawnattr_setsigdefault`
 - `p101_posix_spawnattr_setsigmask`
 - `p101_posix_spawnp`
-- `p101_pthread_kill`
-- `p101_pthread_sigmask`
+- `p101_putenv`
+- `p101_sched_get_priority_max`
+- `p101_sched_get_priority_min`
+- `p101_sched_yield`
+- `p101_setenv`
+- `p101_setpgid`
+- `p101_setpriority`
+- `p101_setrlimit`
+- `p101_setsid`
 - `p101_sigaction`
 - `p101_sigaddset`
 - `p101_sigaltstack`
@@ -83,17 +91,14 @@ fork, exec, wait, spawn, signals, inherited resources, CLOEXEC, and process fail
 - `p101_sigemptyset`
 - `p101_sigfillset`
 - `p101_sigismember`
+- `p101_siglongjmp`
 - `p101_sigpending`
 - `p101_sigprocmask`
 - `p101_sigsuspend`
 - `p101_sigwait`
+- `p101_sleep`
+- `p101_times`
+- `p101_unsetenv`
 - `p101_wait`
 - `p101_waitid`
 - `p101_waitpid`
-
-### `systems/scheduling-basics`
-
-- `p101_alarm`
-- `p101_nice`
-- `p101_pause`
-- `p101_sleep`

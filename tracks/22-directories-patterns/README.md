@@ -4,7 +4,7 @@
 
 Track number: `22`
 
-Wrapper count: `19`
+Wrapper count: `21`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -24,7 +24,7 @@ Directory traversal, glob/fnmatch/wordexp, path decomposition, and tree walking.
 
 ## Domains
 
-- `systems/directories-patterns` (19 wrappers)
+- `systems/directories-patterns` (21 wrappers)
 
 ## Suggested lesson arc
 
@@ -48,12 +48,14 @@ Directory traversal, glob/fnmatch/wordexp, path decomposition, and tree walking.
 - `p101_ftw`
 - `p101_glob`
 - `p101_globfree`
+- `p101_mkdtemp`
+- `p101_mkstemp`
 - `p101_nftw`
 - `p101_opendir`
 - `p101_readdir`
+- `p101_realpath`
+- `p101_renameat`
 - `p101_rewinddir`
 - `p101_scandir`
 - `p101_seekdir`
 - `p101_telldir`
-- `p101_wordexp`
-- `p101_wordfree`

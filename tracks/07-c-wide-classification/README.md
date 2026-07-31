@@ -4,7 +4,7 @@
 
 Track number: `07`
 
-Wrapper count: `36`
+Wrapper count: `18`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -25,7 +25,6 @@ Wide character classification, mapping, and locale-aware wide-character predicat
 ## Domains
 
 - `c/wide-char-classification` (18 wrappers)
-- `c/wide-char-classification-extensions` (18 wrappers)
 
 ## Suggested lesson arc
 
@@ -57,24 +56,3 @@ Wide character classification, mapping, and locale-aware wide-character predicat
 - `p101_towupper`
 - `p101_wctrans`
 - `p101_wctype`
-
-### `c/wide-char-classification-extensions`
-
-- `p101_iswalnum_l`
-- `p101_iswalpha_l`
-- `p101_iswblank_l`
-- `p101_iswcntrl_l`
-- `p101_iswctype_l`
-- `p101_iswdigit_l`
-- `p101_iswgraph_l`
-- `p101_iswlower_l`
-- `p101_iswprint_l`
-- `p101_iswpunct_l`
-- `p101_iswspace_l`
-- `p101_iswupper_l`
-- `p101_iswxdigit_l`
-- `p101_towctrans_l`
-- `p101_towlower_l`
-- `p101_towupper_l`
-- `p101_wctrans_l`
-- `p101_wctype_l`

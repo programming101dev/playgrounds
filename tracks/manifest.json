@@ -9,16 +9,30 @@
     "purpose": "Hand-authored pre-track for env, err, wrappers, and tools."
   },
   "track_count": 40,
-  "covered_function_count": 1207,
+  "covered_function_count": 1224,
   "uncovered_function_count": 0,
   "tracks": [
     {
       "index": 1,
       "track": "c-memory-runtime",
       "directory": "01-c-memory-runtime",
-      "function_count": 57,
+      "function_count": 41,
       "purpose": "Allocation, process termination, environment variables, sorting/searching helpers, and common stdlib extensions.",
       "domains": [
+        {
+          "name": "c/random",
+          "function_count": 8,
+          "functions": [
+            "p101_arc4random",
+            "p101_arc4random_buf",
+            "p101_arc4random_uniform",
+            "p101_initstate",
+            "p101_seed48",
+            "p101_setstate",
+            "p101_srand48",
+            "p101_srandom"
+          ]
+        },
         {
           "name": "c/stdlib",
           "function_count": 33,
@@ -57,36 +71,6 @@
             "p101_wcstombs",
             "p101_wctomb"
           ]
-        },
-        {
-          "name": "c/stdlib-extensions",
-          "function_count": 24,
-          "functions": [
-            "p101_a64l",
-            "p101_arc4random",
-            "p101_arc4random_buf",
-            "p101_arc4random_uniform",
-            "p101_getloadavg",
-            "p101_getsubopt",
-            "p101_grantpt",
-            "p101_initstate",
-            "p101_l64a",
-            "p101_mkdtemp",
-            "p101_mkstemp",
-            "p101_posix_memalign",
-            "p101_posix_openpt",
-            "p101_ptsname",
-            "p101_putenv",
-            "p101_realpath",
-            "p101_rpmatch",
-            "p101_seed48",
-            "p101_setenv",
-            "p101_setstate",
-            "p101_srand48",
-            "p101_srandom",
-            "p101_unlockpt",
-            "p101_unsetenv"
-          ]
         }
       ]
     },
@@ -94,12 +78,12 @@
       "index": 2,
       "track": "c-memory-bytes",
       "directory": "02-c-memory-bytes",
-      "function_count": 23,
+      "function_count": 24,
       "purpose": "Raw byte memory operations and the difference between object bytes and strings.",
       "domains": [
         {
           "name": "c/byte-utility",
-          "function_count": 17,
+          "function_count": 18,
           "functions": [
             "p101_be16toh",
             "p101_be32toh",
@@ -117,7 +101,8 @@
             "p101_le16toh",
             "p101_le32toh",
             "p101_le64toh",
-            "p101_swab"
+            "p101_tool_run_capture",
+            "p101_tool_run_redirect"
           ]
         },
         {
@@ -144,7 +129,7 @@
       "index": 3,
       "track": "c-byte-strings",
       "directory": "03-c-byte-strings",
-      "function_count": 32,
+      "function_count": 83,
       "purpose": "NUL-terminated byte strings, comparisons, searching, collation, and common string extensions.",
       "domains": [
         {
@@ -169,9 +154,39 @@
         },
         {
           "name": "c/byte-strings-extensions",
-          "function_count": 18,
+          "function_count": 69,
           "functions": [
+            "p101_a64l",
             "p101_ffs",
+            "p101_isalnum_l",
+            "p101_isalpha_l",
+            "p101_isblank_l",
+            "p101_iscntrl_l",
+            "p101_isdigit_l",
+            "p101_isgraph_l",
+            "p101_islower_l",
+            "p101_isprint_l",
+            "p101_ispunct_l",
+            "p101_isspace_l",
+            "p101_isupper_l",
+            "p101_iswalnum_l",
+            "p101_iswalpha_l",
+            "p101_iswblank_l",
+            "p101_iswcntrl_l",
+            "p101_iswctype_l",
+            "p101_iswdigit_l",
+            "p101_iswgraph_l",
+            "p101_iswlower_l",
+            "p101_iswprint_l",
+            "p101_iswpunct_l",
+            "p101_iswspace_l",
+            "p101_iswupper_l",
+            "p101_iswxdigit_l",
+            "p101_isxdigit_l",
+            "p101_l64a",
+            "p101_mbsnrtowcs",
+            "p101_open_wmemstream",
+            "p101_rpmatch",
             "p101_stpcpy",
             "p101_stpncpy",
             "p101_strcasecmp",
@@ -188,7 +203,28 @@
             "p101_strsep",
             "p101_strsignal",
             "p101_strtok_r",
-            "p101_strxfrm_l"
+            "p101_strxfrm_l",
+            "p101_swab",
+            "p101_tolower_l",
+            "p101_toupper_l",
+            "p101_towctrans_l",
+            "p101_towlower_l",
+            "p101_towupper_l",
+            "p101_wcpcpy",
+            "p101_wcpncpy",
+            "p101_wcscasecmp",
+            "p101_wcscoll_l",
+            "p101_wcsdup",
+            "p101_wcsncasecmp",
+            "p101_wcsnlen",
+            "p101_wcsnrtombs",
+            "p101_wcswidth",
+            "p101_wcsxfrm_l",
+            "p101_wctrans_l",
+            "p101_wctype_l",
+            "p101_wcwidth",
+            "p101_wordexp",
+            "p101_wordfree"
           ]
         }
       ]
@@ -197,7 +233,7 @@
       "index": 4,
       "track": "c-char-classification",
       "directory": "04-c-char-classification",
-      "function_count": 28,
+      "function_count": 14,
       "purpose": "Character classification, case mapping, locale-sensitive predicates, and signed-char pitfalls.",
       "domains": [
         {
@@ -219,26 +255,6 @@
             "p101_tolower",
             "p101_toupper"
           ]
-        },
-        {
-          "name": "c/char-classification-extensions",
-          "function_count": 14,
-          "functions": [
-            "p101_isalnum_l",
-            "p101_isalpha_l",
-            "p101_isblank_l",
-            "p101_iscntrl_l",
-            "p101_isdigit_l",
-            "p101_isgraph_l",
-            "p101_islower_l",
-            "p101_isprint_l",
-            "p101_ispunct_l",
-            "p101_isspace_l",
-            "p101_isupper_l",
-            "p101_isxdigit_l",
-            "p101_tolower_l",
-            "p101_toupper_l"
-          ]
         }
       ]
     },
@@ -246,7 +262,7 @@
       "index": 5,
       "track": "c-wide-strings",
       "directory": "05-c-wide-strings",
-      "function_count": 31,
+      "function_count": 20,
       "purpose": "Wide string copying, comparison, searching, transformation, and wide-memory operations.",
       "domains": [
         {
@@ -280,23 +296,6 @@
             "p101_wcsstr",
             "p101_wcsxfrm"
           ]
-        },
-        {
-          "name": "c/wide-strings-extensions",
-          "function_count": 11,
-          "functions": [
-            "p101_open_wmemstream",
-            "p101_wcpcpy",
-            "p101_wcpncpy",
-            "p101_wcscasecmp",
-            "p101_wcscoll_l",
-            "p101_wcsdup",
-            "p101_wcsncasecmp",
-            "p101_wcsnlen",
-            "p101_wcswidth",
-            "p101_wcsxfrm_l",
-            "p101_wcwidth"
-          ]
         }
       ]
     },
@@ -304,7 +303,7 @@
       "index": 6,
       "track": "c-wide-io-conversion",
       "directory": "06-c-wide-io-conversion",
-      "function_count": 39,
+      "function_count": 37,
       "purpose": "Wide-character I/O, multibyte conversion state, numeric conversion, and locale-sensitive text boundaries.",
       "domains": [
         {
@@ -327,14 +326,6 @@
             "p101_wcstoul",
             "p101_wcstoull",
             "p101_wctob"
-          ]
-        },
-        {
-          "name": "c/wide-conversion-extensions",
-          "function_count": 2,
-          "functions": [
-            "p101_mbsnrtowcs",
-            "p101_wcsnrtombs"
           ]
         },
         {
@@ -370,7 +361,7 @@
       "index": 7,
       "track": "c-wide-classification",
       "directory": "07-c-wide-classification",
-      "function_count": 36,
+      "function_count": 18,
       "purpose": "Wide character classification, mapping, and locale-aware wide-character predicates.",
       "domains": [
         {
@@ -396,30 +387,6 @@
             "p101_wctrans",
             "p101_wctype"
           ]
-        },
-        {
-          "name": "c/wide-char-classification-extensions",
-          "function_count": 18,
-          "functions": [
-            "p101_iswalnum_l",
-            "p101_iswalpha_l",
-            "p101_iswblank_l",
-            "p101_iswcntrl_l",
-            "p101_iswctype_l",
-            "p101_iswdigit_l",
-            "p101_iswgraph_l",
-            "p101_iswlower_l",
-            "p101_iswprint_l",
-            "p101_iswpunct_l",
-            "p101_iswspace_l",
-            "p101_iswupper_l",
-            "p101_iswxdigit_l",
-            "p101_towctrans_l",
-            "p101_towlower_l",
-            "p101_towupper_l",
-            "p101_wctrans_l",
-            "p101_wctype_l"
-          ]
         }
       ]
     },
@@ -427,7 +394,7 @@
       "index": 8,
       "track": "c-stdio-streams",
       "directory": "08-c-stdio-streams",
-      "function_count": 30,
+      "function_count": 27,
       "purpose": "Opening, closing, positioning, reading, writing, renaming, temporary files, and stream ownership.",
       "domains": [
         {
@@ -451,7 +418,7 @@
         },
         {
           "name": "c/stdio-streams-files-extensions",
-          "function_count": 17,
+          "function_count": 14,
           "functions": [
             "p101_fdopen",
             "p101_fileno",
@@ -465,9 +432,6 @@
             "p101_getdelim",
             "p101_getline",
             "p101_open_memstream",
-            "p101_pclose",
-            "p101_popen",
-            "p101_renameat",
             "p101_setbuffer",
             "p101_setlinebuf"
           ]
@@ -558,16 +522,17 @@
       "index": 11,
       "track": "c-conversion-parsing",
       "directory": "11-c-conversion-parsing",
-      "function_count": 45,
+      "function_count": 46,
       "purpose": "Integer parsing, inttypes helpers, option parsing, and defensive conversion practice.",
       "domains": [
         {
           "name": "c/cli-parsing",
-          "function_count": 3,
+          "function_count": 4,
           "functions": [
             "p101_getopt",
             "p101_getopt_long",
-            "p101_getopt_long_only"
+            "p101_getopt_long_only",
+            "p101_getsubopt"
           ]
         },
         {
@@ -995,7 +960,7 @@
       "index": 19,
       "track": "c-time-locale-control",
       "directory": "19-c-time-locale-control",
-      "function_count": 51,
+      "function_count": 37,
       "purpose": "Time, locale, atomics, setjmp/signal-style control flow, and their common extensions.",
       "domains": [
         {
@@ -1040,28 +1005,11 @@
           ]
         },
         {
-          "name": "c/control-flow-extensions",
-          "function_count": 1,
-          "functions": [
-            "p101_siglongjmp"
-          ]
-        },
-        {
           "name": "c/locale",
           "function_count": 2,
           "functions": [
             "p101_localeconv",
             "p101_setlocale"
-          ]
-        },
-        {
-          "name": "c/locale-extensions",
-          "function_count": 4,
-          "functions": [
-            "p101_duplocale",
-            "p101_freelocale",
-            "p101_newlocale",
-            "p101_uselocale"
           ]
         },
         {
@@ -1075,21 +1023,6 @@
             "p101_time",
             "p101_timespec_get"
           ]
-        },
-        {
-          "name": "c/time-extensions",
-          "function_count": 9,
-          "functions": [
-            "p101_clock_getres",
-            "p101_clock_gettime",
-            "p101_clock_settime",
-            "p101_gmtime_r",
-            "p101_localtime_r",
-            "p101_nanosleep",
-            "p101_strftime_l",
-            "p101_strptime",
-            "p101_tzset"
-          ]
         }
       ]
     },
@@ -1097,7 +1030,7 @@
       "index": 20,
       "track": "file-io",
       "directory": "20-file-io",
-      "function_count": 26,
+      "function_count": 25,
       "purpose": "File descriptors, open/read/write/close, vectored I/O, short reads/writes, async I/O, descriptor ownership, and cleanup.",
       "domains": [
         {
@@ -1116,7 +1049,7 @@
         },
         {
           "name": "systems/fd-io",
-          "function_count": 18,
+          "function_count": 17,
           "functions": [
             "p101_close",
             "p101_creat",
@@ -1128,7 +1061,6 @@
             "p101_lseek",
             "p101_open",
             "p101_openat",
-            "p101_pipe",
             "p101_pread",
             "p101_pwrite",
             "p101_read",
@@ -1144,12 +1076,12 @@
       "index": 21,
       "track": "filesystem-paths",
       "directory": "21-filesystem-paths",
-      "function_count": 34,
+      "function_count": 33,
       "purpose": "Paths, permissions, stat, links, directories-as-filesystem-objects, timestamps, and filesystem mutation.",
       "domains": [
         {
           "name": "systems/filesystem-paths",
-          "function_count": 34,
+          "function_count": 33,
           "functions": [
             "p101_access",
             "p101_chdir",
@@ -1171,7 +1103,6 @@
             "p101_lstat",
             "p101_mkdir",
             "p101_mkdirat",
-            "p101_mkfifo",
             "p101_mknod",
             "p101_readlink",
             "p101_readlinkat",
@@ -1193,12 +1124,12 @@
       "index": 22,
       "track": "directories-patterns",
       "directory": "22-directories-patterns",
-      "function_count": 19,
+      "function_count": 21,
       "purpose": "Directory traversal, glob/fnmatch/wordexp, path decomposition, and tree walking.",
       "domains": [
         {
           "name": "systems/directories-patterns",
-          "function_count": 19,
+          "function_count": 21,
           "functions": [
             "p101_alphasort",
             "p101_basename",
@@ -1210,15 +1141,17 @@
             "p101_ftw",
             "p101_glob",
             "p101_globfree",
+            "p101_mkdtemp",
+            "p101_mkstemp",
             "p101_nftw",
             "p101_opendir",
             "p101_readdir",
+            "p101_realpath",
+            "p101_renameat",
             "p101_rewinddir",
             "p101_scandir",
             "p101_seekdir",
-            "p101_telldir",
-            "p101_wordexp",
-            "p101_wordfree"
+            "p101_telldir"
           ]
         }
       ]
@@ -1227,13 +1160,14 @@
       "index": 23,
       "track": "processes-signals",
       "directory": "23-processes-signals",
-      "function_count": 51,
+      "function_count": 64,
       "purpose": "fork, exec, wait, spawn, signals, inherited resources, CLOEXEC, and process failure paths.",
       "domains": [
         {
-          "name": "systems/process-control",
-          "function_count": 12,
+          "name": "systems/process-signal",
+          "function_count": 64,
           "functions": [
+            "p101_alarm",
             "p101_execv",
             "p101_execve",
             "p101_execvp",
@@ -1242,18 +1176,17 @@
             "p101_getpgrp",
             "p101_getpid",
             "p101_getppid",
+            "p101_getpriority",
+            "p101_getrlimit",
+            "p101_getrusage",
             "p101_getsid",
-            "p101_posix_exit_immediately",
-            "p101_setpgid",
-            "p101_setsid"
-          ]
-        },
-        {
-          "name": "systems/process-signal",
-          "function_count": 35,
-          "functions": [
             "p101_kill",
             "p101_killpg",
+            "p101_nice",
+            "p101_pause",
+            "p101_pclose",
+            "p101_popen",
+            "p101_posix_exit_immediately",
             "p101_posix_spawn",
             "p101_posix_spawn_file_actions_addclose",
             "p101_posix_spawn_file_actions_adddup2",
@@ -1271,8 +1204,15 @@
             "p101_posix_spawnattr_setsigdefault",
             "p101_posix_spawnattr_setsigmask",
             "p101_posix_spawnp",
-            "p101_pthread_kill",
-            "p101_pthread_sigmask",
+            "p101_putenv",
+            "p101_sched_get_priority_max",
+            "p101_sched_get_priority_min",
+            "p101_sched_yield",
+            "p101_setenv",
+            "p101_setpgid",
+            "p101_setpriority",
+            "p101_setrlimit",
+            "p101_setsid",
             "p101_sigaction",
             "p101_sigaddset",
             "p101_sigaltstack",
@@ -1280,23 +1220,17 @@
             "p101_sigemptyset",
             "p101_sigfillset",
             "p101_sigismember",
+            "p101_siglongjmp",
             "p101_sigpending",
             "p101_sigprocmask",
             "p101_sigsuspend",
             "p101_sigwait",
+            "p101_sleep",
+            "p101_times",
+            "p101_unsetenv",
             "p101_wait",
             "p101_waitid",
             "p101_waitpid"
-          ]
-        },
-        {
-          "name": "systems/scheduling-basics",
-          "function_count": 4,
-          "functions": [
-            "p101_alarm",
-            "p101_nice",
-            "p101_pause",
-            "p101_sleep"
           ]
         }
       ]
@@ -1305,18 +1239,9 @@
       "index": 24,
       "track": "thread-lifecycle",
       "directory": "24-thread-lifecycle",
-      "function_count": 30,
+      "function_count": 35,
       "purpose": "Thread creation, joining, detaching, identity, scheduling hooks, and basic lifecycle ownership.",
       "domains": [
-        {
-          "name": "systems/scheduler",
-          "function_count": 3,
-          "functions": [
-            "p101_sched_get_priority_max",
-            "p101_sched_get_priority_min",
-            "p101_sched_yield"
-          ]
-        },
         {
           "name": "systems/thread-attributes",
           "function_count": 18,
@@ -1343,7 +1268,7 @@
         },
         {
           "name": "systems/thread-lifecycle",
-          "function_count": 9,
+          "function_count": 17,
           "functions": [
             "p101_pthread_atfork",
             "p101_pthread_create",
@@ -1352,8 +1277,16 @@
             "p101_pthread_exit",
             "p101_pthread_getschedparam",
             "p101_pthread_join",
+            "p101_pthread_kill",
             "p101_pthread_self",
-            "p101_pthread_setschedparam"
+            "p101_pthread_setschedparam",
+            "p101_pthread_sigmask",
+            "p101_sem_close",
+            "p101_sem_open",
+            "p101_sem_post",
+            "p101_sem_trywait",
+            "p101_sem_unlink",
+            "p101_sem_wait"
           ]
         }
       ]
@@ -1457,7 +1390,7 @@
       "index": 27,
       "track": "ipc",
       "directory": "27-ipc",
-      "function_count": 22,
+      "function_count": 20,
       "purpose": "POSIX and XSI IPC: message queues, semaphores, shared memory, keys, readiness, cleanup, and permissions.",
       "domains": [
         {
@@ -1471,23 +1404,21 @@
         },
         {
           "name": "systems/ipc",
-          "function_count": 19,
+          "function_count": 17,
           "functions": [
             "p101_ftok",
+            "p101_mkfifo",
             "p101_msgctl",
             "p101_msgget",
             "p101_msgrcv",
             "p101_msgsnd",
-            "p101_sem_close",
-            "p101_sem_open",
-            "p101_sem_post",
-            "p101_sem_trywait",
-            "p101_sem_unlink",
-            "p101_sem_wait",
+            "p101_pipe",
             "p101_semctl",
             "p101_semctl_arg",
             "p101_semget",
             "p101_semop",
+            "p101_shm_open",
+            "p101_shm_unlink",
             "p101_shmat",
             "p101_shmctl",
             "p101_shmdt",
@@ -1635,33 +1566,12 @@
       "index": 32,
       "track": "terminals-users",
       "directory": "32-terminals-users",
-      "function_count": 42,
+      "function_count": 47,
       "purpose": "Terminal control, user/group lookup, identity APIs, tty databases, utmpx records, and interactive program boundaries.",
       "domains": [
         {
-          "name": "systems/users-identity",
-          "function_count": 15,
-          "functions": [
-            "p101_endusershell",
-            "p101_getegid",
-            "p101_geteuid",
-            "p101_getgid",
-            "p101_getgroups",
-            "p101_getlogin_r",
-            "p101_getuid",
-            "p101_getusershell",
-            "p101_setegid",
-            "p101_seteuid",
-            "p101_setgid",
-            "p101_setregid",
-            "p101_setreuid",
-            "p101_setuid",
-            "p101_setusershell"
-          ]
-        },
-        {
           "name": "systems/users-terminals",
-          "function_count": 27,
+          "function_count": 47,
           "functions": [
             "p101_cfgetispeed",
             "p101_cfgetospeed",
@@ -1669,16 +1579,35 @@
             "p101_cfsetispeed",
             "p101_cfsetospeed",
             "p101_cfsetspeed",
+            "p101_crypt",
+            "p101_endusershell",
             "p101_endutxent",
+            "p101_getegid",
+            "p101_geteuid",
+            "p101_getgid",
             "p101_getgrgid_r",
             "p101_getgrnam_r",
+            "p101_getgroups",
+            "p101_getlogin_r",
             "p101_getpwnam_r",
             "p101_getpwuid_r",
+            "p101_getuid",
+            "p101_getusershell",
             "p101_getutxent",
             "p101_getutxid",
             "p101_getutxline",
+            "p101_grantpt",
             "p101_isatty",
+            "p101_posix_openpt",
+            "p101_ptsname",
             "p101_pututxline",
+            "p101_setegid",
+            "p101_seteuid",
+            "p101_setgid",
+            "p101_setregid",
+            "p101_setreuid",
+            "p101_setuid",
+            "p101_setusershell",
             "p101_setutxent",
             "p101_tcdrain",
             "p101_tcflow",
@@ -1689,7 +1618,8 @@
             "p101_tcsendbreak",
             "p101_tcsetattr",
             "p101_tcsetpgrp",
-            "p101_ttyname_r"
+            "p101_ttyname_r",
+            "p101_unlockpt"
           ]
         }
       ]
@@ -1698,23 +1628,32 @@
       "index": 33,
       "track": "resources-platform",
       "directory": "33-resources-platform",
-      "function_count": 28,
+      "function_count": 30,
       "purpose": "Resource limits, priorities, clocks/time, memory mapping/locking, host/system configuration, and portable platform administration APIs.",
       "domains": [
         {
           "name": "systems/platform-admin",
-          "function_count": 1,
+          "function_count": 8,
           "functions": [
+            "p101_confstr",
+            "p101_getdomainname",
+            "p101_gethostid",
+            "p101_gethostname",
+            "p101_getloadavg",
+            "p101_setdomainname",
+            "p101_sysconf",
             "p101_uname"
           ]
         },
         {
           "name": "systems/resource-time-memory",
-          "function_count": 17,
+          "function_count": 19,
           "functions": [
-            "p101_getpriority",
-            "p101_getrlimit",
-            "p101_getrusage",
+            "p101_clock_getres",
+            "p101_clock_gettime",
+            "p101_clock_settime",
+            "p101_gmtime_r",
+            "p101_localtime_r",
             "p101_mlock",
             "p101_mlockall",
             "p101_mmap",
@@ -1723,34 +1662,21 @@
             "p101_munlock",
             "p101_munlockall",
             "p101_munmap",
+            "p101_nanosleep",
             "p101_posix_madvise",
-            "p101_setpriority",
-            "p101_setrlimit",
-            "p101_shm_open",
-            "p101_shm_unlink",
-            "p101_times"
-          ]
-        },
-        {
-          "name": "systems/security-legacy",
-          "function_count": 1,
-          "functions": [
-            "p101_crypt"
+            "p101_posix_memalign",
+            "p101_strftime_l",
+            "p101_strptime",
+            "p101_tzset"
           ]
         },
         {
           "name": "systems/system-configuration",
-          "function_count": 9,
+          "function_count": 3,
           "functions": [
-            "p101_confstr",
             "p101_fpathconf",
             "p101_getcwd",
-            "p101_getdomainname",
-            "p101_gethostid",
-            "p101_gethostname",
-            "p101_pathconf",
-            "p101_setdomainname",
-            "p101_sysconf"
+            "p101_pathconf"
           ]
         }
       ]
@@ -1786,7 +1712,7 @@
       "index": 35,
       "track": "runtime-services",
       "directory": "35-runtime-services",
-      "function_count": 36,
+      "function_count": 40,
       "purpose": "Dynamic loading, regex, iconv, locale/message catalogs, legacy DBM, and libc search structures.",
       "domains": [
         {
@@ -1816,16 +1742,20 @@
         },
         {
           "name": "systems/localization-conversion",
-          "function_count": 8,
+          "function_count": 12,
           "functions": [
             "p101_catclose",
             "p101_catgets",
             "p101_catopen",
+            "p101_duplocale",
+            "p101_freelocale",
             "p101_iconv",
             "p101_iconv_close",
             "p101_iconv_open",
+            "p101_newlocale",
             "p101_nl_langinfo",
-            "p101_nl_langinfo_l"
+            "p101_nl_langinfo_l",
+            "p101_uselocale"
           ]
         },
         {
@@ -1938,14 +1868,15 @@
       "index": 37,
       "track": "environment-lifecycle",
       "directory": "37-environment-lifecycle",
-      "function_count": 11,
+      "function_count": 12,
       "purpose": "Creating, configuring, labeling, duplicating, and destroying p101 environments.",
       "domains": [
         {
           "name": "support/environment-lifecycle",
-          "function_count": 11,
+          "function_count": 12,
           "functions": [
             "p101_env_clear_event_log_error",
+            "p101_env_complete_event_streams",
             "p101_env_create",
             "p101_env_destroy",
             "p101_env_dup",
@@ -1964,12 +1895,12 @@
       "index": 38,
       "track": "event-streams",
       "directory": "38-event-streams",
-      "function_count": 34,
+      "function_count": 36,
       "purpose": "Resource events, call tracing, fault injection, event-log formatting, and observer configuration.",
       "domains": [
         {
           "name": "support/call-tracing",
-          "function_count": 12,
+          "function_count": 13,
           "functions": [
             "p101_env_get_exit_tracer",
             "p101_env_get_tracer",
@@ -1982,7 +1913,8 @@
             "p101_env_trace",
             "p101_env_trace_call",
             "p101_env_trace_call_exit",
-            "p101_env_trace_exit"
+            "p101_env_trace_exit",
+            "p101_env_trace_scope_cleanup"
           ]
         },
         {
@@ -1997,8 +1929,9 @@
         },
         {
           "name": "support/resource-events",
-          "function_count": 18,
+          "function_count": 19,
           "functions": [
+            "p101_env_after_fork_child",
             "p101_env_enable_fd_tracking",
             "p101_env_report_leaks",
             "p101_env_set_alloc_log",
@@ -2066,7 +1999,7 @@
       "index": 40,
       "track": "tool-building",
       "directory": "40-tool-building",
-      "function_count": 29,
+      "function_count": 41,
       "purpose": "C facts, small analyzers, and writing tools that reason about p101 projects.",
       "domains": [
         {
@@ -2081,7 +2014,7 @@
         },
         {
           "name": "tooling/event-protocol",
-          "function_count": 25,
+          "function_count": 37,
           "functions": [
             "p101_tool_event_fingerprint_file",
             "p101_tool_event_lifecycle_create",
@@ -2098,16 +2031,28 @@
             "p101_tool_event_ownership_exec_inherits",
             "p101_tool_event_parse_json_size",
             "p101_tool_event_parse_line",
+            "p101_tool_event_parse_policy_summary_json",
             "p101_tool_event_parse_resource_summary_json",
             "p101_tool_event_parse_size_field",
             "p101_tool_event_parse_status_name",
             "p101_tool_event_read_line",
             "p101_tool_event_resource_summary_finding_count",
             "p101_tool_event_split",
+            "p101_tool_event_stream_health_destroy",
+            "p101_tool_event_stream_health_incomplete_producers",
             "p101_tool_event_stream_health_is_complete",
             "p101_tool_event_stream_health_observe",
             "p101_tool_event_unescape_field",
-            "p101_tool_event_write"
+            "p101_tool_event_write",
+            "p101_tool_model_create",
+            "p101_tool_model_destroy",
+            "p101_tool_model_edge_at",
+            "p101_tool_model_edge_count",
+            "p101_tool_model_finish",
+            "p101_tool_model_ingest",
+            "p101_tool_model_node_at",
+            "p101_tool_model_node_count",
+            "p101_tool_model_write_json"
           ]
         }
       ]

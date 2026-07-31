@@ -4,7 +4,7 @@
 
 Track number: `27`
 
-Wrapper count: `22`
+Wrapper count: `20`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -25,7 +25,7 @@ POSIX and XSI IPC: message queues, semaphores, shared memory, keys, readiness, c
 ## Domains
 
 - `systems/io-multiplexing` (3 wrappers)
-- `systems/ipc` (19 wrappers)
+- `systems/ipc` (17 wrappers)
 
 ## Suggested lesson arc
 
@@ -46,20 +46,18 @@ POSIX and XSI IPC: message queues, semaphores, shared memory, keys, readiness, c
 ### `systems/ipc`
 
 - `p101_ftok`
+- `p101_mkfifo`
 - `p101_msgctl`
 - `p101_msgget`
 - `p101_msgrcv`
 - `p101_msgsnd`
-- `p101_sem_close`
-- `p101_sem_open`
-- `p101_sem_post`
-- `p101_sem_trywait`
-- `p101_sem_unlink`
-- `p101_sem_wait`
+- `p101_pipe`
 - `p101_semctl`
 - `p101_semctl_arg`
 - `p101_semget`
 - `p101_semop`
+- `p101_shm_open`
+- `p101_shm_unlink`
 - `p101_shmat`
 - `p101_shmctl`
 - `p101_shmdt`

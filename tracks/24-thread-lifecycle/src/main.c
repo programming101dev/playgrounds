@@ -6,10 +6,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const char *const wrapper_functions[] = {"p101_sched_get_priority_max",
-                                                "p101_sched_get_priority_min",
-                                                "p101_sched_yield",
-                                                "p101_pthread_attr_destroy",
+static const char *const wrapper_functions[] = {"p101_pthread_attr_destroy",
                                                 "p101_pthread_attr_getdetachstate",
                                                 "p101_pthread_attr_getguardsize",
                                                 "p101_pthread_attr_getinheritsched",
@@ -34,8 +31,16 @@ static const char *const wrapper_functions[] = {"p101_sched_get_priority_max",
                                                 "p101_pthread_exit",
                                                 "p101_pthread_getschedparam",
                                                 "p101_pthread_join",
+                                                "p101_pthread_kill",
                                                 "p101_pthread_self",
-                                                "p101_pthread_setschedparam"};
+                                                "p101_pthread_setschedparam",
+                                                "p101_pthread_sigmask",
+                                                "p101_sem_close",
+                                                "p101_sem_open",
+                                                "p101_sem_post",
+                                                "p101_sem_trywait",
+                                                "p101_sem_unlink",
+                                                "p101_sem_wait"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 

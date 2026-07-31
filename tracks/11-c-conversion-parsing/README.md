@@ -4,7 +4,7 @@
 
 Track number: `11`
 
-Wrapper count: `45`
+Wrapper count: `46`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -24,7 +24,7 @@ Integer parsing, inttypes helpers, option parsing, and defensive conversion prac
 
 ## Domains
 
-- `c/cli-parsing` (3 wrappers)
+- `c/cli-parsing` (4 wrappers)
 - `c/conversion` (36 wrappers)
 - `c/inttypes` (6 wrappers)
 
@@ -43,6 +43,7 @@ Integer parsing, inttypes helpers, option parsing, and defensive conversion prac
 - `p101_getopt`
 - `p101_getopt_long`
 - `p101_getopt_long_only`
+- `p101_getsubopt`
 
 ### `c/conversion`
 

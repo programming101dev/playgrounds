@@ -4,7 +4,7 @@
 
 Track number: `02`
 
-Wrapper count: `23`
+Wrapper count: `24`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -24,7 +24,7 @@ Raw byte memory operations and the difference between object bytes and strings.
 
 ## Domains
 
-- `c/byte-utility` (17 wrappers)
+- `c/byte-utility` (18 wrappers)
 - `c/memory-bytes` (5 wrappers)
 - `c/memory-bytes-extensions` (1 wrappers)
 
@@ -56,7 +56,8 @@ Raw byte memory operations and the difference between object bytes and strings.
 - `p101_le16toh`
 - `p101_le32toh`
 - `p101_le64toh`
-- `p101_swab`
+- `p101_tool_run_capture`
+- `p101_tool_run_redirect`
 
 ### `c/memory-bytes`
 

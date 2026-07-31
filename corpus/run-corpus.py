@@ -170,7 +170,7 @@ def run_case(root: Path, p101: Path, playground: Path, out_dir: Path, case: dict
     output_file = case_out / "playground-output.txt"
     log_path = out_dir / "logs" / f"{name}.log"
     expected_exit = int(case["expected_exit"])
-    fault_count = int(case.get("fault_count", 1))
+    fault_count = int(case.get("fault_count", 0))
     expected_findings = {str(item) for item in case.get("expected_findings", [])}
     expected_error_path_findings = bool(case.get("expected_error_path_findings", False))
     expected_output_size = case.get("expected_output_size")

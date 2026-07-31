@@ -3,12 +3,12 @@
   "title": "event streams",
   "order": 38,
   "generated": true,
-  "wrapper_count": 34,
+  "wrapper_count": 36,
   "purpose": "Resource events, call tracing, fault injection, event-log formatting, and observer configuration.",
   "domains": [
     {
       "name": "support/call-tracing",
-      "function_count": 12,
+      "function_count": 13,
       "functions": [
         "p101_env_get_exit_tracer",
         "p101_env_get_tracer",
@@ -21,7 +21,8 @@
         "p101_env_trace",
         "p101_env_trace_call",
         "p101_env_trace_call_exit",
-        "p101_env_trace_exit"
+        "p101_env_trace_exit",
+        "p101_env_trace_scope_cleanup"
       ]
     },
     {
@@ -36,8 +37,9 @@
     },
     {
       "name": "support/resource-events",
-      "function_count": 18,
+      "function_count": 19,
       "functions": [
+        "p101_env_after_fork_child",
         "p101_env_enable_fd_tracking",
         "p101_env_report_leaks",
         "p101_env_set_alloc_log",

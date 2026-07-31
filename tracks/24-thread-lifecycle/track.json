@@ -3,18 +3,9 @@
   "title": "thread lifecycle",
   "order": 24,
   "generated": true,
-  "wrapper_count": 30,
+  "wrapper_count": 35,
   "purpose": "Thread creation, joining, detaching, identity, scheduling hooks, and basic lifecycle ownership.",
   "domains": [
-    {
-      "name": "systems/scheduler",
-      "function_count": 3,
-      "functions": [
-        "p101_sched_get_priority_max",
-        "p101_sched_get_priority_min",
-        "p101_sched_yield"
-      ]
-    },
     {
       "name": "systems/thread-attributes",
       "function_count": 18,
@@ -41,7 +32,7 @@
     },
     {
       "name": "systems/thread-lifecycle",
-      "function_count": 9,
+      "function_count": 17,
       "functions": [
         "p101_pthread_atfork",
         "p101_pthread_create",
@@ -50,8 +41,16 @@
         "p101_pthread_exit",
         "p101_pthread_getschedparam",
         "p101_pthread_join",
+        "p101_pthread_kill",
         "p101_pthread_self",
-        "p101_pthread_setschedparam"
+        "p101_pthread_setschedparam",
+        "p101_pthread_sigmask",
+        "p101_sem_close",
+        "p101_sem_open",
+        "p101_sem_post",
+        "p101_sem_trywait",
+        "p101_sem_unlink",
+        "p101_sem_wait"
       ]
     }
   ],

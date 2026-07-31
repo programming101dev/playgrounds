@@ -1,6 +1,9 @@
 # Free of unknown pointer
 
-This case allocates a buffer but passes an interior pointer to `p101_free`.
+This case allocates a buffer but records an attempted release of an interior
+pointer. It then performs one real `p101_free` on the owning pointer. Recording
+the invalid attempt without passing it to the system allocator keeps the lesson
+deterministic while preserving the exact ownership violation.
 
 That is invalid. The allocator can only release the exact pointer it returned.
 Freeing stack addresses, string literals, interior pointers, or borrowed

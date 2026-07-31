@@ -6,9 +6,9 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const char *const wrapper_functions[] = {"p101_fclose",       "p101_fgetpos",     "p101_fopen",    "p101_fread",   "p101_freopen",        "p101_fseek",     "p101_fsetpos",  "p101_ftell",    "p101_fwrite",    "p101_perror",
-                                                "p101_remove",       "p101_rename",      "p101_tmpfile",  "p101_fdopen",  "p101_fileno",         "p101_flockfile", "p101_fmemopen", "p101_fpurge",   "p101_fseeko",    "p101_ftello",
-                                                "p101_ftrylockfile", "p101_funlockfile", "p101_getdelim", "p101_getline", "p101_open_memstream", "p101_pclose",    "p101_popen",    "p101_renameat", "p101_setbuffer", "p101_setlinebuf"};
+static const char *const wrapper_functions[] = {"p101_fclose", "p101_fgetpos", "p101_fopen",        "p101_fread",       "p101_freopen",  "p101_fseek",   "p101_fsetpos",        "p101_ftell",     "p101_fwrite",
+                                                "p101_perror", "p101_remove",  "p101_rename",       "p101_tmpfile",     "p101_fdopen",   "p101_fileno",  "p101_flockfile",      "p101_fmemopen",  "p101_fpurge",
+                                                "p101_fseeko", "p101_ftello",  "p101_ftrylockfile", "p101_funlockfile", "p101_getdelim", "p101_getline", "p101_open_memstream", "p101_setbuffer", "p101_setlinebuf"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 

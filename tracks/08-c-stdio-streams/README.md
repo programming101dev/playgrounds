@@ -4,7 +4,7 @@
 
 Track number: `08`
 
-Wrapper count: `30`
+Wrapper count: `27`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -25,7 +25,7 @@ Opening, closing, positioning, reading, writing, renaming, temporary files, and 
 ## Domains
 
 - `c/stdio-streams-files` (13 wrappers)
-- `c/stdio-streams-files-extensions` (17 wrappers)
+- `c/stdio-streams-files-extensions` (14 wrappers)
 
 ## Suggested lesson arc
 
@@ -67,8 +67,5 @@ Opening, closing, positioning, reading, writing, renaming, temporary files, and 
 - `p101_getdelim`
 - `p101_getline`
 - `p101_open_memstream`
-- `p101_pclose`
-- `p101_popen`
-- `p101_renameat`
 - `p101_setbuffer`
 - `p101_setlinebuf`

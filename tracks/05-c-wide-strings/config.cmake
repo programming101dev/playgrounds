@@ -26,6 +26,10 @@ list(SORT _P101_TRACK_LIBRARY_REPOS)
 set(_P101_TRACK_INCLUDE_DIRS "")
 set(_P101_TRACK_LINK_DIRS "")
 foreach (_p101_library_repo IN LISTS _P101_TRACK_LIBRARY_REPOS)
+    get_filename_component(_p101_library_name "${_p101_library_repo}" NAME)
+    if (_p101_library_name MATCHES "^lib_(posix|posix_optional|posix_xsi|unix)$")
+        continue()
+    endif ()
     if (IS_DIRECTORY "${_p101_library_repo}/include")
         list(APPEND _P101_TRACK_INCLUDE_DIRS "${_p101_library_repo}/include")
     endif ()
@@ -66,10 +70,27 @@ set(main_LINK_LIBRARIES
         p101_env
         p101_tool_event
         p101_c
-        p101_posix
-        p101_posix_optional
-        p101_posix_xsi
-        p101_unix
+        p101_io
+        p101_filesystem
+        p101_memory
+        p101_process
+        p101_thread
+        p101_sync
+        p101_ipc
+        p101_network
+        p101_terminal
+        p101_time
+        p101_identity
+        p101_text
+        p101_locale
+        p101_math
+        p101_search
+        p101_dynamic_linking
+        p101_diagnostics
+        p101_database
+        p101_cli
+        p101_random
+        p101_host
         p101_fsm
         p101_util
         p101_convert

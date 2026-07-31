@@ -4,7 +4,7 @@
 
 Track number: `20`
 
-Wrapper count: `26`
+Wrapper count: `25`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -25,7 +25,7 @@ File descriptors, open/read/write/close, vectored I/O, short reads/writes, async
 ## Domains
 
 - `systems/async-io` (8 wrappers)
-- `systems/fd-io` (18 wrappers)
+- `systems/fd-io` (17 wrappers)
 
 ## Suggested lesson arc
 
@@ -60,7 +60,6 @@ File descriptors, open/read/write/close, vectored I/O, short reads/writes, async
 - `p101_lseek`
 - `p101_open`
 - `p101_openat`
-- `p101_pipe`
 - `p101_pread`
 - `p101_pwrite`
 - `p101_read`

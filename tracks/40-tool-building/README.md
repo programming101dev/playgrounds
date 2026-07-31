@@ -4,7 +4,7 @@
 
 Track number: `40`
 
-Wrapper count: `29`
+Wrapper count: `41`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -25,7 +25,7 @@ C facts, small analyzers, and writing tools that reason about p101 projects.
 ## Domains
 
 - `tooling/c-facts` (4 wrappers)
-- `tooling/event-protocol` (25 wrappers)
+- `tooling/event-protocol` (37 wrappers)
 
 ## Suggested lesson arc
 
@@ -61,13 +61,25 @@ C facts, small analyzers, and writing tools that reason about p101 projects.
 - `p101_tool_event_ownership_exec_inherits`
 - `p101_tool_event_parse_json_size`
 - `p101_tool_event_parse_line`
+- `p101_tool_event_parse_policy_summary_json`
 - `p101_tool_event_parse_resource_summary_json`
 - `p101_tool_event_parse_size_field`
 - `p101_tool_event_parse_status_name`
 - `p101_tool_event_read_line`
 - `p101_tool_event_resource_summary_finding_count`
 - `p101_tool_event_split`
+- `p101_tool_event_stream_health_destroy`
+- `p101_tool_event_stream_health_incomplete_producers`
 - `p101_tool_event_stream_health_is_complete`
 - `p101_tool_event_stream_health_observe`
 - `p101_tool_event_unescape_field`
 - `p101_tool_event_write`
+- `p101_tool_model_create`
+- `p101_tool_model_destroy`
+- `p101_tool_model_edge_at`
+- `p101_tool_model_edge_count`
+- `p101_tool_model_finish`
+- `p101_tool_model_ingest`
+- `p101_tool_model_node_at`
+- `p101_tool_model_node_count`
+- `p101_tool_model_write_json`

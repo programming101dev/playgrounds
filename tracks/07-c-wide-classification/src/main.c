@@ -6,10 +6,24 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const char *const wrapper_functions[] = {"p101_iswalnum",   "p101_iswalpha",   "p101_iswblank",   "p101_iswcntrl",    "p101_iswctype",    "p101_iswdigit",   "p101_iswgraph",   "p101_iswlower",   "p101_iswprint",
-                                                "p101_iswpunct",   "p101_iswspace",   "p101_iswupper",   "p101_iswxdigit",   "p101_towctrans",   "p101_towlower",   "p101_towupper",   "p101_wctrans",    "p101_wctype",
-                                                "p101_iswalnum_l", "p101_iswalpha_l", "p101_iswblank_l", "p101_iswcntrl_l",  "p101_iswctype_l",  "p101_iswdigit_l", "p101_iswgraph_l", "p101_iswlower_l", "p101_iswprint_l",
-                                                "p101_iswpunct_l", "p101_iswspace_l", "p101_iswupper_l", "p101_iswxdigit_l", "p101_towctrans_l", "p101_towlower_l", "p101_towupper_l", "p101_wctrans_l",  "p101_wctype_l"};
+static const char *const wrapper_functions[] = {"p101_iswalnum",
+                                                "p101_iswalpha",
+                                                "p101_iswblank",
+                                                "p101_iswcntrl",
+                                                "p101_iswctype",
+                                                "p101_iswdigit",
+                                                "p101_iswgraph",
+                                                "p101_iswlower",
+                                                "p101_iswprint",
+                                                "p101_iswpunct",
+                                                "p101_iswspace",
+                                                "p101_iswupper",
+                                                "p101_iswxdigit",
+                                                "p101_towctrans",
+                                                "p101_towlower",
+                                                "p101_towupper",
+                                                "p101_wctrans",
+                                                "p101_wctype"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 

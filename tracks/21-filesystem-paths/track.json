@@ -3,12 +3,12 @@
   "title": "filesystem paths",
   "order": 21,
   "generated": true,
-  "wrapper_count": 34,
+  "wrapper_count": 33,
   "purpose": "Paths, permissions, stat, links, directories-as-filesystem-objects, timestamps, and filesystem mutation.",
   "domains": [
     {
       "name": "systems/filesystem-paths",
-      "function_count": 34,
+      "function_count": 33,
       "functions": [
         "p101_access",
         "p101_chdir",
@@ -30,7 +30,6 @@
         "p101_lstat",
         "p101_mkdir",
         "p101_mkdirat",
-        "p101_mkfifo",
         "p101_mknod",
         "p101_readlink",
         "p101_readlinkat",

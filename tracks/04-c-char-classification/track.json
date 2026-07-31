@@ -3,7 +3,7 @@
   "title": "c char classification",
   "order": 4,
   "generated": true,
-  "wrapper_count": 28,
+  "wrapper_count": 14,
   "purpose": "Character classification, case mapping, locale-sensitive predicates, and signed-char pitfalls.",
   "domains": [
     {
@@ -24,26 +24,6 @@
         "p101_isxdigit",
         "p101_tolower",
         "p101_toupper"
-      ]
-    },
-    {
-      "name": "c/char-classification-extensions",
-      "function_count": 14,
-      "functions": [
-        "p101_isalnum_l",
-        "p101_isalpha_l",
-        "p101_isblank_l",
-        "p101_iscntrl_l",
-        "p101_isdigit_l",
-        "p101_isgraph_l",
-        "p101_islower_l",
-        "p101_isprint_l",
-        "p101_ispunct_l",
-        "p101_isspace_l",
-        "p101_isupper_l",
-        "p101_isxdigit_l",
-        "p101_tolower_l",
-        "p101_toupper_l"
       ]
     }
   ],

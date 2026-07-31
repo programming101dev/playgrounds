@@ -4,7 +4,7 @@
 
 Track number: `24`
 
-Wrapper count: `30`
+Wrapper count: `35`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -24,9 +24,8 @@ Thread creation, joining, detaching, identity, scheduling hooks, and basic lifec
 
 ## Domains
 
-- `systems/scheduler` (3 wrappers)
 - `systems/thread-attributes` (18 wrappers)
-- `systems/thread-lifecycle` (9 wrappers)
+- `systems/thread-lifecycle` (17 wrappers)
 
 ## Suggested lesson arc
 
@@ -37,12 +36,6 @@ Thread creation, joining, detaching, identity, scheduling hooks, and basic lifec
 5. Add one regression test or corpus expectation before moving on.
 
 ## Wrapper inventory
-
-### `systems/scheduler`
-
-- `p101_sched_get_priority_max`
-- `p101_sched_get_priority_min`
-- `p101_sched_yield`
 
 ### `systems/thread-attributes`
 
@@ -74,5 +67,13 @@ Thread creation, joining, detaching, identity, scheduling hooks, and basic lifec
 - `p101_pthread_exit`
 - `p101_pthread_getschedparam`
 - `p101_pthread_join`
+- `p101_pthread_kill`
 - `p101_pthread_self`
 - `p101_pthread_setschedparam`
+- `p101_pthread_sigmask`
+- `p101_sem_close`
+- `p101_sem_open`
+- `p101_sem_post`
+- `p101_sem_trywait`
+- `p101_sem_unlink`
+- `p101_sem_wait`

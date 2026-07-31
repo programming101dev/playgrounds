@@ -4,7 +4,7 @@
 
 Track number: `03`
 
-Wrapper count: `32`
+Wrapper count: `83`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -25,7 +25,7 @@ NUL-terminated byte strings, comparisons, searching, collation, and common strin
 ## Domains
 
 - `c/byte-strings` (14 wrappers)
-- `c/byte-strings-extensions` (18 wrappers)
+- `c/byte-strings-extensions` (69 wrappers)
 
 ## Suggested lesson arc
 
@@ -56,7 +56,37 @@ NUL-terminated byte strings, comparisons, searching, collation, and common strin
 
 ### `c/byte-strings-extensions`
 
+- `p101_a64l`
 - `p101_ffs`
+- `p101_isalnum_l`
+- `p101_isalpha_l`
+- `p101_isblank_l`
+- `p101_iscntrl_l`
+- `p101_isdigit_l`
+- `p101_isgraph_l`
+- `p101_islower_l`
+- `p101_isprint_l`
+- `p101_ispunct_l`
+- `p101_isspace_l`
+- `p101_isupper_l`
+- `p101_iswalnum_l`
+- `p101_iswalpha_l`
+- `p101_iswblank_l`
+- `p101_iswcntrl_l`
+- `p101_iswctype_l`
+- `p101_iswdigit_l`
+- `p101_iswgraph_l`
+- `p101_iswlower_l`
+- `p101_iswprint_l`
+- `p101_iswpunct_l`
+- `p101_iswspace_l`
+- `p101_iswupper_l`
+- `p101_iswxdigit_l`
+- `p101_isxdigit_l`
+- `p101_l64a`
+- `p101_mbsnrtowcs`
+- `p101_open_wmemstream`
+- `p101_rpmatch`
 - `p101_stpcpy`
 - `p101_stpncpy`
 - `p101_strcasecmp`
@@ -74,3 +104,24 @@ NUL-terminated byte strings, comparisons, searching, collation, and common strin
 - `p101_strsignal`
 - `p101_strtok_r`
 - `p101_strxfrm_l`
+- `p101_swab`
+- `p101_tolower_l`
+- `p101_toupper_l`
+- `p101_towctrans_l`
+- `p101_towlower_l`
+- `p101_towupper_l`
+- `p101_wcpcpy`
+- `p101_wcpncpy`
+- `p101_wcscasecmp`
+- `p101_wcscoll_l`
+- `p101_wcsdup`
+- `p101_wcsncasecmp`
+- `p101_wcsnlen`
+- `p101_wcsnrtombs`
+- `p101_wcswidth`
+- `p101_wcsxfrm_l`
+- `p101_wctrans_l`
+- `p101_wctype_l`
+- `p101_wcwidth`
+- `p101_wordexp`
+- `p101_wordfree`

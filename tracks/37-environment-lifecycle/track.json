@@ -3,14 +3,15 @@
   "title": "environment lifecycle",
   "order": 37,
   "generated": true,
-  "wrapper_count": 11,
+  "wrapper_count": 12,
   "purpose": "Creating, configuring, labeling, duplicating, and destroying p101 environments.",
   "domains": [
     {
       "name": "support/environment-lifecycle",
-      "function_count": 11,
+      "function_count": 12,
       "functions": [
         "p101_env_clear_event_log_error",
+        "p101_env_complete_event_streams",
         "p101_env_create",
         "p101_env_destroy",
         "p101_env_dup",

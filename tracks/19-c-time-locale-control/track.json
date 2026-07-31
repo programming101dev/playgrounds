@@ -3,7 +3,7 @@
   "title": "c time locale control",
   "order": 19,
   "generated": true,
-  "wrapper_count": 51,
+  "wrapper_count": 37,
   "purpose": "Time, locale, atomics, setjmp/signal-style control flow, and their common extensions.",
   "domains": [
     {
@@ -48,28 +48,11 @@
       ]
     },
     {
-      "name": "c/control-flow-extensions",
-      "function_count": 1,
-      "functions": [
-        "p101_siglongjmp"
-      ]
-    },
-    {
       "name": "c/locale",
       "function_count": 2,
       "functions": [
         "p101_localeconv",
         "p101_setlocale"
-      ]
-    },
-    {
-      "name": "c/locale-extensions",
-      "function_count": 4,
-      "functions": [
-        "p101_duplocale",
-        "p101_freelocale",
-        "p101_newlocale",
-        "p101_uselocale"
       ]
     },
     {
@@ -82,21 +65,6 @@
         "p101_strftime",
         "p101_time",
         "p101_timespec_get"
-      ]
-    },
-    {
-      "name": "c/time-extensions",
-      "function_count": 9,
-      "functions": [
-        "p101_clock_getres",
-        "p101_clock_gettime",
-        "p101_clock_settime",
-        "p101_gmtime_r",
-        "p101_localtime_r",
-        "p101_nanosleep",
-        "p101_strftime_l",
-        "p101_strptime",
-        "p101_tzset"
       ]
     }
   ],

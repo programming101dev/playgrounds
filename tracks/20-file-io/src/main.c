@@ -8,7 +8,7 @@
 
 static const char *const wrapper_functions[] = {"p101_aio_cancel", "p101_aio_error", "p101_aio_fsync", "p101_aio_read", "p101_aio_return", "p101_aio_suspend", "p101_aio_write", "p101_lio_listio", "p101_close",
                                                 "p101_creat",      "p101_dup",       "p101_dup2",      "p101_fcntl",    "p101_ftruncate",  "p101_lockf",       "p101_lseek",     "p101_open",       "p101_openat",
-                                                "p101_pipe",       "p101_pread",     "p101_pwrite",    "p101_read",     "p101_readv",      "p101_sync",        "p101_write",     "p101_writev"};
+                                                "p101_pread",      "p101_pwrite",    "p101_read",      "p101_readv",    "p101_sync",       "p101_write",       "p101_writev"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 

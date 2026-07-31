@@ -4,7 +4,7 @@
 
 Track number: `19`
 
-Wrapper count: `51`
+Wrapper count: `37`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -26,11 +26,8 @@ Time, locale, atomics, setjmp/signal-style control flow, and their common extens
 
 - `c/atomics` (26 wrappers)
 - `c/control-flow` (3 wrappers)
-- `c/control-flow-extensions` (1 wrappers)
 - `c/locale` (2 wrappers)
-- `c/locale-extensions` (4 wrappers)
 - `c/time` (6 wrappers)
-- `c/time-extensions` (9 wrappers)
 
 ## Suggested lesson arc
 
@@ -77,21 +74,10 @@ Time, locale, atomics, setjmp/signal-style control flow, and their common extens
 - `p101_raise`
 - `p101_signal`
 
-### `c/control-flow-extensions`
-
-- `p101_siglongjmp`
-
 ### `c/locale`
 
 - `p101_localeconv`
 - `p101_setlocale`
-
-### `c/locale-extensions`
-
-- `p101_duplocale`
-- `p101_freelocale`
-- `p101_newlocale`
-- `p101_uselocale`
 
 ### `c/time`
 
@@ -101,15 +87,3 @@ Time, locale, atomics, setjmp/signal-style control flow, and their common extens
 - `p101_strftime`
 - `p101_time`
 - `p101_timespec_get`
-
-### `c/time-extensions`
-
-- `p101_clock_getres`
-- `p101_clock_gettime`
-- `p101_clock_settime`
-- `p101_gmtime_r`
-- `p101_localtime_r`
-- `p101_nanosleep`
-- `p101_strftime_l`
-- `p101_strptime`
-- `p101_tzset`

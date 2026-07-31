@@ -350,6 +350,9 @@ concurrency="$(find_tool P101_SYNC_CHECK "$(last_build_tool ../programs/p101-syn
 trace="$(find_tool P101_TRACE "$(last_build_tool ../programs/p101-trace p101-trace)" ../programs/p101-trace/build-clang-22/p101-trace ../programs/p101-trace/build-clang/p101-trace ../programs/p101-trace/build-gcc-16/p101-trace p101-trace)"
 report="$(find_tool P101_REPORT "$(last_build_tool ../programs/p101-report p101-report)" ../programs/p101-report/build-clang-22/p101-report ../programs/p101-report/build-clang/p101-report ../programs/p101-report/build-gcc-16/p101-report p101-report)"
 walker="$(find_tool P101_ERROR_PATH_WALK "$(last_build_tool ../programs/p101-error-path-walk p101-error-path-walk)" ../programs/p101-error-path-walk/build-clang-22/p101-error-path-walk ../programs/p101-error-path-walk/build-clang/p101-error-path-walk ../programs/p101-error-path-walk/build-gcc-16/p101-error-path-walk ../programs/p101-error-path-walk/build-clang/error-path-walk p101-error-path-walk error-path-walk)"
+p101_run="$(find_tool P101_RUN ../scripts/p101-run.py p101-run.py)"
+analyze="$(find_tool P101_ANALYZE ../scripts/p101-analyze.py p101-analyze.py)"
+event_model="$(find_tool P101_EVENT_MODEL "$(last_build_tool ../libraries/lib_tool_event p101-event-model)" ../libraries/lib_tool_event/build-clang-22/p101-event-model ../libraries/lib_tool_event/build-clang/p101-event-model ../libraries/lib_tool_event/build-gcc-16/p101-event-model p101-event-model)"
 wrapper_audit="$(find_tool P101_WRAPPER_AUDIT ../programs/p101-wrapper-audit/p101-wrapper-audit p101-wrapper-audit)"
 error_contract="$(find_tool P101_ERROR_CONTRACT "$(last_build_tool ../programs/p101-error-contract p101-error-contract)" ../programs/p101-error-contract/build-clang-22/p101-error-contract ../programs/p101-error-contract/build-clang/p101-error-contract ../programs/p101-error-contract/build-gcc-16/p101-error-contract p101-error-contract)"
 module_map="$(find_tool P101_MODULE_MAP "$(last_build_tool ../programs/p101-module-map p101-module-map)" ../programs/p101-module-map/build-clang-22/p101-module-map ../programs/p101-module-map/build-clang/p101-module-map ../programs/p101-module-map/build-gcc-16/p101-module-map p101-module-map)"
@@ -370,19 +373,19 @@ else
   run_logged "observe double close" "$log_dir/observe-double-close.log" "0 1" "$observe" -o "$out_dir/observed-double-close" -r "$tracker" -d "$concurrency" -t "$trace" -p "$report" -- "$playground" -s double-close -o "$out_dir/double-close-output.txt" || true
 fi
 
-if [ -z "$playground" ] || [ -z "$walker" ] || [ -z "$observe" ] || [ -z "$tracker" ] || [ -z "$concurrency" ] || [ -z "$trace" ] || [ -z "$report" ]; then
-  record "FAIL" "fault walk" "missing: $(missing_tools p101-tool-playground "$playground" p101-error-path-walk "$walker" p101-observe "$observe" p101-resource-tracker "$tracker" p101-sync-check "$concurrency" p101-trace "$trace" p101-report "$report")"
+if [ -z "$playground" ] || [ -z "$walker" ] || [ -z "$p101_run" ] || [ -z "$observe" ] || [ -z "$analyze" ] || [ -z "$event_model" ]; then
+  record "FAIL" "fault walk" "missing: $(missing_tools p101-tool-playground "$playground" p101-error-path-walk "$walker" p101-run "$p101_run" p101-observe "$observe" p101-analyze "$analyze" p101-event-model "$event_model")"
 else
   reset_child_dir "$out_dir/fault-walk"
   mkdir -p "$out_dir/fault-walk"
-  run_logged "fault walk" "$log_dir/fault-walk.log" "0 1" "$walker" -n "$fault_count" -l "$out_dir/fault-walk/fault" -O "$observe" -r "$tracker" -d "$concurrency" -t "$trace" -p "$report" -- "$playground" -s fault-lab -o "$out_dir/fault-lab-output.txt" || true
+  run_logged "fault walk" "$log_dir/fault-walk.log" "0 1" "$walker" -n "$fault_count" -l "$out_dir/fault-walk/fault" -U "$p101_run" -O "$observe" -Y "$analyze" -B "$event_model" -- "$playground" -s fault-lab -o "$out_dir/fault-lab-output.txt" || true
 fi
 
-if [ -z "$playground" ] || [ -z "$doctor" ] || [ -z "$wrapper_audit" ] || [ -z "$error_contract" ] || [ -z "$module_map" ] || [ -z "$observe" ] || [ -z "$walker" ] || [ -z "$tracker" ] || [ -z "$concurrency" ] || [ -z "$trace" ] || [ -z "$report" ]; then
-  record "FAIL" "doctor full source audit" "missing: $(missing_tools p101-tool-playground "$playground" p101-doctor "$doctor" p101-wrapper-audit "$wrapper_audit" p101-error-contract "$error_contract" p101-module-map "$module_map" p101-observe "$observe" p101-error-path-walk "$walker" p101-resource-tracker "$tracker" p101-sync-check "$concurrency" p101-trace "$trace" p101-report "$report")"
+if [ -z "$playground" ] || [ -z "$doctor" ] || [ -z "$wrapper_audit" ] || [ -z "$error_contract" ] || [ -z "$module_map" ] || [ -z "$p101_run" ] || [ -z "$observe" ] || [ -z "$analyze" ] || [ -z "$event_model" ] || [ -z "$walker" ] || [ -z "$tracker" ] || [ -z "$concurrency" ] || [ -z "$trace" ] || [ -z "$report" ]; then
+  record "FAIL" "doctor full source audit" "missing: $(missing_tools p101-tool-playground "$playground" p101-doctor "$doctor" p101-wrapper-audit "$wrapper_audit" p101-error-contract "$error_contract" p101-module-map "$module_map" p101-run "$p101_run" p101-observe "$observe" p101-analyze "$analyze" p101-event-model "$event_model" p101-error-path-walk "$walker" p101-resource-tracker "$tracker" p101-sync-check "$concurrency" p101-trace "$trace" p101-report "$report")"
 else
   reset_child_dir "$out_dir/doctor"
-  run_logged "doctor full source audit" "$log_dir/doctor.log" "0 1" "$doctor" -o "$out_dir/doctor" -s src -n "$fault_count" -A "$wrapper_audit" -E "$error_contract" -M "$module_map" -O "$observe" -W "$walker" -r "$tracker" -d "$concurrency" -t "$trace" -p "$report" -- "$playground" -s clean-file -o "$out_dir/doctor-target-output.txt" || true
+  run_logged "doctor full source audit" "$log_dir/doctor.log" "0 1" "$doctor" -o "$out_dir/doctor" -s src -n "$fault_count" -A "$wrapper_audit" -E "$error_contract" -M "$module_map" -U "$p101_run" -O "$observe" -Y "$analyze" -B "$event_model" -W "$walker" -r "$tracker" -d "$concurrency" -t "$trace" -p "$report" -- "$playground" -s clean-file -o "$out_dir/doctor-target-output.txt" || true
 fi
 
 append_summary_footer

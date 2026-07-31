@@ -9,6 +9,7 @@
 static const char *const wrapper_functions[] = {"p101_getopt",
                                                 "p101_getopt_long",
                                                 "p101_getopt_long_only",
+                                                "p101_getsubopt",
                                                 "p101_parse_char",
                                                 "p101_parse_int",
                                                 "p101_parse_int16_t",

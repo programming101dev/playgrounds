@@ -4,7 +4,7 @@
 
 Track number: `37`
 
-Wrapper count: `11`
+Wrapper count: `12`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -24,7 +24,7 @@ Creating, configuring, labeling, duplicating, and destroying p101 environments.
 
 ## Domains
 
-- `support/environment-lifecycle` (11 wrappers)
+- `support/environment-lifecycle` (12 wrappers)
 
 ## Suggested lesson arc
 
@@ -39,6 +39,7 @@ Creating, configuring, labeling, duplicating, and destroying p101 environments.
 ### `support/environment-lifecycle`
 
 - `p101_env_clear_event_log_error`
+- `p101_env_complete_event_streams`
 - `p101_env_create`
 - `p101_env_destroy`
 - `p101_env_dup`

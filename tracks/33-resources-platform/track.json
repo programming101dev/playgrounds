@@ -3,23 +3,32 @@
   "title": "resources platform",
   "order": 33,
   "generated": true,
-  "wrapper_count": 28,
+  "wrapper_count": 30,
   "purpose": "Resource limits, priorities, clocks/time, memory mapping/locking, host/system configuration, and portable platform administration APIs.",
   "domains": [
     {
       "name": "systems/platform-admin",
-      "function_count": 1,
+      "function_count": 8,
       "functions": [
+        "p101_confstr",
+        "p101_getdomainname",
+        "p101_gethostid",
+        "p101_gethostname",
+        "p101_getloadavg",
+        "p101_setdomainname",
+        "p101_sysconf",
         "p101_uname"
       ]
     },
     {
       "name": "systems/resource-time-memory",
-      "function_count": 17,
+      "function_count": 19,
       "functions": [
-        "p101_getpriority",
-        "p101_getrlimit",
-        "p101_getrusage",
+        "p101_clock_getres",
+        "p101_clock_gettime",
+        "p101_clock_settime",
+        "p101_gmtime_r",
+        "p101_localtime_r",
         "p101_mlock",
         "p101_mlockall",
         "p101_mmap",
@@ -28,34 +37,21 @@
         "p101_munlock",
         "p101_munlockall",
         "p101_munmap",
+        "p101_nanosleep",
         "p101_posix_madvise",
-        "p101_setpriority",
-        "p101_setrlimit",
-        "p101_shm_open",
-        "p101_shm_unlink",
-        "p101_times"
-      ]
-    },
-    {
-      "name": "systems/security-legacy",
-      "function_count": 1,
-      "functions": [
-        "p101_crypt"
+        "p101_posix_memalign",
+        "p101_strftime_l",
+        "p101_strptime",
+        "p101_tzset"
       ]
     },
     {
       "name": "systems/system-configuration",
-      "function_count": 9,
+      "function_count": 3,
       "functions": [
-        "p101_confstr",
         "p101_fpathconf",
         "p101_getcwd",
-        "p101_getdomainname",
-        "p101_gethostid",
-        "p101_gethostname",
-        "p101_pathconf",
-        "p101_setdomainname",
-        "p101_sysconf"
+        "p101_pathconf"
       ]
     }
   ],

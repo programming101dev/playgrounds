@@ -3,7 +3,7 @@
   "title": "c stdio streams",
   "order": 8,
   "generated": true,
-  "wrapper_count": 30,
+  "wrapper_count": 27,
   "purpose": "Opening, closing, positioning, reading, writing, renaming, temporary files, and stream ownership.",
   "domains": [
     {
@@ -27,7 +27,7 @@
     },
     {
       "name": "c/stdio-streams-files-extensions",
-      "function_count": 17,
+      "function_count": 14,
       "functions": [
         "p101_fdopen",
         "p101_fileno",
@@ -41,9 +41,6 @@
         "p101_getdelim",
         "p101_getline",
         "p101_open_memstream",
-        "p101_pclose",
-        "p101_popen",
-        "p101_renameat",
         "p101_setbuffer",
         "p101_setlinebuf"
       ]

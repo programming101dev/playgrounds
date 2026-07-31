@@ -1,7 +1,10 @@
 # Descriptor inherited across exec
 
-This case opens a file descriptor and reaches an `exec` wrapper while that
-descriptor is still open and not marked `FD_CLOEXEC`.
+This case opens a file descriptor and reaches a recorded successful exec
+boundary while that descriptor is still open and not marked `FD_CLOEXEC`. The
+playground records the boundary without replacing its own process so it can
+finish the event stream. A separate regression case proves that a failed exec
+emits `EXECFAIL` and correctly cancels this finding.
 
 That is a security bug because file descriptors are capabilities. A child
 program can inherit a private file, socket, pipe, or listening descriptor that

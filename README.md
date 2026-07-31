@@ -230,7 +230,25 @@ The machine-readable finding-to-lesson contract is
 with concept lessons for source-analysis and tool-integrity findings. From the
 sibling scripts repository, `./p101 lesson <finding-id>` resolves one
 diagnostic, while `./p101 lessons check` proves that every emitted diagnostic
-has a lesson, prerequisites, and a verification command.
+has a lesson, prerequisites, native evidence, and a repair oracle.
+
+The curriculum is executable:
+
+```sh
+../scripts/p101 lesson run P101-FD-001
+../scripts/p101 lesson verify P101-FD-001 /path/to/report.json
+../scripts/p101 lessons verify --quick
+../scripts/p101 lessons coverage
+../scripts/p101 lessons progress /path/to/student-receipts
+```
+
+Every diagnostic receives a canonical broken/repaired protocol pair. Native
+evidence is kept separate: case lessons run their real playground scenario,
+while source-analysis lessons run the owning tool or policy test suite. The
+coverage matrix records the evidence kind and macOS/Linux/FreeBSD contract so a
+synthetic routing test cannot be mistaken for analyzer proof. Actual platform
+verification appears only when a successful full acceptance receipt from that
+platform is supplied to `p101 lessons coverage --receipts`.
 
 The intended student loop is:
 

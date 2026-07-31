@@ -3,7 +3,7 @@
   "title": "c wide strings",
   "order": 5,
   "generated": true,
-  "wrapper_count": 31,
+  "wrapper_count": 20,
   "purpose": "Wide string copying, comparison, searching, transformation, and wide-memory operations.",
   "domains": [
     {
@@ -36,23 +36,6 @@
         "p101_wcsspn",
         "p101_wcsstr",
         "p101_wcsxfrm"
-      ]
-    },
-    {
-      "name": "c/wide-strings-extensions",
-      "function_count": 11,
-      "functions": [
-        "p101_open_wmemstream",
-        "p101_wcpcpy",
-        "p101_wcpncpy",
-        "p101_wcscasecmp",
-        "p101_wcscoll_l",
-        "p101_wcsdup",
-        "p101_wcsncasecmp",
-        "p101_wcsnlen",
-        "p101_wcswidth",
-        "p101_wcsxfrm_l",
-        "p101_wcwidth"
       ]
     }
   ],

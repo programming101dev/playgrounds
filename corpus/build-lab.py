@@ -216,6 +216,8 @@ def collect_fault_findings(report_dir: Path) -> list[dict[str, Any]]:
 
 
 def issue_case(case: LabCase) -> bool:
+    if case.expected_status == "PASS":
+        return False
     return (
         bool(case.expected_findings)
         or case.expects_error_path_findings

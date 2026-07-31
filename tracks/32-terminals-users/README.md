@@ -4,7 +4,7 @@
 
 Track number: `32`
 
-Wrapper count: `42`
+Wrapper count: `47`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -24,8 +24,7 @@ Terminal control, user/group lookup, identity APIs, tty databases, utmpx records
 
 ## Domains
 
-- `systems/users-identity` (15 wrappers)
-- `systems/users-terminals` (27 wrappers)
+- `systems/users-terminals` (47 wrappers)
 
 ## Suggested lesson arc
 
@@ -37,24 +36,6 @@ Terminal control, user/group lookup, identity APIs, tty databases, utmpx records
 
 ## Wrapper inventory
 
-### `systems/users-identity`
-
-- `p101_endusershell`
-- `p101_getegid`
-- `p101_geteuid`
-- `p101_getgid`
-- `p101_getgroups`
-- `p101_getlogin_r`
-- `p101_getuid`
-- `p101_getusershell`
-- `p101_setegid`
-- `p101_seteuid`
-- `p101_setgid`
-- `p101_setregid`
-- `p101_setreuid`
-- `p101_setuid`
-- `p101_setusershell`
-
 ### `systems/users-terminals`
 
 - `p101_cfgetispeed`
@@ -63,16 +44,35 @@ Terminal control, user/group lookup, identity APIs, tty databases, utmpx records
 - `p101_cfsetispeed`
 - `p101_cfsetospeed`
 - `p101_cfsetspeed`
+- `p101_crypt`
+- `p101_endusershell`
 - `p101_endutxent`
+- `p101_getegid`
+- `p101_geteuid`
+- `p101_getgid`
 - `p101_getgrgid_r`
 - `p101_getgrnam_r`
+- `p101_getgroups`
+- `p101_getlogin_r`
 - `p101_getpwnam_r`
 - `p101_getpwuid_r`
+- `p101_getuid`
+- `p101_getusershell`
 - `p101_getutxent`
 - `p101_getutxid`
 - `p101_getutxline`
+- `p101_grantpt`
 - `p101_isatty`
+- `p101_posix_openpt`
+- `p101_ptsname`
 - `p101_pututxline`
+- `p101_setegid`
+- `p101_seteuid`
+- `p101_setgid`
+- `p101_setregid`
+- `p101_setreuid`
+- `p101_setuid`
+- `p101_setusershell`
 - `p101_setutxent`
 - `p101_tcdrain`
 - `p101_tcflow`
@@ -84,3 +84,4 @@ Terminal control, user/group lookup, identity APIs, tty databases, utmpx records
 - `p101_tcsetattr`
 - `p101_tcsetpgrp`
 - `p101_ttyname_r`
+- `p101_unlockpt`
