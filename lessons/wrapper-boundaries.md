@@ -2,15 +2,18 @@
 
 A wrapper is part of the instrumentation boundary. Calling the native function
 directly can make fault injection, tracing, and resource tracking silently miss
-student code. A wrapper with the wrong parameter order, target mapping, trace,
-fault hook, or lifecycle hook is just as dangerous because it looks covered
-while emitting incomplete evidence.
+student code.
 
-Use the audit evidence to identify the exact call or wrapper contract that
-failed. Repair the smallest boundary: call the available wrapper, or make the
-wrapper preserve the native contract while accepting `env` and `err` in the
-standard positions. Do not suppress an external call until you have decided
-whether it is an intentional dependency boundary.
+Use the audit evidence to identify the exact call that crossed the boundary.
+Repair the smallest boundary by calling the available wrapper. Do not suppress
+an external call until you have decided whether it is an intentional dependency
+boundary.
+
+Wrapper implementations themselves have a separate executable contract:
+generated unit tests exercise normal return, failure, tracing entry/exit, and
+resource events. When writing a wrapper library, run that library's `./test.sh`
+as well as this boundary audit; a call-site audit cannot prove the wrapper's
+runtime behavior.
 
 Verify with:
 

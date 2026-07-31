@@ -27,15 +27,7 @@
         "P101-WRAP-002",
         "P101-WRAP-003",
         "P101-WRAP-004",
-        "P101-WRAP-900",
-        "P101-WFORM-002",
-        "P101-WFORM-003",
-        "P101-WFORM-004",
-        "P101-WFORM-005",
-        "P101-WFORM-006",
-        "P101-WFORM-007",
-        "P101-WFORM-008",
-        "P101-WFORM-900"
+        "P101-WRAP-900"
       ],
       "acceptance_profile": "wrapper-audit",
       "verification": "p101 audit --strict-external <source-path>"
@@ -174,28 +166,20 @@
     {
       "profile_id": "wrapper-audit",
       "kind": "native-tool-suite",
-      "description": "The wrapper audit suite exercises direct, indirect, external, portability, wrapper-form, and malformed-contract findings.",
+      "description": "The native wrapper audit suite exercises direct, indirect, external, portability, fact-stream, annotation, and receipt behavior.",
       "finding_ids": [
         "P101-WRAP-001",
         "P101-WRAP-002",
         "P101-WRAP-003",
         "P101-WRAP-004",
-        "P101-WRAP-900",
-        "P101-WFORM-002",
-        "P101-WFORM-003",
-        "P101-WFORM-004",
-        "P101-WFORM-005",
-        "P101-WFORM-006",
-        "P101-WFORM-007",
-        "P101-WFORM-008",
-        "P101-WFORM-900"
+        "P101-WRAP-900"
       ],
       "command": [
         "./test.sh"
       ],
       "cwd": "programs/p101-wrapper-audit",
       "evidence_paths": [
-        "programs/p101-wrapper-audit/p101_wrapper_audit.py",
+        "programs/p101-wrapper-audit/src",
         "programs/p101-wrapper-audit/test"
       ],
       "platforms": [
@@ -359,6 +343,7 @@
       "cwd": "programs/p101-mutation-check",
       "evidence_paths": [
         "programs/p101-mutation-check/p101-mutation-check",
+        "programs/p101-mutation-check/src",
         "programs/p101-mutation-check/test"
       ],
       "platforms": [
