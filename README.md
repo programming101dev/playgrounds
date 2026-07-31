@@ -225,6 +225,13 @@ has an ordered lab ID, a dedicated `lesson.md`, a fix checklist, and a progress
 state. Students fix one issue, re-run `./lab.sh`, and watch that lab move from
 `OPEN` to `FIXED`.
 
+The machine-readable finding-to-lesson contract is
+[`lessons/manifest.json`](lessons/manifest.json). It combines the case lessons
+with concept lessons for source-analysis and tool-integrity findings. From the
+sibling scripts repository, `./p101 lesson <finding-id>` resolves one
+diagnostic, while `./p101 lessons check` proves that every emitted diagnostic
+has a lesson, prerequisites, and a verification command.
+
 The intended student loop is:
 
 ```sh

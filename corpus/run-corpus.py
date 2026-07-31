@@ -94,7 +94,7 @@ def load_cases(cases_dir: Path, selected: set[str] | None, track: str | None) ->
 
 
 def read_correlated_ids(report_dir: Path) -> set[str]:
-    path = report_dir / "doctor" / "observe" / "correlated-report.json"
+    path = report_dir / "runtime" / "analysis" / "correlated-report.json"
     try:
         data = read_json(path)
     except (OSError, json.JSONDecodeError, ValueError):
@@ -125,8 +125,8 @@ def correlated_file_ids(path: Path) -> set[str]:
 
 
 def fault_walk_has_findings(report_dir: Path) -> bool:
-    fault_dir = report_dir / "doctor" / "fault-walk"
-    for path in fault_dir.glob("*.observe/correlated-report.json"):
+    fault_dir = report_dir / "fault-walk"
+    for path in fault_dir.glob("*.run/analysis/correlated-report.json"):
         if correlated_file_ids(path):
             return True
         try:
@@ -135,22 +135,6 @@ def fault_walk_has_findings(report_dir: Path) -> bool:
             continue
         summary = data.get("summary")
         if isinstance(summary, dict) and isinstance(summary.get("findings"), int) and summary["findings"] > 0:
-            return True
-    for path in fault_dir.glob("*.observe/resource-report.json"):
-        try:
-            data = read_json(path)
-        except (OSError, json.JSONDecodeError, ValueError):
-            continue
-        for key in ("fd_leaks", "allocation_leaks", "bad_releases", "exec_inheritances", "generic_resource_leaks", "generic_bad_releases"):
-            value = data.get(key)
-            if isinstance(value, int) and value > 0:
-                return True
-        findings = data.get("findings")
-        if isinstance(findings, list) and findings:
-            return True
-    for path in fault_dir.glob("*.observe/summary.txt"):
-        text = path.read_text(encoding="utf-8", errors="replace")
-        if "fd_leaks=0 allocation_leaks=0 bad_releases=0" not in text or "generic_resource_leaks=0 generic_bad_releases=0" not in text:
             return True
     return False
 
@@ -174,8 +158,8 @@ def doctor_status_code(report_dir: Path, name: str) -> int | None:
 def clean_runtime_with_module_findings(report_dir: Path) -> bool:
     return (
         doctor_status_code(report_dir, "p101_module_map") == 1
-        and doctor_status_code(report_dir, "p101_observe") == 0
-        and doctor_status_code(report_dir, "p101_error_path_walk") == 0
+        and not read_correlated_ids(report_dir)
+        and not fault_walk_has_findings(report_dir)
     )
 
 
@@ -226,7 +210,7 @@ def run_case(root: Path, p101: Path, playground: Path, out_dir: Path, case: dict
     if missing:
         problems.append("missing finding IDs: " + ", ".join(missing))
 
-    if expected_error_path_findings and doctor_status_code(case_out, "p101_error_path_walk") != 1 and not fault_walk_has_findings(case_out):
+    if expected_error_path_findings and not fault_walk_has_findings(case_out):
         problems.append("expected error-path findings, but fault walk looked clean")
 
     if expected_output_size is not None:

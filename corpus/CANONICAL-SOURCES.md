@@ -5,6 +5,11 @@ taxonomies. This file is the seed list for new labs: when a new pitfall is
 added, map it to one or more of these sources and add a short lesson under
 `corpus/cases/`.
 
+Tool-produced diagnostic families that are better taught as concepts than as
+one broken fixture live under `lessons/`. The checked
+`lessons/manifest.json` joins both kinds of lesson and makes an unmapped emitted
+diagnostic fail `p101 lessons check`.
+
 There is no single canonical list of all C mistakes. The useful canon is a
 crosswalk:
 

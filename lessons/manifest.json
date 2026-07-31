@@ -1,0 +1,160 @@
+{
+  "schema": "p101-finding-lesson-catalog-v1",
+  "url_base": "https://github.com/programming101dev/playgrounds/blob/main/",
+  "case_glob": "../corpus/cases/*/expected.json",
+  "case_prerequisite_mode": "previous-in-track",
+  "ignored_diagnostic_ids": [
+    "P101-SYNC-000",
+    "P101-UNKNOWN-000",
+    "P101-WRAP-000"
+  ],
+  "lessons": [
+    {
+      "lesson_id": "P101-LESSON-WRAPPER-BOUNDARIES",
+      "title": "Keep wrapper boundaries complete and observable",
+      "path": "wrapper-boundaries.md",
+      "track": "tool-building",
+      "prerequisites": [
+        "P101-LAB-ORIENTATION"
+      ],
+      "finding_ids": [
+        "P101-WRAP-001",
+        "P101-WRAP-002",
+        "P101-WRAP-003",
+        "P101-WRAP-004",
+        "P101-WRAP-900",
+        "P101-WFORM-002",
+        "P101-WFORM-003",
+        "P101-WFORM-004",
+        "P101-WFORM-005",
+        "P101-WFORM-006",
+        "P101-WFORM-007",
+        "P101-WFORM-008",
+        "P101-WFORM-900"
+      ],
+      "verification": "p101 audit --strict-external <source-path>"
+    },
+    {
+      "lesson_id": "P101-LESSON-ERROR-CONTRACTS",
+      "title": "Make environment and error ownership explicit",
+      "path": "error-contracts.md",
+      "track": "c",
+      "prerequisites": [
+        "P101-LAB-ORIENTATION"
+      ],
+      "finding_ids": [
+        "P101-ERR-001",
+        "P101-ERR-002",
+        "P101-ERR-003",
+        "P101-ERR-004",
+        "P101-ERR-005",
+        "P101-ERR-006"
+      ],
+      "verification": "p101 doctor -s <source-path>"
+    },
+    {
+      "lesson_id": "P101-LESSON-MODULE-BOUNDARIES",
+      "title": "Reduce module coupling and public API surface",
+      "path": "module-boundaries.md",
+      "track": "tool-building",
+      "prerequisites": [
+        "P101-LESSON-ERROR-CONTRACTS"
+      ],
+      "finding_ids": [
+        "P101-MOD-001",
+        "P101-MOD-002",
+        "P101-MOD-003",
+        "P101-MOD-004",
+        "P101-MOD-005",
+        "P101-MOD-006",
+        "P101-MOD-007",
+        "P101-MOD-008",
+        "P101-MOD-009",
+        "P101-MOD-010",
+        "P101-MOD-011",
+        "P101-MOD-012",
+        "P101-MOD-013"
+      ],
+      "verification": "p101 module-map <source-path>"
+    },
+    {
+      "lesson_id": "P101-LESSON-GENERIC-RESOURCES",
+      "title": "Model ownership for every resource class",
+      "path": "generic-resources.md",
+      "track": "systems",
+      "prerequisites": [
+        "P101-LAB-101",
+        "P101-LAB-102"
+      ],
+      "finding_ids": [
+        "P101-ALLOC-004",
+        "P101-RESOURCE-001",
+        "P101-RESOURCE-002",
+        "P101-RESOURCE-003",
+        "P101-RESOURCE-004",
+        "P101-RESOURCE-005"
+      ],
+      "verification": "p101 check -- <command>"
+    },
+    {
+      "lesson_id": "P101-LESSON-SYNCHRONIZATION",
+      "title": "Reason about lock, wait, and join graphs",
+      "path": "synchronization.md",
+      "track": "systems",
+      "prerequisites": [
+        "P101-LAB-321"
+      ],
+      "finding_ids": [
+        "P101-SYNC-001",
+        "P101-SYNC-002",
+        "P101-SYNC-003",
+        "P101-SYNC-900",
+        "P101-SYNC-901"
+      ],
+      "verification": "p101 check -- <multithreaded-command>"
+    },
+    {
+      "lesson_id": "P101-LESSON-TRACE-INTEGRITY",
+      "title": "Keep call traces balanced and trustworthy",
+      "path": "trace-integrity.md",
+      "track": "tool-building",
+      "prerequisites": [
+        "P101-LAB-ORIENTATION"
+      ],
+      "finding_ids": [
+        "P101-TRACE-001",
+        "P101-TRACE-002",
+        "P101-TRACE-003"
+      ],
+      "verification": "p101 run -- <command>"
+    },
+    {
+      "lesson_id": "P101-LESSON-MUTATION-STRENGTH",
+      "title": "Measure whether tests reject wrong behavior",
+      "path": "mutation-strength.md",
+      "track": "tool-building",
+      "prerequisites": [
+        "P101-LAB-322"
+      ],
+      "finding_ids": [
+        "P101-MUTATION-001"
+      ],
+      "verification": "p101 mutation-check --test-command '<test-command>' <source-path>"
+    },
+    {
+      "lesson_id": "P101-LESSON-POLICY-EXPECTATIONS",
+      "title": "Turn observed behavior into an executable expectation",
+      "path": "policy-expectations.md",
+      "track": "tool-building",
+      "prerequisites": [
+        "P101-LESSON-TRACE-INTEGRITY"
+      ],
+      "finding_ids": [
+        "P101-POLICY-RESOURCE-001",
+        "P101-POLICY-RESOURCE-002",
+        "P101-POLICY-RESOURCE-003"
+      ],
+      "verification": "p101 verify -e <expectations.txt> <analysis-directory>"
+    }
+  ]
+}

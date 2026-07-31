@@ -186,7 +186,7 @@ def link_if_exists(out_dir: Path, path: Path, label: str) -> str:
 
 
 def collect_correlated_findings(report_dir: Path) -> list[dict[str, Any]]:
-    path = report_dir / "doctor" / "observe" / "correlated-report.json"
+    path = report_dir / "runtime" / "analysis" / "correlated-report.json"
     try:
         data = read_json(path)
     except (OSError, json.JSONDecodeError, ValueError):
@@ -198,9 +198,9 @@ def collect_correlated_findings(report_dir: Path) -> list[dict[str, Any]]:
 
 
 def collect_fault_findings(report_dir: Path) -> list[dict[str, Any]]:
-    fault_dir = report_dir / "doctor" / "fault-walk"
+    fault_dir = report_dir / "fault-walk"
     findings: list[dict[str, Any]] = []
-    for path in sorted(fault_dir.glob("*.observe/correlated-report.json")):
+    for path in sorted(fault_dir.glob("*.run/analysis/correlated-report.json")):
         try:
             data = read_json(path)
         except (OSError, json.JSONDecodeError, ValueError):
@@ -210,7 +210,7 @@ def collect_fault_findings(report_dir: Path) -> list[dict[str, Any]]:
             for item in items:
                 if isinstance(item, dict):
                     item = dict(item)
-                    item["source_report"] = path.parent.name
+                    item["source_report"] = path.parent.parent.name
                     findings.append(item)
     return findings
 
@@ -237,11 +237,11 @@ def missing_evidence(case: LabCase) -> list[str]:
     missing: list[str] = []
     if not case.report_dir.exists():
         return ["case report directory"]
-    if case.expected_findings and not parseable_json(case.report_dir / "doctor" / "observe" / "correlated-report.json"):
+    if case.expected_findings and not parseable_json(case.report_dir / "runtime" / "analysis" / "correlated-report.json"):
         missing.append("ordinary correlated-report.json")
     if case.expects_error_path_findings:
-        fault_dir = case.report_dir / "doctor" / "fault-walk"
-        if not fault_dir.exists() or not any(fault_dir.glob("*.observe/*")):
+        fault_dir = case.report_dir / "fault-walk"
+        if not fault_dir.exists() or not any(fault_dir.glob("*.run/analysis/correlated-report.json")):
             missing.append("fault-walk reports")
     if (case.expected_output_size is not None or case.expected_output_contains or case.expected_output_missing) and not (case.report_dir / "playground-output.txt").exists():
         missing.append("playground output")
@@ -279,9 +279,17 @@ def format_finding(finding: dict[str, Any]) -> str:
     finding_id = str(finding.get("id", "P101-UNKNOWN"))
     message = str(finding.get("message", finding.get("kind", "")))
     location = ""
+    lesson_link = ""
     if isinstance(finding.get("source_report"), str):
         location = f" ({finding['source_report']})"
-    return f"<li><code>{html.escape(finding_id)}</code>{html.escape(location)} — {html.escape(message)}</li>"
+    lesson = finding.get("lesson")
+    if isinstance(lesson, dict) and isinstance(lesson.get("primary"), dict):
+        primary = lesson["primary"]
+        title = html.escape(str(primary.get("title", "lesson")))
+        url = html.escape(str(primary.get("url", "")), quote=True)
+        if url:
+            lesson_link = f' — <a href="{url}">Learn how to fix this: {title}</a>'
+    return f"<li><code>{html.escape(finding_id)}</code>{html.escape(location)} — {html.escape(message)}{lesson_link}</li>"
 
 
 def case_status(case: LabCase) -> str:
@@ -601,9 +609,10 @@ def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
         links = [
             link_if_exists(out_dir, case.report_dir / "index.html", "case HTML report"),
             link_if_exists(out_dir, case.report_dir / "summary.md", "case summary"),
-            link_if_exists(out_dir, case.report_dir / "doctor" / "observe" / "correlated-report.txt", "correlated text"),
-            link_if_exists(out_dir, case.report_dir / "doctor" / "observe" / "resource-lifetimes.md", "resource lifetimes"),
-            link_if_exists(out_dir, case.report_dir / "doctor" / "fault-walk", "fault-walk directory"),
+            link_if_exists(out_dir, case.report_dir / "runtime" / "analysis" / "correlated-report.txt", "correlated text"),
+            link_if_exists(out_dir, case.report_dir / "runtime" / "analysis" / "resource-lifetimes.md", "resource lifetimes"),
+            link_if_exists(out_dir, case.report_dir / "fault-walk", "fault-walk directory"),
+            link_if_exists(out_dir, case.report_dir / "lesson-guide.md", "lesson guide"),
             link_if_exists(out_dir, out_dir / "runs" / "logs" / f"{case.name}.log", "command log"),
         ]
         link_text = " · ".join(link for link in links if link)
