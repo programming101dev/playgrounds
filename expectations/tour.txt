@@ -1,0 +1,16 @@
+p101-expectations-v1
+result=clean
+finding_count=0
+forbid=P101-*
+require_call=p101_open
+require_call=p101_malloc
+require_call=p101_fork
+require_call=p101_waitpid
+require_resource=fd
+require_resource=allocation
+require_edge=call-parent
+require_edge=call-return
+require_edge=call-caused-event
+require_edge=resource-lifetime
+min_edges=resource-lifetime:4
+min_nodes=20

@@ -125,8 +125,12 @@ last_build_tool() {
   project_dir="$1"
   tool_name="$2"
 
-  if [ -f "$project_dir/.last-build-dir" ]; then
-    build_dir="$(cat "$project_dir/.last-build-dir")"
+  marker="$project_dir/.last-runtime-build-dir"
+  if [ ! -f "$marker" ]; then
+    marker="$project_dir/.last-build-dir"
+  fi
+  if [ -f "$marker" ]; then
+    build_dir="$(cat "$marker")"
     candidate="$project_dir/$build_dir/$tool_name"
     if [ -x "$candidate" ]; then
       printf '%s\n' "$candidate"

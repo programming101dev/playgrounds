@@ -163,6 +163,21 @@ and a fault-injected error-path walk. For quick runtime-only demos:
 ./tour.sh --skip-quality --skip-coverage -n 5
 ```
 
+The clean tour and three defect scenarios also have executable causal-model
+contracts under `expectations/`. Capture once, replay the current analyzers,
+then verify the lesson contract:
+
+```bash
+../scripts/p101 observe -C -o /tmp/p101-tour -- \
+  ./build-clang/p101-tool-playground -s tour
+../scripts/p101 analyze /tmp/p101-tour
+../scripts/p101 verify -e expectations/tour.txt /tmp/p101-tour.analysis
+```
+
+Equivalent contracts exist for `fd-leak`, `alloc-leak`, and `double-close`.
+They assert findings and observable call/resource relationships without pinning
+volatile process IDs, descriptor numbers, pointer values, or timestamps.
+
 For shorter classroom slices, use the lesson script:
 
 ```sh
