@@ -1318,8 +1318,8 @@ static int run_double_free_demo(const struct p101_env *env, struct p101_error *e
 
 static int run_stray_free_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
 {
-    char *buffer;
-    char *interior;
+    char       *buffer;
+    const char *interior;
 
     P101_TRACE_SCOPE(env);
     p101_printf(env, err, "stray-free: intentionally frees an interior pointer\n");
