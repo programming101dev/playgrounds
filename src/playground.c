@@ -671,7 +671,7 @@ static int run_c_memory_runtime_demo(const struct p101_env *env, struct p101_err
     {
         goto done;
     }
-    if(p101_getenv(env, "P101_TRACK_MEMORY_RUNTIME") == NULL)
+    if(p101_getenv(env, err, "P101_TRACK_MEMORY_RUNTIME") == NULL)
     {
         P101_ERROR_RAISE_USER(err, "The setenv/getenv smoke check failed.", ERR_SCENARIO_FAILURE);
         goto done;
@@ -697,7 +697,7 @@ static int run_c_memory_runtime_demo(const struct p101_env *env, struct p101_err
     {
         goto done;
     }
-    if(p101_getenv(env, "P101_TRACK_PUTENV") == NULL)
+    if(p101_getenv(env, err, "P101_TRACK_PUTENV") == NULL)
     {
         P101_ERROR_RAISE_USER(err, "The putenv/getenv smoke check failed.", ERR_SCENARIO_FAILURE);
         goto done;
