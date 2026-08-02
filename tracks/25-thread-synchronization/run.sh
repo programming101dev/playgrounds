@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Canonical standalone playground-track runner.
 #
-# scripts/copy-playground-track-scripts.sh materializes this file as run.sh in
+# scripts/distribution/copy-playground-track-scripts.sh materializes this file as run.sh in
 # every track so copied tracks remain self-contained without allowing 41
 # private runner implementations to drift apart.
 set -euo pipefail

@@ -50,7 +50,7 @@ the actual wrapper surface:
 Refresh it after changing wrapper libraries or classification rules:
 
 ```sh
-../scripts/analyze-lib-function-graph.py
+../scripts/generators/analyze-lib-function-graph.py
 ./sync-track-map.py
 ```
 

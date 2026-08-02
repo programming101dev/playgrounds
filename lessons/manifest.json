@@ -265,12 +265,12 @@
       ],
       "command": [
         "python3",
-        "scripts/test-p101-runtime.py"
+        "scripts/tests/test-p101-runtime.py"
       ],
       "cwd": ".",
       "evidence_paths": [
-        "scripts/p101_runtime.py",
-        "scripts/test-p101-runtime.py"
+        "scripts/runtime/p101_runtime.py",
+        "scripts/tests/test-p101-runtime.py"
       ],
       "platforms": [
         "macos",
@@ -316,12 +316,12 @@
       ],
       "command": [
         "python3",
-        "scripts/test-p101-runtime.py"
+        "scripts/tests/test-p101-runtime.py"
       ],
       "cwd": ".",
       "evidence_paths": [
-        "scripts/p101_runtime.py",
-        "scripts/test-p101-runtime.py"
+        "scripts/runtime/p101_runtime.py",
+        "scripts/tests/test-p101-runtime.py"
       ],
       "platforms": [
         "macos",
@@ -364,13 +364,13 @@
       ],
       "command": [
         "python3",
-        "scripts/test-p101-model.py"
+        "scripts/tests/test-p101-model.py"
       ],
       "cwd": ".",
       "evidence_paths": [
-        "scripts/p101-model.py",
+        "scripts/runtime/p101-model.py",
         "scripts/rules/resource-clean.json",
-        "scripts/test-p101-model.py"
+        "scripts/tests/test-p101-model.py"
       ],
       "platforms": [
         "macos",

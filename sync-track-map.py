@@ -947,7 +947,7 @@ def tracks_index(graph: dict[str, Any], tracks: list[dict[str, Any]]) -> str:
             "Regenerate after changing wrapper libraries or graph classification:",
             "",
             "```sh",
-            "../../scripts/analyze-lib-function-graph.py",
+            "../../scripts/generators/analyze-lib-function-graph.py",
             "./sync-track-map.py",
             "```",
             "",

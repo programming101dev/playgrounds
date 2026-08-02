@@ -35,6 +35,6 @@ curated lesson sequence in `TRACK.md`, machine-readable case map in
 The track map comes from the library function graph:
 
 ```sh
-../../scripts/analyze-lib-function-graph.py
+../../scripts/generators/analyze-lib-function-graph.py
 ./sync-track-map.py
 ```
