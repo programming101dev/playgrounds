@@ -25,13 +25,13 @@ The point is to have one program that makes the whole toolchain visible:
 
 ```text
 p101-tool-playground
-  -> p101-observe
+  -> p101 run
+      -> p101-observe (capture)
       -> resources.log
       -> calls.log
-      -> p101-resource-tracker
-      -> p101-trace
-      -> p101-report
-  -> p101-error-path-walk
+      -> lib_tool_event causal model
+      -> resource, synchronization, trace, and sanitizer policies
+  -> p101 walk
       -> fail p101 call N
       -> per-run resource/call/fault/report artifacts
 ```
@@ -291,18 +291,15 @@ Build the playground:
 Run a clean observed tour:
 
 ```sh
-p101-observe \
+p101 run \
   -o /tmp/p101-playground-tour \
-  -r ../programs/p101-resource-tracker/build-clang/p101-resource-tracker \
-  -t ../programs/p101-trace/build-clang/p101-trace \
-  -p ../programs/p101-report/build-clang/p101-report \
   -- ./build-clang/p101-tool-playground -s tour
 ```
 
 Run a descriptor leak:
 
 ```sh
-p101-observe \
+p101 run \
   -o /tmp/p101-playground-fd-leak \
   -- ./build-clang/p101-tool-playground -s fd-leak
 ```
@@ -310,21 +307,19 @@ p101-observe \
 Inspect individual artifacts:
 
 ```sh
-p101-resource-tracker /tmp/p101-playground-fd-leak/resources.log
-p101-resource-tracker -j /tmp/p101-playground-fd-leak/resources.log
-p101-trace /tmp/p101-playground-fd-leak/calls.log
-p101-report /tmp/p101-playground-fd-leak
-p101-report -j /tmp/p101-playground-fd-leak
+p101 resource /tmp/p101-playground-fd-leak
+p101 resource -j /tmp/p101-playground-fd-leak
+p101 trace /tmp/p101-playground-fd-leak
+p101 report /tmp/p101-playground-fd-leak
+p101 report -j /tmp/p101-playground-fd-leak
 ```
 
 Walk injected error paths:
 
 ```sh
-p101-error-path-walk \
+p101 walk \
   -n 20 \
   -l /tmp/p101-playground-walk \
-  -r ../programs/p101-resource-tracker/build-clang/p101-resource-tracker \
-  -p ../programs/p101-report/build-clang/p101-report \
   -- ./build-clang/p101-tool-playground -s fault-lab
 ```
 
@@ -362,12 +357,12 @@ scenario stayed inside its expected resource model.
 
 ## Suggested classroom flow
 
-1. Run `tour` with `p101-observe` and inspect `summary.txt`.
+1. Run `tour` with `p101 run` and inspect `summary.txt`.
 2. Run `fd-leak` and compare `resource-report.txt` with
    `correlated-report.txt`.
 3. Run `alloc-leak` and inspect `correlated-report.json`.
-4. Run `p101-trace` directly on `calls.log`.
-5. Run `fault-lab` through `p101-error-path-walk` and find the first injected
+4. Run `p101 trace` on the analysis directory.
+5. Run `fault-lab` through `p101 walk` and find the first injected
    failure that leaks.
 6. Run `./test.sh`, `./fuzz.sh`, and `./coverage-report.sh` to show the static
    and dynamic quality workflow around the demo.

@@ -21,15 +21,15 @@ Quick reference for the playground and the tools it is meant to show.
 
 | Command | What it shows |
 | --- | --- |
-| `p101-observe -- p101-tool-playground -s tour` | Full clean report directory |
-| `p101-observe -- p101-tool-playground -s fd-leak` | Descriptor leak report |
-| `p101-resource-tracker resources.log` | Resource model replay |
-| `p101-resource-tracker -j resources.log` | Machine-readable resource report |
-| `p101-trace calls.log` | Call tree |
-| `p101-trace -s calls.log` | Call summary |
-| `p101-report report-dir` | Correlated resource + trace narrative |
-| `p101-report -j report-dir` | Correlated JSON |
-| `p101-error-path-walk -- p101-tool-playground -s fault-lab` | Injected error-path resource audit |
+| `p101 run -- p101-tool-playground -s tour` | Capture, model, and analyze a clean run |
+| `p101 run -- p101-tool-playground -s fd-leak` | Descriptor leak analysis |
+| `p101 resource analysis-dir` | Resource policy view |
+| `p101 resource -j analysis-dir` | Machine-readable resource policy |
+| `p101 trace analysis-dir` | Call tree |
+| `p101 trace -s analysis-dir` | Call summary |
+| `p101 report analysis-dir` | Correlated resource + trace narrative |
+| `p101 report -j analysis-dir` | Correlated JSON |
+| `p101 walk -- p101-tool-playground -s fault-lab` | Injected error-path resource audit |
 
 ## Project quality tools
 

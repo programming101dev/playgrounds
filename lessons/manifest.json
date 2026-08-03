@@ -9,8 +9,6 @@
     "freebsd"
   ],
   "ignored_diagnostic_ids": [
-    "P101-SYNC-000",
-    "P101-UNKNOWN-000",
     "P101-WRAP-000"
   ],
   "lessons": [
@@ -108,9 +106,7 @@
       "finding_ids": [
         "P101-SYNC-001",
         "P101-SYNC-002",
-        "P101-SYNC-003",
-        "P101-SYNC-900",
-        "P101-SYNC-901"
+        "P101-SYNC-003"
       ],
       "acceptance_profile": "runtime-synchronization",
       "verification": "p101 check -- <multithreaded-command>"
@@ -132,6 +128,23 @@
       "verification": "p101 run -- <command>"
     },
     {
+      "lesson_id": "P101-LESSON-SANITIZERS",
+      "title": "Use compiler runtime evidence to find unwrapped defects",
+      "path": "sanitizer-findings.md",
+      "track": "c",
+      "prerequisites": [
+        "P101-LAB-ORIENTATION"
+      ],
+      "finding_ids": [
+        "P101-SAN-001",
+        "P101-SAN-002",
+        "P101-SAN-003",
+        "P101-SAN-004"
+      ],
+      "acceptance_profile": "runtime-sanitizers",
+      "verification": "p101 run -- <sanitized-command>"
+    },
+    {
       "lesson_id": "P101-LESSON-MUTATION-STRENGTH",
       "title": "Measure whether tests reject wrong behavior",
       "path": "mutation-strength.md",
@@ -144,6 +157,23 @@
       ],
       "acceptance_profile": "mutation-check",
       "verification": "p101 mutation-check --test-command '<test-command>' <source-path>"
+    },
+    {
+      "lesson_id": "P101-LESSON-API-COMPATIBILITY",
+      "title": "Review public API changes before consumers discover them",
+      "path": "api-compatibility.md",
+      "track": "tool-building",
+      "prerequisites": [
+        "P101-LESSON-MODULE-BOUNDARIES"
+      ],
+      "finding_ids": [
+        "P101-API-001",
+        "P101-API-002",
+        "P101-API-003",
+        "P101-API-004"
+      ],
+      "acceptance_profile": "api-diff",
+      "verification": "p101 api-diff <before-manifest> <after-manifest>"
     },
     {
       "lesson_id": "P101-LESSON-POLICY-EXPECTATIONS",
@@ -282,21 +312,20 @@
     {
       "profile_id": "runtime-synchronization",
       "kind": "native-policy-suite",
-      "description": "Canonical event graphs and the sync-check suite exercise lock, wait, join, stream-integrity, and capacity findings.",
+      "description": "Canonical event graphs exercise lock-order, live wait-for, and join-cycle findings.",
       "finding_ids": [
         "P101-SYNC-001",
         "P101-SYNC-002",
-        "P101-SYNC-003",
-        "P101-SYNC-900",
-        "P101-SYNC-901"
+        "P101-SYNC-003"
       ],
       "command": [
-        "./test.sh"
+        "python3",
+        "tests/test-p101-runtime.py"
       ],
-      "cwd": "programs/p101-sync-check",
+      "cwd": "scripts",
       "evidence_paths": [
-        "programs/p101-sync-check/src/concurrency_finding.c",
-        "programs/p101-sync-check/test"
+        "scripts/runtime/p101_runtime.py",
+        "scripts/tests/test-p101-runtime.py"
       ],
       "platforms": [
         "macos",
@@ -313,6 +342,32 @@
         "P101-TRACE-001",
         "P101-TRACE-002",
         "P101-TRACE-003"
+      ],
+      "command": [
+        "python3",
+        "scripts/tests/test-p101-runtime.py"
+      ],
+      "cwd": ".",
+      "evidence_paths": [
+        "scripts/runtime/p101_runtime.py",
+        "scripts/tests/test-p101-runtime.py"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "freebsd"
+      ],
+      "quick": true
+    },
+    {
+      "profile_id": "runtime-sanitizers",
+      "kind": "native-policy-suite",
+      "description": "Captured ASan, LSan, UBSan, and TSan diagnostics are normalized into the common finding envelope.",
+      "finding_ids": [
+        "P101-SAN-001",
+        "P101-SAN-002",
+        "P101-SAN-003",
+        "P101-SAN-004"
       ],
       "command": [
         "python3",
@@ -352,6 +407,32 @@
         "freebsd"
       ],
       "quick": false
+    },
+    {
+      "profile_id": "api-diff",
+      "kind": "native-tool-suite",
+      "description": "API snapshots detect removals, ownership moves, header moves, and platform-support loss.",
+      "finding_ids": [
+        "P101-API-001",
+        "P101-API-002",
+        "P101-API-003",
+        "P101-API-004"
+      ],
+      "command": [
+        "python3",
+        "scripts/tests/test-p101-api-diff.py"
+      ],
+      "cwd": ".",
+      "evidence_paths": [
+        "scripts/runtime/p101-api-diff.py",
+        "scripts/tests/test-p101-api-diff.py"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "freebsd"
+      ],
+      "quick": true
     },
     {
       "profile_id": "policy-rules",

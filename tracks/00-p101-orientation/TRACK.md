@@ -213,14 +213,8 @@ Build first if needed, then run:
 track_dir="$(pwd)"
 workspace_root="$(cd ../../.. && pwd)"
 build_dir="$(cat .last-build-dir)"
-resource_tracker="${workspace_root}/programs/p101-resource-tracker/$(cat "${workspace_root}/programs/p101-resource-tracker/.last-build-dir")/p101-resource-tracker"
-trace_tool="${workspace_root}/programs/p101-trace/$(cat "${workspace_root}/programs/p101-trace/.last-build-dir")/p101-trace"
-report_tool="${workspace_root}/programs/p101-report/$(cat "${workspace_root}/programs/p101-report/.last-build-dir")/p101-report"
-"${workspace_root}/scripts/p101" observe \
+"${workspace_root}/scripts/p101" run \
   -o /tmp/p101-orientation-observe \
-  -r "${resource_tracker}" \
-  -t "${trace_tool}" \
-  -p "${report_tool}" \
   -- "${track_dir}/${build_dir}/p101-track-p101-orientation"
 ```
 
@@ -303,22 +297,11 @@ workspace_root="$(cd ../../.. && pwd)"
 build_dir="$(cat .last-build-dir)"
 wrapper_audit="${workspace_root}/programs/p101-wrapper-audit/p101-wrapper-audit"
 module_map="${workspace_root}/programs/p101-module-map/$(cat "${workspace_root}/programs/p101-module-map/.last-build-dir")/p101-module-map"
-observe_tool="${workspace_root}/programs/p101-observe/$(cat "${workspace_root}/programs/p101-observe/.last-build-dir")/p101-observe"
-walker="${workspace_root}/programs/p101-error-path-walk/$(cat "${workspace_root}/programs/p101-error-path-walk/.last-build-dir")/p101-error-path-walk"
-resource_tracker="${workspace_root}/programs/p101-resource-tracker/$(cat "${workspace_root}/programs/p101-resource-tracker/.last-build-dir")/p101-resource-tracker"
-trace_tool="${workspace_root}/programs/p101-trace/$(cat "${workspace_root}/programs/p101-trace/.last-build-dir")/p101-trace"
-report_tool="${workspace_root}/programs/p101-report/$(cat "${workspace_root}/programs/p101-report/.last-build-dir")/p101-report"
 "${workspace_root}/scripts/p101" doctor \
   -o /tmp/p101-orientation-doctor \
   -s "${track_dir}/src" \
-  -n 1 \
   -A "${wrapper_audit}" \
   -M "${module_map}" \
-  -O "${observe_tool}" \
-  -W "${walker}" \
-  -r "${resource_tracker}" \
-  -t "${trace_tool}" \
-  -p "${report_tool}" \
   -- "${track_dir}/${build_dir}/p101-track-p101-orientation"
 ```
 
@@ -328,9 +311,8 @@ Then read:
 sed -n '1,220p' /tmp/p101-orientation-doctor/summary.md
 ```
 
-`p101-doctor` is the conductor. It runs the static boundary check, module
-shape check, observed clean run, and a small fault-walk pass, then puts the
-results in one place.
+`p101-doctor` is the source preflight conductor. It runs the static
+boundary and module-shape checks, then puts the results in one place.
 
 ## Step 15 — make one safe edit
 
