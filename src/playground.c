@@ -1316,9 +1316,8 @@ static int run_double_free_demo(const struct p101_env *env, struct p101_error *e
 
 static int run_stray_free_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
 {
-    char       *buffer;
-    const char *interior;
-    int         ret_val;
+    char *buffer;
+    int   ret_val;
 
     P101_TRACE_SCOPE(env);
     ret_val = EXIT_FAILURE;
@@ -1327,6 +1326,8 @@ static int run_stray_free_demo(const struct p101_env *env, struct p101_error *er
     buffer = make_buffer(env, err, args->bytes, 's');
     if(buffer != NULL && p101_error_has_no_error(err))
     {
+        const char *interior;
+
         interior = buffer + 1;
         /*
          * The bad event is the attempted release of an interior pointer.
@@ -1778,8 +1779,6 @@ static int run_parser_fuzz_demo(const struct p101_env *env, struct p101_error *e
 
 static void close_fd_preserving_error(const struct p101_env *env, struct p101_error *err, int *fd)
 {
-    struct p101_error *cleanup_err;
-
     P101_TRACE_SCOPE(env);
     if(fd != NULL && *fd != -1)
     {
@@ -1789,6 +1788,8 @@ static void close_fd_preserving_error(const struct p101_env *env, struct p101_er
         }
         else
         {
+            struct p101_error *cleanup_err;
+
             cleanup_err = p101_error_create(false);
             if(cleanup_err != NULL)
             {
