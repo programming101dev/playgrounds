@@ -5,6 +5,8 @@
   "generated": true,
   "wrapper_count": 20,
   "purpose": "Wide string copying, comparison, searching, transformation, and wide-memory operations.",
+  "behavior_demonstration": null,
+  "coverage_claim": "inventory-and-linkage",
   "domains": [
     {
       "name": "c/wide-memory",

@@ -5,6 +5,8 @@
   "generated": true,
   "wrapper_count": 54,
   "purpose": "Rounding, remainder, scaling, decomposition, and integer-result math APIs.",
+  "behavior_demonstration": null,
+  "coverage_claim": "inventory-and-linkage",
   "domains": [
     {
       "name": "c/math-rounding-remainder",

@@ -5,6 +5,8 @@
   "generated": true,
   "wrapper_count": 37,
   "purpose": "Time, locale, atomics, setjmp/signal-style control flow, and their common extensions.",
+  "behavior_demonstration": null,
+  "coverage_claim": "inventory-and-linkage",
   "domains": [
     {
       "name": "c/atomics",

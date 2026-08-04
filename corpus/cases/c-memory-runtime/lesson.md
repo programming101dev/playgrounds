@@ -12,14 +12,15 @@ Expected result: `p101 check` exits `0`, reports no findings, and the output
 contains:
 
 ```text
-c-memory-runtime: exercised 57 wrappers
+c-memory-runtime: exercised 53 wrappers
 ```
 
 ## Why this exists
 
-The track has 57 wrappers, but only some of them are natural broken-code labs.
-This smoke test proves the whole wrapper family still compiles, links, runs, and
-is visible to the p101 observation stack.
+The scenario exercises 53 wrapper calls spanning the track's runtime behavior.
+Only some of them are natural broken-code labs. This smoke test proves the
+runtime family still compiles, links, runs, and is visible to the p101
+observation stack.
 
 ## Fix habit
 

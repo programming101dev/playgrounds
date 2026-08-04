@@ -4,7 +4,7 @@
 
 Track number: `39`
 
-Wrapper count: `26`
+Wrapper count: `31`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -24,7 +24,7 @@ Finite-state-machine structure, state transitions, callbacks, invalid transition
 
 ## Domains
 
-- `support/fsm` (26 wrappers)
+- `support/fsm` (31 wrappers)
 
 ## Suggested lesson arc
 
@@ -41,6 +41,11 @@ Finite-state-machine structure, state transitions, callbacks, invalid transition
 - `p101_fsm_decide_exit`
 - `p101_fsm_decide_pause`
 - `p101_fsm_decide_transition`
+- `p101_fsm_effect_batch_count`
+- `p101_fsm_effect_batch_create`
+- `p101_fsm_effect_batch_destroy`
+- `p101_fsm_effect_batch_finish_step`
+- `p101_fsm_effect_batch_sink`
 - `p101_fsm_emit_effect`
 - `p101_fsm_exit_immediately`
 - `p101_fsm_info_create`

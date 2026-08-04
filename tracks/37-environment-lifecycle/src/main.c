@@ -51,6 +51,49 @@ static int write_wrapper_inventory(const struct p101_env *env, struct p101_error
     return ret_val;
 }
 
+static void teaching_tracer(const struct p101_env *env, const char *file_name, const char *function_name, int line_number)
+{
+    (void)env;
+    (void)file_name;
+    (void)function_name;
+    (void)line_number;
+}
+
+static int run_environment_lifecycle_demo(const struct p101_env *env, struct p101_error *err)
+{
+    enum
+    {
+        TRACER_MARKER = 101
+    };
+    struct p101_env *duplicate;
+    int              marker;
+    int              ret_val;
+
+    ret_val   = EXIT_FAILURE;
+    marker    = TRACER_MARKER;
+    duplicate = p101_env_dup(err, env);
+    if(duplicate == NULL || p101_error_has_error(err))
+    {
+        goto done;
+    }
+    p101_env_set_label(duplicate, "teaching-env");
+    p101_env_set_tracer(duplicate, teaching_tracer);
+    p101_env_set_tracer_data(duplicate, &marker);
+    if(p101_env_get_tracer(duplicate) != teaching_tracer || p101_env_get_tracer_data(duplicate) != &marker)
+    {
+        goto done;
+    }
+    if(p101_fprintf(env, err, stdout, "Environment label: %s\n", p101_env_get_label(duplicate)) < 0 || p101_error_has_error(err))
+    {
+        goto done;
+    }
+    ret_val = EXIT_SUCCESS;
+
+done:
+    p101_env_destroy(duplicate);
+    return ret_val;
+}
+
 int main(void)
 {
     struct p101_error *err;
@@ -87,6 +130,11 @@ int main(void)
         goto done;
     }
     if(write_wrapper_inventory(env, err) != EXIT_SUCCESS)
+    {
+        goto done;
+    }
+
+    if(run_environment_lifecycle_demo(env, err) != EXIT_SUCCESS)
     {
         goto done;
     }

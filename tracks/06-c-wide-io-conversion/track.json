@@ -5,6 +5,8 @@
   "generated": true,
   "wrapper_count": 37,
   "purpose": "Wide-character I/O, multibyte conversion state, numeric conversion, and locale-sensitive text boundaries.",
+  "behavior_demonstration": null,
+  "coverage_claim": "inventory-and-linkage",
   "domains": [
     {
       "name": "c/wide-conversion",

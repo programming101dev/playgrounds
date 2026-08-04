@@ -5,6 +5,8 @@
   "generated": true,
   "wrapper_count": 23,
   "purpose": "getaddrinfo/getnameinfo, protocol/service databases, interface enumeration, and Ethernet helpers.",
+  "behavior_demonstration": null,
+  "coverage_claim": "inventory-and-linkage",
   "domains": [
     {
       "name": "network/ethernet",

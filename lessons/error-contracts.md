@@ -9,6 +9,17 @@ Create application and subsystem error/environment objects separately when
 their lifetimes or policies differ. Destroy each object in the file or owner
 that created it unless ownership is deliberately transferred.
 
+Process termination is also an ownership decision. A helper reports failure
+through its `p101_error` or return value; it does not call `exit`, `_Exit`,
+`abort`, or an equivalent terminating API. This lets callers finish cleanup
+and decide how to present the failure. Only `main` selects the application's
+final process status.
+
+Within each function, make cleanup and status selection converge on one final
+return. A `void` function can simply fall through its closing brace. Avoid
+branch-local early returns: record the outcome, run the shared cleanup path,
+and return once.
+
 Verify with:
 
 ```sh

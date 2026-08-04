@@ -5,6 +5,8 @@
   "generated": true,
   "wrapper_count": 12,
   "purpose": "Complex exponentials, logarithms, powers, and square roots.",
+  "behavior_demonstration": null,
+  "coverage_claim": "inventory-and-linkage",
   "domains": [
     {
       "name": "c/complex-exp-log-power",

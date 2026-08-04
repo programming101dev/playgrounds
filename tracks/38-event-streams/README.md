@@ -4,7 +4,7 @@
 
 Track number: `38`
 
-Wrapper count: `36`
+Wrapper count: `37`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -25,7 +25,7 @@ Resource events, call tracing, fault injection, event-log formatting, and observ
 ## Domains
 
 - `support/call-tracing` (13 wrappers)
-- `support/fault-injection` (4 wrappers)
+- `support/fault-injection` (5 wrappers)
 - `support/resource-events` (19 wrappers)
 
 ## Suggested lesson arc
@@ -59,6 +59,7 @@ Resource events, call tracing, fault injection, event-log formatting, and observ
 - `p101_env_check_fault`
 - `p101_env_check_fault_action`
 - `p101_env_default_tracer`
+- `p101_env_record_fault_action`
 - `p101_env_set_fault_injector`
 
 ### `support/resource-events`

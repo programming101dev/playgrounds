@@ -5,6 +5,8 @@
   "generated": true,
   "wrapper_count": 40,
   "purpose": "Dynamic loading, regex, iconv, locale/message catalogs, legacy DBM, and libc search structures.",
+  "behavior_demonstration": null,
+  "coverage_claim": "inventory-and-linkage",
   "domains": [
     {
       "name": "systems/dynamic-loading",

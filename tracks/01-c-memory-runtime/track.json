@@ -3,8 +3,10 @@
   "title": "c memory runtime",
   "order": 1,
   "generated": true,
-  "wrapper_count": 41,
+  "wrapper_count": 37,
   "purpose": "Allocation, process termination, environment variables, sorting/searching helpers, and common stdlib extensions.",
+  "behavior_demonstration": "allocation ownership and integer helpers",
+  "coverage_claim": "executable-behavior",
   "domains": [
     {
       "name": "c/random",
@@ -22,9 +24,8 @@
     },
     {
       "name": "c/stdlib",
-      "function_count": 33,
+      "function_count": 29,
       "functions": [
-        "p101_abort",
         "p101_abs",
         "p101_aligned_alloc",
         "p101_at_quick_exit",
@@ -32,8 +33,6 @@
         "p101_bsearch",
         "p101_calloc",
         "p101_div",
-        "p101_exit",
-        "p101_exit_immediately",
         "p101_free",
         "p101_getenv",
         "p101_labs",
@@ -45,7 +44,6 @@
         "p101_mbstowcs",
         "p101_mbtowc",
         "p101_qsort",
-        "p101_quick_exit",
         "p101_realloc",
         "p101_strtod",
         "p101_strtof",

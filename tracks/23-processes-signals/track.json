@@ -3,12 +3,14 @@
   "title": "processes signals",
   "order": 23,
   "generated": true,
-  "wrapper_count": 64,
+  "wrapper_count": 63,
   "purpose": "fork, exec, wait, spawn, signals, inherited resources, CLOEXEC, and process failure paths.",
+  "behavior_demonstration": null,
+  "coverage_claim": "inventory-and-linkage",
   "domains": [
     {
       "name": "systems/process-signal",
-      "function_count": 64,
+      "function_count": 63,
       "functions": [
         "p101_alarm",
         "p101_execv",
@@ -29,7 +31,6 @@
         "p101_pause",
         "p101_pclose",
         "p101_popen",
-        "p101_posix_exit_immediately",
         "p101_posix_spawn",
         "p101_posix_spawn_file_actions_addclose",
         "p101_posix_spawn_file_actions_adddup2",

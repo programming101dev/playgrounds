@@ -89,6 +89,41 @@ static int write_wrapper_inventory(const struct p101_env *env, struct p101_error
     return ret_val;
 }
 
+static int run_error_lifecycle_demo(const struct p101_env *env, struct p101_error *err)
+{
+    enum
+    {
+        TEACHING_ERROR_CODE = 17
+    };
+    struct p101_error *local_err;
+    int                ret_val;
+
+    ret_val   = EXIT_FAILURE;
+    local_err = p101_error_create(false);
+    if(local_err == NULL)
+    {
+        return EXIT_FAILURE;
+    }
+    P101_ERROR_RAISE_USER(local_err, "expected teaching error", TEACHING_ERROR_CODE);
+    if(!p101_error_is_error(local_err, P101_ERROR_USER, TEACHING_ERROR_CODE))
+    {
+        goto done;
+    }
+    if(p101_fprintf(env, err, stdout, "Observed error: %s\n", p101_error_get_message(local_err)) < 0 || p101_error_has_error(err))
+    {
+        goto done;
+    }
+    p101_error_reset(local_err);
+    if(p101_error_has_no_error(local_err))
+    {
+        ret_val = EXIT_SUCCESS;
+    }
+
+done:
+    p101_error_destroy(local_err);
+    return ret_val;
+}
+
 int main(void)
 {
     struct p101_error *err;
@@ -125,6 +160,11 @@ int main(void)
         goto done;
     }
     if(write_wrapper_inventory(env, err) != EXIT_SUCCESS)
+    {
+        goto done;
+    }
+
+    if(run_error_lifecycle_demo(env, err) != EXIT_SUCCESS)
     {
         goto done;
     }

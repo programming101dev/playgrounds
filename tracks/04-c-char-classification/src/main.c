@@ -1,4 +1,5 @@
 #include "track_info.h"
+#include <p101_c/p101_ctype.h>
 #include <p101_c/p101_stdio.h>
 #include <p101_c/p101_stdlib.h>
 #include <p101_env/env.h>
@@ -41,6 +42,19 @@ static int write_wrapper_inventory(const struct p101_env *env, struct p101_error
     return ret_val;
 }
 
+static int run_character_demo(const struct p101_env *env, struct p101_error *err)
+{
+    const unsigned char input = (unsigned char)'A';
+    int                 alphabetic;
+
+    alphabetic = p101_isalpha(env, (int)input);
+    if(p101_fprintf(env, err, stdout, "'%c' alphabetic: %s\n", (int)input, alphabetic != 0 ? "yes" : "no") < 0 || p101_error_has_error(err))
+    {
+        return EXIT_FAILURE;
+    }
+    return alphabetic != 0 ? EXIT_SUCCESS : EXIT_FAILURE;
+}
+
 int main(void)
 {
     struct p101_error *err;
@@ -77,6 +91,11 @@ int main(void)
         goto done;
     }
     if(write_wrapper_inventory(env, err) != EXIT_SUCCESS)
+    {
+        goto done;
+    }
+
+    if(run_character_demo(env, err) != EXIT_SUCCESS)
     {
         goto done;
     }

@@ -5,6 +5,8 @@
   "generated": true,
   "wrapper_count": 50,
   "purpose": "Error objects, errno mapping, assertions/check helpers, reporting, and failure-aware control flow.",
+  "behavior_demonstration": "raise, inspect, reset, and destroy an error",
+  "coverage_claim": "executable-behavior",
   "domains": [
     {
       "name": "support/assertions",

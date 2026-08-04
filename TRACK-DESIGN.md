@@ -21,6 +21,14 @@ Use it as the pattern for later tracks: generated inventory in `README.md`,
 curated lesson sequence in `TRACK.md`, machine-readable case map in
 `track.json`, and a local `run.sh` for the focused smoke run.
 
+Wrapper assignment answers “where is this taught?” It does not prove that a
+track exercises the wrapper. `track.json` therefore records either
+`executable-behavior` or `inventory-and-linkage`. A track is curriculum-ready
+only after it starts with a checked valid behavior example, follows it with a
+focused failure/trap, and retains a regression assertion. This prevents a
+program that merely prints function names from being counted as a finished
+lesson.
+
 ## Rules
 
 1. Every wrapper gets one primary track home.
@@ -29,6 +37,7 @@ curated lesson sequence in `TRACK.md`, machine-readable case map in
 4. Never add a `misc` track. Name the concept instead.
 5. Good examples come first; broken labs come after students have seen the valid
    shape.
+6. Never describe inventory or linkage as behavior coverage.
 
 ## Regeneration
 

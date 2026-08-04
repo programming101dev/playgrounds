@@ -4,7 +4,7 @@
 
 Track number: `23`
 
-Wrapper count: `64`
+Wrapper count: `63`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -24,7 +24,7 @@ fork, exec, wait, spawn, signals, inherited resources, CLOEXEC, and process fail
 
 ## Domains
 
-- `systems/process-signal` (64 wrappers)
+- `systems/process-signal` (63 wrappers)
 
 ## Suggested lesson arc
 
@@ -57,7 +57,6 @@ fork, exec, wait, spawn, signals, inherited resources, CLOEXEC, and process fail
 - `p101_pause`
 - `p101_pclose`
 - `p101_popen`
-- `p101_posix_exit_immediately`
 - `p101_posix_spawn`
 - `p101_posix_spawn_file_actions_addclose`
 - `p101_posix_spawn_file_actions_adddup2`

@@ -5,6 +5,8 @@
   "generated": true,
   "wrapper_count": 19,
   "purpose": "Character/line I/O, pushback, EOF/error state, flushing, and buffering mode.",
+  "behavior_demonstration": "checked line output",
+  "coverage_claim": "executable-behavior",
   "domains": [
     {
       "name": "c/stdio-character-io",

@@ -33,3 +33,21 @@ to the next wrapper family.
 Keep functions file-local with `static` unless they are part of the
 track's real API, pass `env`/`err` through code that can fail, use p101
 wrappers instead of direct libc/POSIX calls, and make cleanup visible.
+
+## Behavior work still to complete
+
+`src/main.c` currently proves project shape, linkage, environment/error
+ownership, and the wrapper inventory. It does **not** claim behavior
+coverage for this wrapper family. Choose one small ownership or data-flow
+story from the inventory and add a checked valid example before adding a
+broken case. Inventory membership is not executable curriculum.
+
+## Progression
+
+1. Run the valid example and record its output.
+2. Add one focused behavior assertion to `test/CMakeLists.txt` or a local
+   test source.
+3. Introduce one documented failure or common trap.
+4. Use the p101 tools to explain the failure, not merely observe a nonzero
+   exit status.
+5. Fix it and keep the regression test.

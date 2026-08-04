@@ -68,6 +68,17 @@ SHARED_LINKS = {
     "supported_c_compilers.txt": "../../../scripts/supported_c_compilers.txt",
 }
 
+BEHAVIOR_DEMOS = {
+    "p101-orientation": "environment/error ownership, wrapper use, and the tool workflow",
+    "c-memory-runtime": "allocation ownership and integer helpers",
+    "c-memory-bytes": "host/network byte-order round trip",
+    "c-char-classification": "safe character classification",
+    "c-stdio-character-buffering": "checked line output",
+    "error-handling": "raise, inspect, reset, and destroy an error",
+    "environment-lifecycle": "duplicate and configure an environment and tracer",
+    "fsm": "one typed, observable FSM step with separate FSM env/error state",
+}
+
 
 def slug(text: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
@@ -180,6 +191,28 @@ def track_lesson(track: dict[str, Any], index: int) -> str:
     if index == 0:
         return orientation_lesson()
 
+    demo = BEHAVIOR_DEMOS.get(track["track"])
+    demonstration = (
+        [
+            "## Valid behavior demonstration",
+            "",
+            f"`src/main.c` executes a checked demonstration of {demo}.",
+            "Read that function before changing it. Its successful run is the baseline",
+            "for later failure and security exercises.",
+            "",
+        ]
+        if demo is not None
+        else [
+            "## Behavior work still to complete",
+            "",
+            "`src/main.c` currently proves project shape, linkage, environment/error",
+            "ownership, and the wrapper inventory. It does **not** claim behavior",
+            "coverage for this wrapper family. Choose one small ownership or data-flow",
+            "story from the inventory and add a checked valid example before adding a",
+            "broken case. Inventory membership is not executable curriculum.",
+            "",
+        ]
+    )
     return "\n".join(
         [
             f"# Track {index:02d}: {track['track']}",
@@ -217,6 +250,17 @@ def track_lesson(track: dict[str, Any], index: int) -> str:
             "Keep functions file-local with `static` unless they are part of the",
             "track's real API, pass `env`/`err` through code that can fail, use p101",
             "wrappers instead of direct libc/POSIX calls, and make cleanup visible.",
+            "",
+            *demonstration,
+            "## Progression",
+            "",
+            "1. Run the valid example and record its output.",
+            "2. Add one focused behavior assertion to `test/CMakeLists.txt` or a local",
+            "   test source.",
+            "3. Introduce one documented failure or common trap.",
+            "4. Use the p101 tools to explain the failure, not merely observe a nonzero",
+            "   exit status.",
+            "5. Fix it and keep the regression test.",
             "",
         ]
     )
@@ -583,6 +627,12 @@ def track_json(graph: dict[str, Any], track: dict[str, Any], index: int) -> str:
         "generated": True,
         "wrapper_count": track["function_count"],
         "purpose": track["purpose"],
+        "behavior_demonstration": BEHAVIOR_DEMOS.get(track["track"]),
+        "coverage_claim": (
+            "executable-behavior"
+            if track["track"] in BEHAVIOR_DEMOS
+            else "inventory-and-linkage"
+        ),
         "domains": [
             {
                 "name": domain,
@@ -658,6 +708,259 @@ def track_main(graph: dict[str, Any], track: dict[str, Any], index: int) -> str:
         ]
         demo_call = [
             "    if(write_endian_demo(env, err) != EXIT_SUCCESS)",
+            "    {",
+            "        goto done;",
+            "    }",
+            "",
+        ]
+    elif track["track"] == "c-memory-runtime":
+        demo_function = [
+            "",
+            "static int run_memory_runtime_demo(const struct p101_env *env, struct p101_error *err)",
+            "{",
+            "    enum",
+            "    {",
+            "        FIRST_MAGNITUDE  = 42,",
+            "        SECOND_MAGNITUDE = 7,",
+            "        EXPECTED_SUM     = 49",
+            "    };",
+            "    int *values;",
+            "    int  ret_val;",
+            "",
+            "    ret_val = EXIT_FAILURE;",
+            "    values  = (int *)p101_calloc(env, err, 3U, sizeof(*values));",
+            "    if(values == NULL || p101_error_has_error(err))",
+            "    {",
+            "        goto done;",
+            "    }",
+            "    values[0] = p101_abs(env, err, -FIRST_MAGNITUDE);",
+            "    values[1] = p101_abs(env, err, -SECOND_MAGNITUDE);",
+            "    values[2] = values[0] + values[1];",
+            "    if(p101_error_has_error(err) || values[2] != EXPECTED_SUM)",
+            "    {",
+            "        goto done;",
+            "    }",
+            "    if(p101_fprintf(env, err, stdout, \"Checked allocation result: %d\\n\", values[2]) < 0 || p101_error_has_error(err))",
+            "    {",
+            "        goto done;",
+            "    }",
+            "    ret_val = EXIT_SUCCESS;",
+            "",
+            "done:",
+            "    p101_free(env, values);",
+            "    return ret_val;",
+            "}",
+        ]
+        demo_call = [
+            "    if(run_memory_runtime_demo(env, err) != EXIT_SUCCESS)",
+            "    {",
+            "        goto done;",
+            "    }",
+            "",
+        ]
+    elif track["track"] == "c-char-classification":
+        extra_includes = ["#include <p101_c/p101_ctype.h>"]
+        demo_function = [
+            "",
+            "static int run_character_demo(const struct p101_env *env, struct p101_error *err)",
+            "{",
+            "    const unsigned char input = (unsigned char)'A';",
+            "    int                 alphabetic;",
+            "",
+            "    alphabetic = p101_isalpha(env, (int)input);",
+            "    if(p101_fprintf(env, err, stdout, \"'%c' alphabetic: %s\\n\", (int)input, alphabetic != 0 ? \"yes\" : \"no\") < 0 || p101_error_has_error(err))",
+            "    {",
+            "        return EXIT_FAILURE;",
+            "    }",
+            "    return alphabetic != 0 ? EXIT_SUCCESS : EXIT_FAILURE;",
+            "}",
+        ]
+        demo_call = [
+            "    if(run_character_demo(env, err) != EXIT_SUCCESS)",
+            "    {",
+            "        goto done;",
+            "    }",
+            "",
+        ]
+    elif track["track"] == "c-stdio-character-buffering":
+        demo_function = [
+            "",
+            "static int run_line_output_demo(const struct p101_env *env, struct p101_error *err)",
+            "{",
+            "    int result;",
+            "",
+            "    result = p101_puts(env, err, \"Checked p101 line output\");",
+            "    return (result < 0 || p101_error_has_error(err)) ? EXIT_FAILURE : EXIT_SUCCESS;",
+            "}",
+        ]
+        demo_call = [
+            "    if(run_line_output_demo(env, err) != EXIT_SUCCESS)",
+            "    {",
+            "        goto done;",
+            "    }",
+            "",
+        ]
+    elif track["track"] == "error-handling":
+        demo_function = [
+            "",
+            "static int run_error_lifecycle_demo(const struct p101_env *env, struct p101_error *err)",
+            "{",
+            "    enum",
+            "    {",
+            "        TEACHING_ERROR_CODE = 17",
+            "    };",
+            "    struct p101_error *local_err;",
+            "    int                ret_val;",
+            "",
+            "    ret_val   = EXIT_FAILURE;",
+            "    local_err = p101_error_create(false);",
+            "    if(local_err == NULL)",
+            "    {",
+            "        return EXIT_FAILURE;",
+            "    }",
+            "    P101_ERROR_RAISE_USER(local_err, \"expected teaching error\", TEACHING_ERROR_CODE);",
+            "    if(!p101_error_is_error(local_err, P101_ERROR_USER, TEACHING_ERROR_CODE))",
+            "    {",
+            "        goto done;",
+            "    }",
+            "    if(p101_fprintf(env, err, stdout, \"Observed error: %s\\n\", p101_error_get_message(local_err)) < 0 || p101_error_has_error(err))",
+            "    {",
+            "        goto done;",
+            "    }",
+            "    p101_error_reset(local_err);",
+            "    if(p101_error_has_no_error(local_err))",
+            "    {",
+            "        ret_val = EXIT_SUCCESS;",
+            "    }",
+            "",
+            "done:",
+            "    p101_error_destroy(local_err);",
+            "    return ret_val;",
+            "}",
+        ]
+        demo_call = [
+            "    if(run_error_lifecycle_demo(env, err) != EXIT_SUCCESS)",
+            "    {",
+            "        goto done;",
+            "    }",
+            "",
+        ]
+    elif track["track"] == "environment-lifecycle":
+        demo_function = [
+            "",
+            "static void teaching_tracer(const struct p101_env *env, const char *file_name, const char *function_name, int line_number)",
+            "{",
+            "    (void)env;",
+            "    (void)file_name;",
+            "    (void)function_name;",
+            "    (void)line_number;",
+            "}",
+            "",
+            "static int run_environment_lifecycle_demo(const struct p101_env *env, struct p101_error *err)",
+            "{",
+            "    enum",
+            "    {",
+            "        TRACER_MARKER = 101",
+            "    };",
+            "    struct p101_env *duplicate;",
+            "    int              marker;",
+            "    int              ret_val;",
+            "",
+            "    ret_val   = EXIT_FAILURE;",
+            "    marker    = TRACER_MARKER;",
+            "    duplicate = p101_env_dup(err, env);",
+            "    if(duplicate == NULL || p101_error_has_error(err))",
+            "    {",
+            "        goto done;",
+            "    }",
+            "    p101_env_set_label(duplicate, \"teaching-env\");",
+            "    p101_env_set_tracer(duplicate, teaching_tracer);",
+            "    p101_env_set_tracer_data(duplicate, &marker);",
+            "    if(p101_env_get_tracer(duplicate) != teaching_tracer || p101_env_get_tracer_data(duplicate) != &marker)",
+            "    {",
+            "        goto done;",
+            "    }",
+            "    if(p101_fprintf(env, err, stdout, \"Environment label: %s\\n\", p101_env_get_label(duplicate)) < 0 || p101_error_has_error(err))",
+            "    {",
+            "        goto done;",
+            "    }",
+            "    ret_val = EXIT_SUCCESS;",
+            "",
+            "done:",
+            "    p101_env_destroy(duplicate);",
+            "    return ret_val;",
+            "}",
+        ]
+        demo_call = [
+            "    if(run_environment_lifecycle_demo(env, err) != EXIT_SUCCESS)",
+            "    {",
+            "        goto done;",
+            "    }",
+            "",
+        ]
+    elif track["track"] == "fsm":
+        extra_includes = ["#include <p101_fsm/fsm.h>"]
+        demo_function = [
+            "",
+            "static void finish_state(const struct p101_env *env, struct p101_error *err, void *arg, struct p101_fsm_effect_sink *sink, struct p101_fsm_decision *decision)",
+            "{",
+            "    (void)env;",
+            "    (void)err;",
+            "    (void)arg;",
+            "    (void)sink;",
+            "    p101_fsm_decide_exit(decision);",
+            "}",
+            "",
+            "static int run_fsm_step_demo(const struct p101_env *env, struct p101_error *err)",
+            "{",
+            "    struct p101_error                      *fsm_err;",
+            "    struct p101_env                        *fsm_env;",
+            "    struct p101_fsm_info                   *fsm;",
+            "    struct p101_fsm_step_result             result;",
+            "    p101_fsm_step_status                    status;",
+            "    int                                     ret_val;",
+            "    static const struct p101_fsm_transition transitions[] = {",
+            "        {P101_FSM_INIT, P101_FSM_USER_START, finish_state},",
+            "    };",
+            "",
+            "    ret_val = EXIT_FAILURE;",
+            "    fsm     = NULL;",
+            "    fsm_env = NULL;",
+            "    fsm_err = p101_error_create(false);",
+            "    if(fsm_err == NULL)",
+            "    {",
+            "        goto done;",
+            "    }",
+            "    fsm_env = p101_env_create(fsm_err, NULL);",
+            "    if(fsm_env == NULL || p101_error_has_error(fsm_err))",
+            "    {",
+            "        goto done;",
+            "    }",
+            "    fsm = p101_fsm_info_create(env, err, \"teaching-fsm\", fsm_env, fsm_err, transitions, sizeof(transitions) / sizeof(transitions[0]), NULL);",
+            "    if(fsm == NULL || p101_error_has_error(err) || p101_error_has_error(fsm_err))",
+            "    {",
+            "        goto done;",
+            "    }",
+            "    status = p101_fsm_step(fsm, NULL, NULL, &result);",
+            "    if(status != P101_FSM_STEP_EXITED || result.sequence != 1U || !p101_fsm_info_is_terminal(fsm))",
+            "    {",
+            "        goto done;",
+            "    }",
+            "    if(p101_fprintf(env, err, stdout, \"FSM %s exited at step %zu\\n\", p101_fsm_info_get_name(env, fsm), result.sequence) < 0 || p101_error_has_error(err))",
+            "    {",
+            "        goto done;",
+            "    }",
+            "    ret_val = EXIT_SUCCESS;",
+            "",
+            "done:",
+            "    p101_fsm_info_destroy(env, fsm_err, &fsm);",
+            "    p101_env_destroy(fsm_env);",
+            "    p101_error_destroy(fsm_err);",
+            "    return ret_val;",
+            "}",
+        ]
+        demo_call = [
+            "    if(run_fsm_step_demo(env, err) != EXIT_SUCCESS)",
             "    {",
             "        goto done;",
             "    }",
@@ -875,6 +1178,11 @@ def materialize_track_project(graph: dict[str, Any], track: dict[str, Any], inde
     for name, target in SHARED_LINKS.items():
         ensure_symlink(track_dir / name, target)
 
+    # A track may be copied out of this repository for a class exercise. Keep
+    # repository policy files materialized rather than symlinked so the copy
+    # retains its license and ignore policy without the workspace.
+    write(track_dir / ".gitignore", (PLAYGROUND / ".gitignore").read_text(encoding="utf-8"))
+    write(track_dir / "LICENSE", (PLAYGROUND / "LICENSE").read_text(encoding="utf-8"))
     write(track_dir / "README.md", track_readme(graph, track, index))
     write(track_dir / "TRACK.md", track_lesson(track, index))
     write(track_dir / "track.json", track_json(graph, track, index))
@@ -896,33 +1204,40 @@ def tracks_index(graph: dict[str, Any], tracks: list[dict[str, Any]]) -> str:
         "",
         "The playground is one repository with many small tracks. The goal is to",
         "replace the old wrapper-example sprawl with focused, teachable playground",
-        "areas while still covering every p101 wrapper exactly once.",
+        "areas while assigning every p101 wrapper exactly one curriculum home.",
         "",
         "## Coverage",
         "",
-        f"- Wrappers covered: `{repo['covered_function_count']}`",
-        f"- Uncovered wrappers/domains: `{repo['uncovered_function_count']}`",
+        f"- Wrappers assigned to a track: `{repo['covered_function_count']}`",
+        f"- Unassigned wrappers/domains: `{repo['uncovered_function_count']}`",
+        f"- Track projects with executable behavior demonstrations: `{len(BEHAVIOR_DEMOS)}`",
         f"- Track count: `{repo['track_count']}`",
         "- Orientation pre-track: `00-p101-orientation`",
         "- Misc tracks/domains are intentionally forbidden.",
         "",
         "## Track list",
         "",
-        "| # | Track | Wrappers | Purpose |",
-        "| ---: | --- | ---: | --- |",
-        "| 00 | [`p101-orientation`](00-p101-orientation/README.md) | 0 | Hand-authored pre-track for env, err, wrappers, and tools. |",
+        "| # | Track | Wrappers | Evidence | Purpose |",
+        "| ---: | --- | ---: | --- | --- |",
+        "| 00 | [`p101-orientation`](00-p101-orientation/README.md) | 0 | guided behavior | Hand-authored pre-track for env, err, wrappers, and tools. |",
     ]
     for index, track in enumerate(tracks, start=1):
         path = f"{index:02d}-{slug(track['track'])}/README.md"
-        lines.append(f"| {index:02d} | [`{track['track']}`]({path}) | {track['function_count']} | {track['purpose']} |")
+        evidence = (
+            "executable behavior"
+            if track["track"] in BEHAVIOR_DEMOS
+            else "inventory/linkage"
+        )
+        lines.append(f"| {index:02d} | [`{track['track']}`]({path}) | {track['function_count']} | {evidence} | {track['purpose']} |")
     lines.extend(
         [
             "",
             "## How to use this",
             "",
             "Each track directory is a standalone project with local source,",
-            "metadata, build configuration, a smoke test, and a runner. A finished",
-            "track should start from good examples, then add issue-focused labs",
+            "metadata, build configuration, a smoke test, and a runner. Inventory",
+            "assignment is not called behavior coverage. A finished track starts from",
+            "a checked good example, then adds issue-focused labs",
             "where students uncomment or repair intentionally bad code and watch the",
             "checks improve.",
             "",
@@ -952,6 +1267,8 @@ def manifest(graph: dict[str, Any], tracks: list[dict[str, Any]]) -> str:
         "track_count": len(tracks),
         "covered_function_count": graph["repository_recommendation"]["covered_function_count"],
         "uncovered_function_count": graph["repository_recommendation"]["uncovered_function_count"],
+        "coverage_definition": "Each wrapper is assigned to one primary track; assignment alone is not behavior coverage.",
+        "behavior_demonstration_track_count": len(BEHAVIOR_DEMOS),
         "tracks": [
             {
                 "index": index,
@@ -959,6 +1276,12 @@ def manifest(graph: dict[str, Any], tracks: list[dict[str, Any]]) -> str:
                 "directory": f"{index:02d}-{slug(track['track'])}",
                 "function_count": track["function_count"],
                 "purpose": track["purpose"],
+                "behavior_demonstration": BEHAVIOR_DEMOS.get(track["track"]),
+                "coverage_claim": (
+                    "executable-behavior"
+                    if track["track"] in BEHAVIOR_DEMOS
+                    else "inventory-and-linkage"
+                ),
                 "domains": [
                     {
                         "name": domain,

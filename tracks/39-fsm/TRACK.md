@@ -33,3 +33,19 @@ to the next wrapper family.
 Keep functions file-local with `static` unless they are part of the
 track's real API, pass `env`/`err` through code that can fail, use p101
 wrappers instead of direct libc/POSIX calls, and make cleanup visible.
+
+## Valid behavior demonstration
+
+`src/main.c` executes a checked demonstration of one typed, observable FSM step with separate FSM env/error state.
+Read that function before changing it. Its successful run is the baseline
+for later failure and security exercises.
+
+## Progression
+
+1. Run the valid example and record its output.
+2. Add one focused behavior assertion to `test/CMakeLists.txt` or a local
+   test source.
+3. Introduce one documented failure or common trap.
+4. Use the p101 tools to explain the failure, not merely observe a nonzero
+   exit status.
+5. Fix it and keep the regression test.

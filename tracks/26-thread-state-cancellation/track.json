@@ -5,6 +5,8 @@
   "generated": true,
   "wrapper_count": 9,
   "purpose": "Thread-local storage, once initialization, cancellation state, cancellation points, and cleanup hazards.",
+  "behavior_demonstration": null,
+  "coverage_claim": "inventory-and-linkage",
   "domains": [
     {
       "name": "systems/thread-cancellation",

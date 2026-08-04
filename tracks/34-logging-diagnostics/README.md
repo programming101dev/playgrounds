@@ -4,7 +4,7 @@
 
 Track number: `34`
 
-Wrapper count: `12`
+Wrapper count: `8`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -24,7 +24,7 @@ syslog, err/warn-style diagnostics, formatted messages, and teachable logging/er
 
 ## Domains
 
-- `systems/logging-diagnostics` (12 wrappers)
+- `systems/logging-diagnostics` (8 wrappers)
 
 ## Suggested lesson arc
 
@@ -39,13 +39,9 @@ syslog, err/warn-style diagnostics, formatted messages, and teachable logging/er
 ### `systems/logging-diagnostics`
 
 - `p101_closelog`
-- `p101_err`
-- `p101_errx`
 - `p101_fmtmsg`
 - `p101_openlog`
 - `p101_setlogmask`
-- `p101_verr`
-- `p101_verrx`
 - `p101_vwarn`
 - `p101_vwarnx`
 - `p101_warn`

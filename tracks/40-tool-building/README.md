@@ -4,7 +4,7 @@
 
 Track number: `40`
 
-Wrapper count: `41`
+Wrapper count: `51`
 
 This directory is a standalone track project. You can enter it, build it,
 run it, and edit its source without depending on the top-level playground
@@ -24,8 +24,8 @@ C facts, small analyzers, and writing tools that reason about p101 projects.
 
 ## Domains
 
-- `tooling/c-facts` (4 wrappers)
-- `tooling/event-protocol` (37 wrappers)
+- `tooling/c-facts` (8 wrappers)
+- `tooling/event-protocol` (43 wrappers)
 
 ## Suggested lesson arc
 
@@ -39,13 +39,22 @@ C facts, small analyzers, and writing tools that reason about p101 projects.
 
 ### `tooling/c-facts`
 
+- `p101_c_analysis_kind_name`
+- `p101_c_analysis_scan`
 - `p101_c_fact_kind_name`
 - `p101_c_fact_parse_line`
 - `p101_c_fact_status_name`
 - `p101_c_facts_find_clang_compile_database`
+- `p101_c_facts_with_compile_command`
+- `p101_c_mutation_kind_name`
 
 ### `tooling/event-protocol`
 
+- `p101_record_parse_size`
+- `p101_record_split`
+- `p101_record_unescape_field`
+- `p101_record_write_json_string`
+- `p101_record_write_json_string_contents`
 - `p101_tool_event_fingerprint_file`
 - `p101_tool_event_lifecycle_create`
 - `p101_tool_event_lifecycle_destroy`
@@ -63,17 +72,15 @@ C facts, small analyzers, and writing tools that reason about p101 projects.
 - `p101_tool_event_parse_line`
 - `p101_tool_event_parse_policy_summary_json`
 - `p101_tool_event_parse_resource_summary_json`
-- `p101_tool_event_parse_size_field`
 - `p101_tool_event_parse_status_name`
 - `p101_tool_event_read_line`
 - `p101_tool_event_resource_summary_finding_count`
-- `p101_tool_event_split`
 - `p101_tool_event_stream_health_destroy`
 - `p101_tool_event_stream_health_incomplete_producers`
 - `p101_tool_event_stream_health_is_complete`
 - `p101_tool_event_stream_health_observe`
-- `p101_tool_event_unescape_field`
 - `p101_tool_event_write`
+- `p101_tool_failure_reason_name`
 - `p101_tool_model_create`
 - `p101_tool_model_destroy`
 - `p101_tool_model_edge_at`
@@ -83,3 +90,6 @@ C facts, small analyzers, and writing tools that reason about p101 projects.
 - `p101_tool_model_node_at`
 - `p101_tool_model_node_count`
 - `p101_tool_model_write_json`
+- `p101_tool_outcome_exit_status`
+- `p101_tool_outcome_name`
+- `p101_tool_run_receipt_write_json`

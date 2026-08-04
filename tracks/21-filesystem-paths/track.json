@@ -5,6 +5,8 @@
   "generated": true,
   "wrapper_count": 33,
   "purpose": "Paths, permissions, stat, links, directories-as-filesystem-objects, timestamps, and filesystem mutation.",
+  "behavior_demonstration": null,
+  "coverage_claim": "inventory-and-linkage",
   "domains": [
     {
       "name": "systems/filesystem-paths",

@@ -3,8 +3,10 @@
   "title": "event streams",
   "order": 38,
   "generated": true,
-  "wrapper_count": 36,
+  "wrapper_count": 37,
   "purpose": "Resource events, call tracing, fault injection, event-log formatting, and observer configuration.",
+  "behavior_demonstration": null,
+  "coverage_claim": "inventory-and-linkage",
   "domains": [
     {
       "name": "support/call-tracing",
@@ -27,11 +29,12 @@
     },
     {
       "name": "support/fault-injection",
-      "function_count": 4,
+      "function_count": 5,
       "functions": [
         "p101_env_check_fault",
         "p101_env_check_fault_action",
         "p101_env_default_tracer",
+        "p101_env_record_fault_action",
         "p101_env_set_fault_injector"
       ]
     },

@@ -44,7 +44,9 @@
         "P101-ERR-003",
         "P101-ERR-004",
         "P101-ERR-005",
-        "P101-ERR-006"
+        "P101-ERR-006",
+        "P101-ERR-007",
+        "P101-ERR-008"
       ],
       "acceptance_profile": "error-contract",
       "verification": "p101 doctor -s <source-path>"
@@ -229,7 +231,9 @@
         "P101-ERR-003",
         "P101-ERR-004",
         "P101-ERR-005",
-        "P101-ERR-006"
+        "P101-ERR-006",
+        "P101-ERR-007",
+        "P101-ERR-008"
       ],
       "command": [
         "./test.sh"

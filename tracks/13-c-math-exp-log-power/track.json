@@ -5,6 +5,8 @@
   "generated": true,
   "wrapper_count": 48,
   "purpose": "Exponentials, logarithms, roots, powers, and gamma/error-function families.",
+  "behavior_demonstration": null,
+  "coverage_claim": "inventory-and-linkage",
   "domains": [
     {
       "name": "c/math-exp-log-power",

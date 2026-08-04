@@ -58,6 +58,21 @@ static int write_wrapper_inventory(const struct p101_env *env, struct p101_error
     return ret_val;
 }
 
+static int run_line_output_demo(const struct p101_env *env, struct p101_error *err)
+{
+    int result;
+    int ret_val;
+
+    result  = p101_puts(env, err, "Checked p101 line output");
+    ret_val = EXIT_SUCCESS;
+    if(result < 0 || p101_error_has_error(err))
+    {
+        ret_val = EXIT_FAILURE;
+    }
+
+    return ret_val;
+}
+
 int main(void)
 {
     struct p101_error *err;
@@ -94,6 +109,11 @@ int main(void)
         goto done;
     }
     if(write_wrapper_inventory(env, err) != EXIT_SUCCESS)
+    {
+        goto done;
+    }
+
+    if(run_line_output_demo(env, err) != EXIT_SUCCESS)
     {
         goto done;
     }

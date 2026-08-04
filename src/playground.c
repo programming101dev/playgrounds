@@ -27,14 +27,6 @@
     #define PATH_MAX 4096
 #endif
 
-enum child_exit_mode
-{
-    CHILD_EXIT_NORMAL,
-    CHILD_EXIT_QUICK,
-    CHILD_EXIT_IMMEDIATE,
-    CHILD_EXIT_ABORT
-};
-
 enum c_memory_runtime_demo_constants
 {
     ORIENTATION_MESSAGE_BYTES       = 64,
@@ -62,10 +54,7 @@ enum c_memory_runtime_demo_constants
     C_MEMORY_ALIGNED_BYTES          = 64,
     C_MEMORY_L64A_VALUE             = 1234,
     C_MEMORY_ARC4RANDOM_UPPER_BOUND = 10,
-    C_MEMORY_LOADAVG_COUNT          = 3,
-    C_MEMORY_EXIT_STATUS            = 17,
-    C_MEMORY_QUICK_EXIT_STATUS      = 18,
-    C_MEMORY_IMMEDIATE_EXIT_STATUS  = 19
+    C_MEMORY_LOADAVG_COUNT          = 3
 };
 
 static int   run_orientation_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
@@ -124,7 +113,6 @@ static int   run_short_read_demo(const struct p101_env *env, struct p101_error *
 static int   run_read_eof_handling_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
 static int   run_parser_fuzz_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args);
 static void  close_fd_preserving_error(const struct p101_env *env, struct p101_error *err, int *fd);
-static int   run_child_exit_wrapper(const struct p101_env *env, struct p101_error *err, enum child_exit_mode mode);
 static int   compare_ints(const void *lhs, const void *rhs);
 static void  c_memory_runtime_atexit_hook(void);
 static int   write_demo_file(const struct p101_env *env, struct p101_error *err, const struct arguments *args, const char *label, bool leak_fd, bool leak_alloc);
@@ -810,8 +798,7 @@ static int run_c_memory_runtime_demo(const struct p101_env *env, struct p101_err
         }
     }
 
-    if(run_child_exit_wrapper(env, err, CHILD_EXIT_NORMAL) != EXIT_SUCCESS || run_child_exit_wrapper(env, err, CHILD_EXIT_QUICK) != EXIT_SUCCESS || run_child_exit_wrapper(env, err, CHILD_EXIT_IMMEDIATE) != EXIT_SUCCESS ||
-       run_child_exit_wrapper(env, err, CHILD_EXIT_ABORT) != EXIT_SUCCESS)
+    if(p101_atexit(env, err, c_memory_runtime_atexit_hook) != 0 || p101_at_quick_exit(env, err, c_memory_runtime_atexit_hook) != 0 || p101_error_has_error(err))
     {
         goto done;
     }
@@ -821,12 +808,12 @@ static int run_c_memory_runtime_demo(const struct p101_env *env, struct p101_err
         goto done;
     }
 
-    p101_printf(env, err, "c-memory-runtime: exercised 57 wrappers\n");
+    p101_printf(env, err, "c-memory-runtime: exercised 53 wrappers\n");
     if(p101_error_has_error(err))
     {
         goto done;
     }
-    if(write_text_output(env, err, args, "c-memory-runtime: exercised 57 wrappers\n") != EXIT_SUCCESS)
+    if(write_text_output(env, err, args, "c-memory-runtime: exercised 53 wrappers\n") != EXIT_SUCCESS)
     {
         goto done;
     }
@@ -955,34 +942,35 @@ static int run_fork_demo(const struct p101_env *env, struct p101_error *err, con
     if(pid == 0)
     {
         char *child_buffer;
-        int   child_status;
 
         child_buffer = make_buffer(env, err, DEFAULT_BYTES, 'c');
         p101_close(env, err, fds[0]);
+        fds[0] = -1;
         p101_write(env, err, fds[1], message, sizeof(message));
         p101_close(env, err, fds[1]);
+        fds[1] = -1;
         p101_free(env, child_buffer);
-        child_status = EXIT_SUCCESS;
+        ret_val = EXIT_SUCCESS;
 
         if(p101_error_has_error(err))
         {
-            child_status = EXEC_FAILURE;
+            ret_val = EXEC_FAILURE;
         }
-
-        p101_posix_exit_immediately(env, child_status);
     }
-
-    p101_close(env, err, fds[1]);
-    fds[1] = -1;
-    p101_read(env, err, fds[0], buffer, sizeof(message));
-    p101_close(env, err, fds[0]);
-    fds[0] = -1;
-    p101_waitpid(env, err, pid, &status, 0);
-
-    if(p101_error_has_no_error(err) && WIFEXITED(status) && WEXITSTATUS(status) == EXIT_SUCCESS)
+    else
     {
-        p101_printf(env, err, "fork: child allocated, wrote through a pipe, and cleaned up\n");
-        ret_val = EXIT_SUCCESS;
+        p101_close(env, err, fds[1]);
+        fds[1] = -1;
+        p101_read(env, err, fds[0], buffer, sizeof(message));
+        p101_close(env, err, fds[0]);
+        fds[0] = -1;
+        p101_waitpid(env, err, pid, &status, 0);
+
+        if(p101_error_has_no_error(err) && WIFEXITED(status) && WEXITSTATUS(status) == EXIT_SUCCESS)
+        {
+            p101_printf(env, err, "fork: child allocated, wrote through a pipe, and cleaned up\n");
+            ret_val = EXIT_SUCCESS;
+        }
     }
 
 done:
@@ -1142,48 +1130,53 @@ static int run_early_return_fd_leak_demo(const struct p101_env *env, struct p101
 {
     int   fd;
     char *buffer;
+    int   ret_val;
 
     P101_TRACE_SCOPE(env);
-    buffer = NULL;
+    buffer  = NULL;
+    ret_val = EXIT_FAILURE;
     p101_printf(env, err, "early-return-fd-leak: returns before descriptor cleanup\n");
 
     fd = p101_open(env, err, args->output_path, O_WRONLY | O_CREAT | O_TRUNC, REPORT_FILE_MODE);
     if(p101_error_has_error(err))
     {
-        return EXIT_FAILURE;
+        goto done;
     }
 
     buffer = make_buffer(env, err, args->bytes, 'e');
     if(p101_error_has_error(err))
     {
-        return EXIT_FAILURE;
+        goto done;
     }
 
     p101_write(env, err, fd, buffer, args->bytes);
     p101_free(env, buffer);
 
-    if(p101_error_has_error(err))
+    if(p101_error_has_no_error(err))
     {
-        return EXIT_FAILURE;
+        ret_val = EXIT_SUCCESS;
     }
 
-    return EXIT_SUCCESS;
+done:
+    return ret_val;
 }
 
 static int run_early_return_alloc_leak_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
 {
     const char *buffer;
+    int         ret_val;
 
     P101_TRACE_SCOPE(env);
+    ret_val = EXIT_FAILURE;
     p101_printf(env, err, "early-return-alloc-leak: returns before allocation cleanup\n");
 
     buffer = make_buffer(env, err, args->bytes, 'a');
-    if(buffer == NULL || p101_error_has_error(err))
+    if(buffer != NULL && p101_error_has_no_error(err))
     {
-        return EXIT_FAILURE;
+        ret_val = EXIT_SUCCESS;
     }
 
-    return EXIT_SUCCESS;
+    return ret_val;
 }
 
 static int run_partial_cleanup_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
@@ -1191,40 +1184,43 @@ static int run_partial_cleanup_demo(const struct p101_env *env, struct p101_erro
     int         file_fd;
     int         pipe_fds[2];
     const char *buffer;
+    int         ret_val;
 
     P101_TRACE_SCOPE(env);
     buffer      = NULL;
     pipe_fds[0] = -1;
     pipe_fds[1] = -1;
+    ret_val     = EXIT_FAILURE;
     p101_printf(env, err, "partial-cleanup: acquires several resources and releases only some\n");
 
     file_fd = p101_open(env, err, args->output_path, O_WRONLY | O_CREAT | O_TRUNC, REPORT_FILE_MODE);
     if(p101_error_has_error(err))
     {
-        return EXIT_FAILURE;
+        goto done;
     }
 
     buffer = make_buffer(env, err, args->bytes, 'p');
     if(p101_error_has_error(err))
     {
-        return EXIT_FAILURE;
+        goto done;
     }
 
     p101_pipe(env, err, pipe_fds);
     if(p101_error_has_error(err))
     {
-        return EXIT_FAILURE;
+        goto done;
     }
 
     p101_write(env, err, file_fd, buffer, args->bytes);
     p101_close(env, err, pipe_fds[1]);
 
-    if(p101_error_has_error(err))
+    if(p101_error_has_no_error(err))
     {
-        return EXIT_FAILURE;
+        ret_val = EXIT_SUCCESS;
     }
 
-    return EXIT_SUCCESS;
+done:
+    return ret_val;
 }
 
 static int run_realloc_leak_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
@@ -1295,51 +1291,54 @@ done:
 static int run_double_free_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
 {
     char *buffer;
+    int   ret_val;
 
     P101_TRACE_SCOPE(env);
+    ret_val = EXIT_FAILURE;
     p101_printf(env, err, "double-free: intentionally releases one allocation twice\n");
 
     buffer = make_buffer(env, err, args->bytes, 'd');
-    if(buffer == NULL || p101_error_has_error(err))
+    if(buffer != NULL && p101_error_has_no_error(err))
     {
-        return EXIT_FAILURE;
+        /*
+         * Emit the erroneous first release, then let p101_free emit the second
+         * release while performing the one real free. Calling free twice would
+         * be undefined behavior and could abort before the event stream
+         * completes.
+         */
+        P101_TRACK_FREE(env, buffer);
+        p101_free(env, buffer);
+        ret_val = EXIT_SUCCESS;
     }
 
-    /*
-     * Emit the erroneous first release, then let p101_free emit the second
-     * release while performing the one real free. Calling free twice would be
-     * undefined behavior and could abort before the event stream completes.
-     */
-    P101_TRACK_FREE(env, buffer);
-    p101_free(env, buffer);
-
-    return EXIT_SUCCESS;
+    return ret_val;
 }
 
 static int run_stray_free_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
 {
     char       *buffer;
     const char *interior;
+    int         ret_val;
 
     P101_TRACE_SCOPE(env);
+    ret_val = EXIT_FAILURE;
     p101_printf(env, err, "stray-free: intentionally frees an interior pointer\n");
 
     buffer = make_buffer(env, err, args->bytes, 's');
-    if(buffer == NULL || p101_error_has_error(err))
+    if(buffer != NULL && p101_error_has_no_error(err))
     {
-        return EXIT_FAILURE;
+        interior = buffer + 1;
+        /*
+         * The bad event is the attempted release of an interior pointer.
+         * Record it explicitly, then free the actual allocation once so the
+         * fixture is deterministic under every allocator.
+         */
+        P101_TRACK_FREE(env, interior);
+        p101_free(env, buffer);
+        ret_val = EXIT_SUCCESS;
     }
 
-    interior = buffer + 1;
-    /*
-     * The bad event is the attempted release of an interior pointer. Record
-     * it explicitly, then free the actual allocation once so the fixture is
-     * deterministic under every allocator.
-     */
-    P101_TRACK_FREE(env, interior);
-    p101_free(env, buffer);
-
-    return EXIT_SUCCESS;
+    return ret_val;
 }
 
 static int run_sizeof_pointer_demo(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
@@ -1782,105 +1781,32 @@ static void close_fd_preserving_error(const struct p101_env *env, struct p101_er
     struct p101_error *cleanup_err;
 
     P101_TRACE_SCOPE(env);
-    if(fd == NULL || *fd == -1)
+    if(fd != NULL && *fd != -1)
     {
-        return;
-    }
-
-    if(p101_error_has_no_error(err))
-    {
-        p101_close(env, err, *fd);
+        if(p101_error_has_no_error(err))
+        {
+            p101_close(env, err, *fd);
+        }
+        else
+        {
+            cleanup_err = p101_error_create(false);
+            if(cleanup_err != NULL)
+            {
+                p101_close(env, cleanup_err, *fd);
+                p101_error_destroy(cleanup_err);
+            }
+            else
+            {
+                /*
+                 * Last-resort cleanup: p101_error_create itself could not
+                 * allocate a scratch error object, so close with the primary
+                 * object rather than intentionally leaking the descriptor.
+                 */
+                p101_close(env, err, *fd);
+            }
+        }
         *fd = -1;
-        return;
     }
-
-    cleanup_err = p101_error_create(false);
-    if(cleanup_err != NULL)
-    {
-        p101_close(env, cleanup_err, *fd);
-        p101_error_destroy(cleanup_err);
-    }
-    else
-    {
-        /*
-         * Last-resort cleanup: p101_error_create itself could not allocate a
-         * scratch error object, so close with the primary object rather than
-         * intentionally leaking the descriptor.
-         */
-        p101_close(env, err, *fd);
-    }
-    *fd = -1;
-}
-
-static int run_child_exit_wrapper(const struct p101_env *env, struct p101_error *err, enum child_exit_mode mode)
-{
-    int   status;
-    pid_t child;
-
-    P101_TRACE_SCOPE(env);
-    status = 0;
-    child  = p101_fork(env, err);
-    if(child == -1 || p101_error_has_error(err))
-    {
-        return EXIT_FAILURE;
-    }
-
-    if(child == 0)
-    {
-        if(mode == CHILD_EXIT_NORMAL)
-        {
-            (void)p101_atexit(env, err, c_memory_runtime_atexit_hook);
-            p101_exit(env, C_MEMORY_EXIT_STATUS);
-        }
-        if(mode == CHILD_EXIT_QUICK)
-        {
-            (void)p101_at_quick_exit(env, err, c_memory_runtime_atexit_hook);
-            p101_quick_exit(env, C_MEMORY_QUICK_EXIT_STATUS);
-        }
-        if(mode == CHILD_EXIT_IMMEDIATE)
-        {
-            p101_exit_immediately(env, C_MEMORY_IMMEDIATE_EXIT_STATUS);
-        }
-        p101_abort(env);
-    }
-
-    if(p101_waitpid(env, err, child, &status, 0) == -1 || p101_error_has_error(err))
-    {
-        return EXIT_FAILURE;
-    }
-
-    if(mode == CHILD_EXIT_ABORT)
-    {
-        if(WIFSIGNALED(status))
-        {
-            return EXIT_SUCCESS;
-        }
-        return EXIT_FAILURE;
-    }
-
-    if(mode == CHILD_EXIT_NORMAL)
-    {
-        if(WIFEXITED(status) && WEXITSTATUS(status) == C_MEMORY_EXIT_STATUS)
-        {
-            return EXIT_SUCCESS;
-        }
-        return EXIT_FAILURE;
-    }
-
-    if(mode == CHILD_EXIT_QUICK)
-    {
-        if(WIFEXITED(status) && WEXITSTATUS(status) == C_MEMORY_QUICK_EXIT_STATUS)
-        {
-            return EXIT_SUCCESS;
-        }
-        return EXIT_FAILURE;
-    }
-
-    if(WIFEXITED(status) && WEXITSTATUS(status) == C_MEMORY_IMMEDIATE_EXIT_STATUS)
-    {
-        return EXIT_SUCCESS;
-    }
-    return EXIT_FAILURE;
 }
 
 static int compare_ints(const void *lhs, const void *rhs)

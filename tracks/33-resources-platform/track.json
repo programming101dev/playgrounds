@@ -5,6 +5,8 @@
   "generated": true,
   "wrapper_count": 30,
   "purpose": "Resource limits, priorities, clocks/time, memory mapping/locking, host/system configuration, and portable platform administration APIs.",
+  "behavior_demonstration": null,
+  "coverage_claim": "inventory-and-linkage",
   "domains": [
     {
       "name": "systems/platform-admin",

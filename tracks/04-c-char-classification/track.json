@@ -5,6 +5,8 @@
   "generated": true,
   "wrapper_count": 14,
   "purpose": "Character classification, case mapping, locale-sensitive predicates, and signed-char pitfalls.",
+  "behavior_demonstration": "safe character classification",
+  "coverage_claim": "executable-behavior",
   "domains": [
     {
       "name": "c/char-classification",

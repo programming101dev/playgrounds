@@ -4,7 +4,6 @@
 #include "scenario.h"
 #include <p101_c/p101_ctype.h>
 #include <p101_c/p101_stdio.h>
-#include <p101_c/p101_stdlib.h>
 #include <p101_c/p101_string.h>
 #include <p101_cli/cli.h>
 #include <p101_convert/integer.h>
@@ -33,7 +32,8 @@ void p101_tool_playground_parse_arguments(const struct p101_env *env, struct p10
         {
             case 'h':
             {
-                p101_tool_playground_usage(env, err, argv[0], EXIT_SUCCESS, NULL);
+                args->show_help = true;
+                break;
             }
             case 'v':
             {
@@ -181,7 +181,7 @@ done:
     return;
 }
 
-_Noreturn void p101_tool_playground_usage(const struct p101_env *env, struct p101_error *err, const char *program_name, int exit_code, const char *message)
+void p101_tool_playground_usage(const struct p101_env *env, struct p101_error *err, const char *program_name, int exit_code, const char *message)
 {
 #ifndef P101_SUPPRESS_USAGE_TEXT
     FILE *stream;
@@ -206,8 +206,8 @@ _Noreturn void p101_tool_playground_usage(const struct p101_env *env, struct p10
     p101_tool_playground_print_scenarios(env, err, stream);
 #else
     (void)err;
+    (void)exit_code;
     (void)program_name;
     (void)message;
 #endif
-    p101_exit(env, exit_code);
 }

@@ -8,7 +8,7 @@
 enum
 {
     P101_TRACK_INDEX         = 2,
-    P101_TRACK_WRAPPER_COUNT = 24
+    P101_TRACK_WRAPPER_COUNT = 30
 };
 
 #endif /* P101_TRACK_02_C_MEMORY_BYTES_INFO_H */

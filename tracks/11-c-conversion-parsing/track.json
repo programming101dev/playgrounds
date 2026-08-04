@@ -5,6 +5,8 @@
   "generated": true,
   "wrapper_count": 46,
   "purpose": "Integer parsing, inttypes helpers, option parsing, and defensive conversion practice.",
+  "behavior_demonstration": null,
+  "coverage_claim": "inventory-and-linkage",
   "domains": [
     {
       "name": "c/cli-parsing",

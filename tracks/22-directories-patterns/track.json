@@ -5,6 +5,8 @@
   "generated": true,
   "wrapper_count": 21,
   "purpose": "Directory traversal, glob/fnmatch/wordexp, path decomposition, and tree walking.",
+  "behavior_demonstration": null,
+  "coverage_claim": "inventory-and-linkage",
   "domains": [
     {
       "name": "systems/directories-patterns",

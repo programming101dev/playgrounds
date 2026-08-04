@@ -8,9 +8,36 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const char *const wrapper_functions[] = {"p101_be16toh",          "p101_be32toh",           "p101_be64toh", "p101_bswap16", "p101_bswap32",          "p101_bswap64", "p101_htobe16", "p101_htobe32",
-                                                "p101_htobe64",          "p101_htole16",           "p101_htole32", "p101_htole64", "p101_is_little_endian", "p101_le16toh", "p101_le32toh", "p101_le64toh",
-                                                "p101_tool_run_capture", "p101_tool_run_redirect", "p101_memchr",  "p101_memcmp",  "p101_memcpy",           "p101_memmove", "p101_memset",  "p101_memccpy"};
+static const char *const wrapper_functions[] = {"p101_be16toh",
+                                                "p101_be32toh",
+                                                "p101_be64toh",
+                                                "p101_bswap16",
+                                                "p101_bswap32",
+                                                "p101_bswap64",
+                                                "p101_htobe16",
+                                                "p101_htobe32",
+                                                "p101_htobe64",
+                                                "p101_htole16",
+                                                "p101_htole32",
+                                                "p101_htole64",
+                                                "p101_is_little_endian",
+                                                "p101_le16toh",
+                                                "p101_le32toh",
+                                                "p101_le64toh",
+                                                "p101_tool_argv_append",
+                                                "p101_tool_argv_append_prefixed",
+                                                "p101_tool_argv_destroy",
+                                                "p101_tool_argv_init",
+                                                "p101_tool_read_pipe_close",
+                                                "p101_tool_read_pipe_open",
+                                                "p101_tool_run_capture",
+                                                "p101_tool_run_redirect",
+                                                "p101_memchr",
+                                                "p101_memcmp",
+                                                "p101_memcpy",
+                                                "p101_memmove",
+                                                "p101_memset",
+                                                "p101_memccpy"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 

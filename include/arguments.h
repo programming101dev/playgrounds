@@ -73,6 +73,7 @@ struct arguments
     unsigned int             bytes;
     unsigned int             repeats;
     bool                     verbose;
+    bool                     show_help;
 };
 
 #endif    // P101_TOOL_PLAYGROUND_ARGUMENTS_H

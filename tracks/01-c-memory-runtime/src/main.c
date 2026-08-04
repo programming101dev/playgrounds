@@ -6,20 +6,19 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const char *const wrapper_functions[] = {"p101_arc4random", "p101_arc4random_buf", "p101_arc4random_uniform",
-                                                "p101_initstate",  "p101_seed48",         "p101_setstate",
-                                                "p101_srand48",    "p101_srandom",        "p101_abort",
-                                                "p101_abs",        "p101_aligned_alloc",  "p101_at_quick_exit",
-                                                "p101_atexit",     "p101_bsearch",        "p101_calloc",
-                                                "p101_div",        "p101_exit",           "p101_exit_immediately",
-                                                "p101_free",       "p101_getenv",         "p101_labs",
-                                                "p101_ldiv",       "p101_llabs",          "p101_lldiv",
-                                                "p101_malloc",     "p101_mblen",          "p101_mbstowcs",
-                                                "p101_mbtowc",     "p101_qsort",          "p101_quick_exit",
-                                                "p101_realloc",    "p101_strtod",         "p101_strtof",
-                                                "p101_strtol",     "p101_strtold",        "p101_strtoll",
-                                                "p101_strtoul",    "p101_strtoull",       "p101_system",
-                                                "p101_wcstombs",   "p101_wctomb"};
+static const char *const wrapper_functions[] = {"p101_arc4random",    "p101_arc4random_buf", "p101_arc4random_uniform",
+                                                "p101_initstate",     "p101_seed48",         "p101_setstate",
+                                                "p101_srand48",       "p101_srandom",        "p101_abs",
+                                                "p101_aligned_alloc", "p101_at_quick_exit",  "p101_atexit",
+                                                "p101_bsearch",       "p101_calloc",         "p101_div",
+                                                "p101_free",          "p101_getenv",         "p101_labs",
+                                                "p101_ldiv",          "p101_llabs",          "p101_lldiv",
+                                                "p101_malloc",        "p101_mblen",          "p101_mbstowcs",
+                                                "p101_mbtowc",        "p101_qsort",          "p101_realloc",
+                                                "p101_strtod",        "p101_strtof",         "p101_strtol",
+                                                "p101_strtold",       "p101_strtoll",        "p101_strtoul",
+                                                "p101_strtoull",      "p101_system",         "p101_wcstombs",
+                                                "p101_wctomb"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 
@@ -50,6 +49,42 @@ static int write_wrapper_inventory(const struct p101_env *env, struct p101_error
         }
     }
 
+    return ret_val;
+}
+
+static int run_memory_runtime_demo(const struct p101_env *env, struct p101_error *err)
+{
+    enum
+    {
+        FIRST_MAGNITUDE  = 42,
+        SECOND_MAGNITUDE = 7,
+        EXPECTED_SUM     = 49
+    };
+
+    int *values;
+    int  ret_val;
+
+    ret_val = EXIT_FAILURE;
+    values  = (int *)p101_calloc(env, err, 3U, sizeof(*values));
+    if(values == NULL || p101_error_has_error(err))
+    {
+        goto done;
+    }
+    values[0] = p101_abs(env, err, -FIRST_MAGNITUDE);
+    values[1] = p101_abs(env, err, -SECOND_MAGNITUDE);
+    values[2] = values[0] + values[1];
+    if(p101_error_has_error(err) || values[2] != EXPECTED_SUM)
+    {
+        goto done;
+    }
+    if(p101_fprintf(env, err, stdout, "Checked allocation result: %d\n", values[2]) < 0 || p101_error_has_error(err))
+    {
+        goto done;
+    }
+    ret_val = EXIT_SUCCESS;
+
+done:
+    p101_free(env, values);
     return ret_val;
 }
 
@@ -89,6 +124,11 @@ int main(void)
         goto done;
     }
     if(write_wrapper_inventory(env, err) != EXIT_SUCCESS)
+    {
+        goto done;
+    }
+
+    if(run_memory_runtime_demo(env, err) != EXIT_SUCCESS)
     {
         goto done;
     }

@@ -5,6 +5,8 @@
   "generated": true,
   "wrapper_count": 83,
   "purpose": "NUL-terminated byte strings, comparisons, searching, collation, and common string extensions.",
+  "behavior_demonstration": null,
+  "coverage_claim": "inventory-and-linkage",
   "domains": [
     {
       "name": "c/byte-strings",

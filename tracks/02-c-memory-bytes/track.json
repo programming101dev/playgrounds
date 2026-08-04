@@ -3,12 +3,14 @@
   "title": "c memory bytes",
   "order": 2,
   "generated": true,
-  "wrapper_count": 24,
+  "wrapper_count": 30,
   "purpose": "Raw byte memory operations and the difference between object bytes and strings.",
+  "behavior_demonstration": "host/network byte-order round trip",
+  "coverage_claim": "executable-behavior",
   "domains": [
     {
       "name": "c/byte-utility",
-      "function_count": 18,
+      "function_count": 24,
       "functions": [
         "p101_be16toh",
         "p101_be32toh",
@@ -26,6 +28,12 @@
         "p101_le16toh",
         "p101_le32toh",
         "p101_le64toh",
+        "p101_tool_argv_append",
+        "p101_tool_argv_append_prefixed",
+        "p101_tool_argv_destroy",
+        "p101_tool_argv_init",
+        "p101_tool_read_pipe_close",
+        "p101_tool_read_pipe_open",
         "p101_tool_run_capture",
         "p101_tool_run_redirect"
       ]

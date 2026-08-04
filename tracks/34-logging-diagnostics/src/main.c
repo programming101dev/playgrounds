@@ -6,7 +6,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const char *const wrapper_functions[] = {"p101_closelog", "p101_err", "p101_errx", "p101_fmtmsg", "p101_openlog", "p101_setlogmask", "p101_verr", "p101_verrx", "p101_vwarn", "p101_vwarnx", "p101_warn", "p101_warnx"};
+static const char *const wrapper_functions[] = {"p101_closelog", "p101_fmtmsg", "p101_openlog", "p101_setlogmask", "p101_vwarn", "p101_vwarnx", "p101_warn", "p101_warnx"};
 
 static const size_t wrapper_function_count = sizeof(wrapper_functions) / sizeof(wrapper_functions[0]);
 
