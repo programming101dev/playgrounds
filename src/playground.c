@@ -424,8 +424,15 @@ int p101_tool_playground_run(const struct p101_env *env, struct p101_error *err,
             ret_val = run_parser_fuzz_demo(env, err, args);
             break;
         }
+        case SCENARIO_COUNT:
+        {
+            P101_ERROR_RAISE_USER(err, "The scenario-count sentinel is not executable.", ERR_USAGE);
+            ret_val = EXIT_FAILURE;
+            break;
+        }
         default:
         {
+            P101_ERROR_RAISE_USER(err, "The scenario value is invalid.", ERR_USAGE);
             ret_val = EXIT_FAILURE;
             break;
         }
@@ -808,12 +815,12 @@ static int run_c_memory_runtime_demo(const struct p101_env *env, struct p101_err
         goto done;
     }
 
-    p101_printf(env, err, "c-memory-runtime: exercised 53 wrappers\n");
+    p101_printf(env, err, "c-memory-runtime: completed declared wrapper smoke path\n");
     if(p101_error_has_error(err))
     {
         goto done;
     }
-    if(write_text_output(env, err, args, "c-memory-runtime: exercised 53 wrappers\n") != EXIT_SUCCESS)
+    if(write_text_output(env, err, args, "c-memory-runtime: completed declared wrapper smoke path\n") != EXIT_SUCCESS)
     {
         goto done;
     }
@@ -927,6 +934,16 @@ static int run_fork_demo(const struct p101_env *env, struct p101_error *err, con
     ret_val = EXIT_FAILURE;
     p101_pipe(env, err, fds);
 
+    if(p101_error_has_error(err))
+    {
+        goto done;
+    }
+    /*
+     * A child that returns through main inherits the parent's stdio buffers.
+     * Flush the teaching output before fork so both processes cannot flush the
+     * same pre-fork bytes.
+     */
+    p101_fflush(env, err, stdout);
     if(p101_error_has_error(err))
     {
         goto done;

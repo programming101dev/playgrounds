@@ -13,7 +13,7 @@
   "expected_findings": [],
   "fault_count": 0,
   "expected_output_contains": [
-    "c-memory-runtime: exercised 53 wrappers"
+    "c-memory-runtime: completed declared wrapper smoke path"
   ],
   "fix_goal": "Keep every c-memory-runtime wrapper compiling, linking, running, and visible to p101 observation.",
   "fix_steps": [
@@ -22,5 +22,5 @@
     "If it fails, identify the wrapper family named by the scenario output or compiler diagnostic.",
     "Fix the wrapper use or portability guard without removing the wrapper from the track inventory."
   ],
-  "lesson": "This smoke scenario exercises 53 runtime wrapper calls before students work the broken ownership labs."
+  "lesson": "This smoke scenario executes the declared runtime wrapper path before students work the broken ownership labs; wrapper counts come from the generated track manifest."
 }

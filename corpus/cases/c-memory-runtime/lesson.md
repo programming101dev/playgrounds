@@ -12,7 +12,7 @@ Expected result: `p101 check` exits `0`, reports no findings, and the output
 contains:
 
 ```text
-c-memory-runtime: exercised 53 wrappers
+c-memory-runtime: completed declared wrapper smoke path
 ```
 
 ## Why this exists

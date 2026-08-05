@@ -325,14 +325,14 @@ if [ "$do_quality" -eq 1 ]; then
     record "SKIP" "fuzz smoke" "--skip-fuzz"
   fi
 
-  if [ "$do_coverage" -eq 1 ] && [ -x ./coverage-report.sh ] && command -v gcovr >/dev/null 2>&1; then
+  if [ "$do_coverage" -eq 1 ] && [ -x ./report.sh ] && command -v gcovr >/dev/null 2>&1; then
     run_logged "configure coverage build" "$log_dir/configure-coverage.log" "0" ./change-compiler.sh -c "$cc" --coverage || true
     run_logged "coverage build" "$log_dir/build-coverage.log" "0" ./build.sh -q || true
     run_logged "coverage tests" "$log_dir/tests-coverage.log" "0" ./test.sh --coverage || true
-    run_logged "coverage report" "$log_dir/coverage.log" "0" ./coverage-report.sh --no-open --min 1 -- -s tour || true
+    run_logged "coverage report" "$log_dir/coverage.log" "0" ./report.sh coverage --no-open --min 1 -- -s tour || true
     copy_coverage_report
-  elif [ "$do_coverage" -eq 1 ] && [ ! -x ./coverage-report.sh ]; then
-    record "FAIL" "coverage report" "coverage-report.sh not executable"
+  elif [ "$do_coverage" -eq 1 ] && [ ! -x ./report.sh ]; then
+    record "FAIL" "coverage report" "report.sh not executable"
   elif [ "$do_coverage" -eq 1 ]; then
     record "FAIL" "coverage report" "gcovr not found"
   else

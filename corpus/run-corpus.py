@@ -12,6 +12,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from scenario_manifest import load_scenario_manifest
+
 
 @dataclass(frozen=True)
 class CaseResult:
@@ -77,12 +79,17 @@ def case_tracks(case: dict[str, Any]) -> set[str]:
     return set()
 
 
-def load_cases(cases_dir: Path, selected: set[str] | None, track: str | None) -> list[dict[str, Any]]:
+def load_cases(root: Path, cases_dir: Path, selected: set[str] | None, track: str | None) -> list[dict[str, Any]]:
     cases: list[dict[str, Any]] = []
+    scenarios = load_scenario_manifest(root)
     for expected_path in sorted(cases_dir.glob("*/expected.json")):
         case = read_json(expected_path)
         case["case_dir"] = str(expected_path.parent)
         name = str(case.get("name"))
+        scenario = str(case.get("scenario", ""))
+        if scenario not in scenarios:
+            raise ValueError(f"{expected_path}: unknown scenario {scenario!r}")
+        case["scenario_behavior"] = scenarios[scenario].behavior
         if selected is not None and name not in selected:
             continue
         if track is not None and track not in case_tracks(case):
@@ -274,7 +281,11 @@ def main(argv: list[str]) -> int:
     else:
         selected = None
 
-    cases = load_cases(cases_dir, selected, args.track)
+    try:
+        cases = load_cases(root, cases_dir, selected, args.track)
+    except (OSError, ValueError) as exc:
+        print(f"p101 corpus: {exc}", file=sys.stderr)
+        return 2
     if not cases:
         print("p101 corpus: no cases selected", file=sys.stderr)
         return 2

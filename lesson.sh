@@ -99,6 +99,11 @@ assert_contains() {
   file="$2"
   pattern="$3"
 
+  if [ ! -f "$file" ]; then
+    printf '| FAIL | %s | missing `%s` |\n' "$title" "$file" >> "$summary"
+    return 1
+  fi
+
   if grep -Eq "$pattern" "$file"; then
     printf '| PASS | %s | [%s](./%s) |\n' "$title" "$(basename "$file")" "${file#"$out_dir"/}" >> "$summary"
     return 0
@@ -146,13 +151,31 @@ need_runtime_tools() {
 }
 
 do_wrappers() {
+  compile_db=""
+
   if [ -z "$wrapper_audit" ]; then
     printf '| FAIL | wrapper boundary | p101-wrapper-audit not found |\n' >> "$summary"
     failures=1
     return 1
   fi
-  run_step "wrapper boundary audit" "$out_dir/logs/wrappers.log" 0 "$wrapper_audit" src include || failures=1
+  if [ -f compile_commands.json ]; then
+    compile_db="$(pwd -P)/compile_commands.json"
+  else
+    for candidate in build-*/compile_commands.json; do
+      if [ -f "$candidate" ]; then
+        compile_db="$(pwd -P)/$candidate"
+        break
+      fi
+    done
+  fi
+  if [ -z "$compile_db" ]; then
+    printf '| FAIL | wrapper boundary | compile_commands.json not found; run ./change-compiler.sh and ./build.sh first |\n' >> "$summary"
+    failures=1
+    return 1
+  fi
+  run_step "wrapper boundary audit" "$out_dir/logs/wrappers.log" 0 "$wrapper_audit" --compile-db "$compile_db" src include || failures=1
   assert_contains "wrapper audit produced a summary" "$out_dir/logs/wrappers.log" "p101-wrapper-audit summary" || failures=1
+  assert_contains "wrapper audit parsed every admitted file" "$out_dir/logs/wrappers.log" "parse_failures:[[:space:]]*0" || failures=1
   assert_contains "wrapper audit found no missed wrappers" "$out_dir/logs/wrappers.log" "missed_wrappers:[[:space:]]*0" || failures=1
 }
 
@@ -163,7 +186,8 @@ do_fd_leak() {
     return 1
   fi
   run_step "fd leak observation" "$out_dir/logs/fd-leak.log" 1 "$p101_dispatcher" run -o "$out_dir/fd-leak" -- "$playground" -s fd-leak -o "$out_dir/fd-leak-output.txt" || failures=1
-  assert_contains "fd leak is counted" "$out_dir/fd-leak/resource-report.json" "\"fd_leaks\"[[:space:]]*:[[:space:]]*[1-9]" || failures=1
+  assert_contains "fd leak report uses the current schema" "$out_dir/fd-leak/analysis/resource-report.json" "\"schema\"[[:space:]]*:[[:space:]]*\"p101-resource-policy-findings-v1\"" || failures=1
+  assert_contains "fd leak is counted" "$out_dir/fd-leak/analysis/resource-report.json" "\"findings\"[[:space:]]*:[[:space:]]*[1-9]" || failures=1
 }
 
 do_error_path() {
@@ -198,6 +222,7 @@ case "$lesson" in
   wrappers) do_wrappers ;;
   fd-leak) do_fd_leak ;;
   error-path) do_error_path ;;
+  module-split) do_module_split ;;
   *) echo "Unknown lesson: $lesson" >&2; usage; exit 2 ;;
 esac
 

@@ -46,8 +46,8 @@ static void set_defaults(struct arguments *args)
 
 static void test_parse_accepts_full_option_set(void)
 {
-    char             *argv[] = {"p101-tool-playground", "-v", "-s", "pipe", "-o", "/tmp/out", "-b", "128", "-r", "3", NULL};
-    struct arguments  args;
+    char            *argv[] = {"p101-tool-playground", "-v", "-s", "pipe", "-o", "/tmp/out", "-b", "128", "-r", "3", NULL};
+    struct arguments args;
 
     reset_getopt();
     set_defaults(&args);
@@ -204,8 +204,8 @@ static void test_scenario_names_round_trip(void)
 
 static void test_rejects_unknown_scenario(void)
 {
-    char             *argv[] = {"p101-tool-playground", "-s", "wat", NULL};
-    struct arguments  args;
+    char            *argv[] = {"p101-tool-playground", "-s", "wat", NULL};
+    struct arguments args;
 
     reset_getopt();
     set_defaults(&args);
@@ -218,8 +218,8 @@ static void test_rejects_unknown_scenario(void)
 
 static void test_rejects_too_many_bytes(void)
 {
-    char             *argv[] = {"p101-tool-playground", "-b", "4097", NULL};
-    struct arguments  args;
+    char            *argv[] = {"p101-tool-playground", "-b", "4097", NULL};
+    struct arguments args;
 
     reset_getopt();
     set_defaults(&args);
@@ -233,8 +233,8 @@ static void test_rejects_too_many_bytes(void)
 
 static void test_rejects_positional_argument(void)
 {
-    char             *argv[] = {"p101-tool-playground", "extra", NULL};
-    struct arguments  args;
+    char            *argv[] = {"p101-tool-playground", "extra", NULL};
+    struct arguments args;
 
     reset_getopt();
     set_defaults(&args);

@@ -14,6 +14,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from scenario_manifest import load_scenario_manifest
+
 
 @dataclass(frozen=True)
 class LabCase:
@@ -24,6 +26,7 @@ class LabCase:
     category: str
     tracks: list[str]
     scenario: str
+    scenario_behavior: str
     expected_exit: int
     expected_status: str
     lesson: str
@@ -109,6 +112,7 @@ def expected_tracks(expected: dict[str, Any]) -> list[str]:
 
 def load_cases(root: Path, runs_dir: Path, selected: set[str] | None, track: str | None) -> list[LabCase]:
     cases: list[LabCase] = []
+    scenarios = load_scenario_manifest(root)
     for expected_path in sorted((root / "corpus" / "cases").glob("*/expected.json")):
         expected = load_expected(expected_path)
         name = str(expected["name"])
@@ -118,6 +122,9 @@ def load_cases(root: Path, runs_dir: Path, selected: set[str] | None, track: str
         if track is not None and track not in tracks:
             continue
         case_dir = Path(expected["case_dir"])
+        scenario = str(expected["scenario"])
+        if scenario not in scenarios:
+            raise ValueError(f"{expected_path}: unknown scenario {scenario!r}")
         lesson = read_text(case_dir / "lesson.md", str(expected.get("lesson", ""))).strip()
         expected_findings = [str(item) for item in expected.get("expected_findings", [])]
         fix_steps = [str(item) for item in expected.get("fix_steps", [])]
@@ -135,7 +142,8 @@ def load_cases(root: Path, runs_dir: Path, selected: set[str] | None, track: str
                 title=str(expected.get("title", name)),
                 category=str(expected.get("category", "")),
                 tracks=tracks,
-                scenario=str(expected["scenario"]),
+                scenario=scenario,
+                scenario_behavior=scenarios[scenario].behavior,
                 expected_exit=int(expected["expected_exit"]),
                 expected_status=str(expected.get("expected_status", "")),
                 lesson=lesson,
@@ -321,9 +329,13 @@ def expected_issue_is_present(case: LabCase) -> bool:
             output_text = output_path.read_text(encoding="utf-8", errors="replace")
         except OSError:
             return False
-        if case.expected_output_contains and all(item in output_text for item in case.expected_output_contains):
-            return True
-        if case.expected_output_missing and all(item not in output_text for item in case.expected_output_missing):
+        contains_match = not case.expected_output_contains or all(
+            item in output_text for item in case.expected_output_contains
+        )
+        missing_match = not case.expected_output_missing or all(
+            item not in output_text for item in case.expected_output_missing
+        )
+        if contains_match and missing_match:
             return True
     return False
 
@@ -528,6 +540,7 @@ def render_markdown(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
                 f"- Difficulty: `{case_difficulty(case)}`",
                 f"- Estimated time: `{case_minutes(case)} minutes`",
                 f"- Scenario: `{case.scenario}`",
+                f"- Evidence kind: `{case.scenario_behavior}`",
                 f"- Expected status: `{case.expected_status}`",
                 f"- Expected exit: `{case.expected_exit}`",
                 f"- Progress: `{lab_progress(case)}`",
@@ -626,7 +639,7 @@ def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
                 <h3>Lab {case.order}: {html.escape(case.title)}</h3>
                 <span>{html.escape(progress)}</span>
               </div>
-              <p><code>{html.escape(case.issue_id)}</code> · tracks {html.escape(', '.join(case.tracks))} · {html.escape(case_phase(case))} · {html.escape(case_difficulty(case))} · about {case_minutes(case)} min · scenario <code>{html.escape(case.scenario)}</code></p>
+              <p><code>{html.escape(case.issue_id)}</code> · tracks {html.escape(', '.join(case.tracks))} · {html.escape(case_phase(case))} · {html.escape(case_difficulty(case))} · about {case_minutes(case)} min · scenario <code>{html.escape(case.scenario)}</code> · evidence <code>{html.escape(case.scenario_behavior)}</code></p>
               <p class="lesson">{html.escape(lesson_excerpt(case.lesson))}</p>
               <dl>
                 <dt>Goal</dt><dd>{html.escape(case.fix_goal)}</dd>

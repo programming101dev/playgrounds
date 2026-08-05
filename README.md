@@ -43,7 +43,7 @@ the actual wrapper surface:
 
 - 40 tracks;
 - 1 orientation pre-track;
-- 1,224 wrappers assigned to one primary track;
+- 1,237 wrappers assigned to one primary track;
 - inventory assignment is kept distinct from executable behavior coverage;
 - 0 uncovered domains;
 - no `misc` bucket.
@@ -75,7 +75,7 @@ Options:
 | --- | --- | --- |
 | `tour` | Clean file, realloc, pipe, and fork path | clean |
 | `orientation` | First p101 tour: env, err, wrappers, and tools | clean |
-| `c-memory-runtime` | Clean smoke test for 53 Track 01 runtime wrapper calls | clean |
+| `c-memory-runtime` | Clean smoke path for the declared Track 01 runtime wrappers | clean |
 | `clean-file` | Open/write/close/free | clean |
 | `realloc` | Allocate, grow, and free | clean |
 | `pipe` | Create/read/write/close pipe fds | clean |
@@ -130,8 +130,18 @@ Options:
 | `thread-argument-lifetime` | Let a thread outlive its argument storage | concurrency/lifetime bug |
 | `parser-fuzz` | Parse boundary-heavy input without fuzz coverage | testing practice bug |
 
-The bug scenarios are intentionally broken. They are not regressions; they are
-teaching targets.
+Scenario names, descriptions, and evidence kinds have one source of truth:
+[`include/playground_scenarios.def`](include/playground_scenarios.def).
+`p101-tool-playground -h` renders that manifest and labels every scenario as:
+
+- `executable-clean`: a real behavior path expected to pass;
+- `executable-defect`: deterministic broken behavior that is safe to execute;
+- `modeled-defect`: an output model used to teach a dangerous or
+  nondeterministic defect without invoking undefined behavior.
+
+The defect scenarios are intentional teaching targets, but a modeled defect is
+not evidence that the unsafe operation itself executed. Corpus and lab reports
+carry the same evidence-kind label so those two claims cannot be confused.
 
 ## Lab progression
 
@@ -169,10 +179,10 @@ contracts under `expectations/`. Capture once, replay the current analyzers,
 then verify the lesson contract:
 
 ```bash
-../scripts/p101 observe -C -o /tmp/p101-tour -- \
+../scripts/p101 observe -o /tmp/p101-tour -- \
   ./build-clang/p101-tool-playground -s tour
 ../scripts/p101 analyze /tmp/p101-tour
-../scripts/p101 verify -e expectations/tour.txt /tmp/p101-tour.analysis
+../scripts/p101 verify -e "$(pwd -P)/expectations/tour.txt" /tmp/p101-tour.analysis
 ```
 
 Equivalent contracts exist for `fd-leak`, `alloc-leak`, and `double-close`.
@@ -269,11 +279,12 @@ submission, run:
 ./submit-labs.sh
 ```
 
-Networking-specific labs live in this repository too, as focused networking
-tracks rather than a separate playground repo. TCP, UDP, interfaces, socket
-nonblocking behavior, protocol framing, and the port-forwarder capstone should
-land under the relevant `network-*` track directories as those lessons are
-filled in.
+Networking wrapper inventories live in this repository as focused tracks rather
+than a separate playground repo. They are reference/linkage tracks until a
+track explicitly declares and tests executable behavior. TCP, UDP, interfaces,
+socket nonblocking behavior, protocol framing, and the port-forwarder capstone
+should become executable lessons under the relevant `network-*` track
+directories as those lessons are filled in.
 
 For instructor/CI checks that prove the committed broken fixtures still produce
 their expected diagnostics, add `--strict-corpus`:
@@ -338,7 +349,7 @@ The playground also demonstrates the project pipeline itself:
 ./change-compiler.sh -c clang --coverage
 ./build.sh
 ./test.sh --coverage
-./coverage-report.sh --no-open --min 50 -- -s tour
+./report.sh coverage --no-open --min 50 -- -s tour
 ./check.sh
 ```
 
@@ -365,7 +376,7 @@ scenario stayed inside its expected resource model.
 4. Run `p101 trace` on the analysis directory.
 5. Run `fault-lab` through `p101 walk` and find the first injected
    failure that leaks.
-6. Run `./test.sh`, `./fuzz.sh`, and `./coverage-report.sh` to show the static
+6. Run `./test.sh`, `./fuzz.sh`, and `./report.sh coverage` to show the static
    and dynamic quality workflow around the demo.
 
 Or run `./lab.sh` first and use the generated `index.html` as the table of
