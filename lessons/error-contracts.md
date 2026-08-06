@@ -20,6 +20,28 @@ return. A `void` function can simply fall through its closing brace. Avoid
 branch-local early returns: record the outcome, run the shared cleanup path,
 and return once.
 
+Keep every call visible as a separate operation. A call whose result is
+intentionally ignored may stand alone. When another operation consumes a
+result, the call must initialize or assign a named local before that value is
+tested, passed, returned, cast, or combined:
+
+```c
+ready = is_ready();
+if(ready)
+{
+    value = read_value();
+    result = transform(value);
+}
+return result;
+```
+
+Do not hide work inside `if(is_ready())`, `transform(read_value())`,
+`return transform(value)`, or `(void)transform(value)`. With a named local, a
+debugger can stop after each operation, a log can show the intermediate value,
+and the source makes evaluation order explicit. The compiler may optimize the
+local away, so this is an observability rule rather than a promise of faster
+machine code.
+
 Verify with:
 
 ```sh

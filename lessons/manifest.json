@@ -46,7 +46,8 @@
         "P101-ERR-005",
         "P101-ERR-006",
         "P101-ERR-007",
-        "P101-ERR-008"
+        "P101-ERR-008",
+        "P101-ERR-009"
       ],
       "acceptance_profile": "error-contract",
       "verification": "p101 doctor -s <source-path>"
@@ -64,7 +65,6 @@
         "P101-MOD-002",
         "P101-MOD-003",
         "P101-MOD-004",
-        "P101-MOD-005",
         "P101-MOD-006",
         "P101-MOD-007",
         "P101-MOD-008",
@@ -233,7 +233,8 @@
         "P101-ERR-005",
         "P101-ERR-006",
         "P101-ERR-007",
-        "P101-ERR-008"
+        "P101-ERR-008",
+        "P101-ERR-009"
       ],
       "command": [
         "./test.sh"
@@ -260,7 +261,6 @@
         "P101-MOD-002",
         "P101-MOD-003",
         "P101-MOD-004",
-        "P101-MOD-005",
         "P101-MOD-006",
         "P101-MOD-007",
         "P101-MOD-008",
