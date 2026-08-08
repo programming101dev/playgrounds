@@ -38,31 +38,16 @@ int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
     argc      = 1;
     p         = buf;
 
-    while(argc < FUZZ_MAX_ARGS - 1)
+    /*
+     * Every NUL-terminated segment of the fuzz buffer is one argument, so an
+     * empty segment reaches the parser as an empty-string argument and a
+     * segment may carry whitespace.
+     */
+    while(p < buf + size && argc < FUZZ_MAX_ARGS - 1)
     {
-        while(*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r' || *p == '\v' || *p == '\f')
-        {
-            p++;
-        }
-
-        if(*p == '\0')
-        {
-            break;
-        }
-
         argv[argc] = p;
         argc++;
-
-        while(*p != '\0' && *p != ' ' && *p != '\t' && *p != '\n' && *p != '\r' && *p != '\v' && *p != '\f')
-        {
-            p++;
-        }
-
-        if(*p != '\0')
-        {
-            *p = '\0';
-            p++;
-        }
+        p += p101_strlen(env, p) + 1U;
     }
 
     argv[argc] = NULL;

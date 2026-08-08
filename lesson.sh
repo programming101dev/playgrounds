@@ -74,13 +74,17 @@ run_step() {
   shift 3
 
   printf '==> %s\n' "$title"
-  printf '$' > "$log"
-  for arg in "$@"; do
-    printf ' %s' "$arg" >> "$log"
-  done
-  printf '\n\n' >> "$log"
 
-  "$@" >> "$log" 2>&1
+  # The command banner goes to a sibling file so that assertions against the
+  # step log cannot be satisfied by the echoed command line itself.
+  cmd_log="$log.cmd"
+  printf '$' > "$cmd_log"
+  for arg in "$@"; do
+    printf ' %s' "$arg" >> "$cmd_log"
+  done
+  printf '\n' >> "$cmd_log"
+
+  "$@" > "$log" 2>&1
   rc=$?
 
   for accepted_rc in $expected_rc; do
@@ -110,6 +114,34 @@ assert_contains() {
   fi
 
   printf '| FAIL | %s missing `%s` | [%s](./%s) |\n' "$title" "$pattern" "$(basename "$file")" "${file#"$out_dir"/}" >> "$summary"
+  return 1
+}
+
+assert_findings_counted() {
+  title="$1"
+  file="$2"
+
+  if [ ! -f "$file" ]; then
+    printf '| FAIL | %s | missing `%s` |\n' "$title" "$file" >> "$summary"
+    return 1
+  fi
+
+  # Read the top-level summary count instead of grepping for any nested
+  # "findings" key, which matches unrelated per-record structures.
+  count="$(python3 -c 'import json, sys
+data = json.load(open(sys.argv[1], encoding="utf-8"))
+summary = data.get("summary")
+value = summary.get("findings") if isinstance(summary, dict) else data.get("findings")
+if isinstance(value, list):
+    value = len(value)
+print(value if isinstance(value, int) else -1)' "$file" 2>/dev/null || true)"
+
+  if [ -n "$count" ] && [ "$count" -gt 0 ] 2>/dev/null; then
+    printf '| PASS | %s | [%s](./%s) |\n' "$title" "$(basename "$file")" "${file#"$out_dir"/}" >> "$summary"
+    return 0
+  fi
+
+  printf '| FAIL | %s reported no top-level findings | [%s](./%s) |\n' "$title" "$(basename "$file")" "${file#"$out_dir"/}" >> "$summary"
   return 1
 }
 
@@ -187,7 +219,7 @@ do_fd_leak() {
   fi
   run_step "fd leak observation" "$out_dir/logs/fd-leak.log" 1 "$p101_dispatcher" run -o "$out_dir/fd-leak" -- "$playground" -s fd-leak -o "$out_dir/fd-leak-output.txt" || failures=1
   assert_contains "fd leak report uses the current schema" "$out_dir/fd-leak/analysis/resource-report.json" "\"schema\"[[:space:]]*:[[:space:]]*\"p101-resource-policy-findings-v1\"" || failures=1
-  assert_contains "fd leak is counted" "$out_dir/fd-leak/analysis/resource-report.json" "\"findings\"[[:space:]]*:[[:space:]]*[1-9]" || failures=1
+  assert_findings_counted "fd leak is counted" "$out_dir/fd-leak/analysis/resource-report.json" || failures=1
 }
 
 do_error_path() {

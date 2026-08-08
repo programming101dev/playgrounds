@@ -36,6 +36,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--playground", type=Path, help="Path to p101-tool-playground executable.")
     parser.add_argument("--skip-html", action="store_true", help="Pass --skip-html to p101 check.")
     parser.add_argument("--skip-bundle", action="store_true", help="Pass --skip-bundle to p101 check.")
+    parser.add_argument("--strict", action="store_true", help="Fail on unexpected extra finding IDs, and require per-case opt-in for exit-code amnesty.")
     return parser.parse_args(argv)
 
 
@@ -170,7 +171,7 @@ def clean_runtime_with_module_findings(report_dir: Path) -> bool:
     )
 
 
-def run_case(root: Path, p101: Path, playground: Path, out_dir: Path, case: dict[str, Any], skip_html: bool, skip_bundle: bool) -> CaseResult:
+def run_case(root: Path, p101: Path, playground: Path, out_dir: Path, case: dict[str, Any], skip_html: bool, skip_bundle: bool, strict: bool = False) -> CaseResult:
     name = str(case["name"])
     scenario = str(case["scenario"])
     case_out = out_dir / name
@@ -179,6 +180,8 @@ def run_case(root: Path, p101: Path, playground: Path, out_dir: Path, case: dict
     expected_exit = int(case["expected_exit"])
     fault_count = int(case.get("fault_count", 0))
     expected_findings = {str(item) for item in case.get("expected_findings", [])}
+    allowed_extra_findings = {str(item) for item in case.get("allowed_extra_findings", [])}
+    exit_amnesty = str(case.get("exit_amnesty", ""))
     expected_error_path_findings = bool(case.get("expected_error_path_findings", False))
     expected_output_size = case.get("expected_output_size")
     expected_output_contains = [str(item) for item in case.get("expected_output_contains", [])]
@@ -209,13 +212,21 @@ def run_case(root: Path, p101: Path, playground: Path, out_dir: Path, case: dict
 
     problems: list[str] = []
     if completed.returncode != expected_exit:
-        if not (expected_exit == 0 and completed.returncode == 1 and clean_runtime_with_module_findings(case_out)):
+        # Exit-code amnesty is opt-in per case under --strict; outside strict mode
+        # it still applies to every case, as before.
+        amnesty_requested = exit_amnesty == "module-map" if strict else exit_amnesty in ("", "module-map")
+        if not (amnesty_requested and expected_exit == 0 and completed.returncode == 1 and clean_runtime_with_module_findings(case_out)):
             problems.append(f"expected exit {expected_exit}, got {completed.returncode}")
 
     actual_ids = read_correlated_ids(case_out)
     missing = sorted(expected_findings - actual_ids)
     if missing:
         problems.append("missing finding IDs: " + ", ".join(missing))
+
+    if strict:
+        extra = sorted(actual_ids - expected_findings - allowed_extra_findings)
+        if extra:
+            problems.append("unexpected finding IDs: " + ", ".join(extra))
 
     if expected_error_path_findings and not fault_walk_has_findings(case_out):
         problems.append("expected error-path findings, but fault walk looked clean")
@@ -295,7 +306,7 @@ def main(argv: list[str]) -> int:
 
     results: list[CaseResult] = []
     for case in cases:
-        result = run_case(root, p101, playground, out_dir, case, args.skip_html, args.skip_bundle)
+        result = run_case(root, p101, playground, out_dir, case, args.skip_html, args.skip_bundle, args.strict)
         results.append(result)
         print(f"{result.status}: {result.name} ({result.message})")
         if result.status != "PASS" and not args.keep_going:

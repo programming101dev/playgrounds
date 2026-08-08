@@ -340,20 +340,50 @@ def expected_issue_is_present(case: LabCase) -> bool:
     return False
 
 
+def has_fixed_oracle(case: LabCase) -> bool:
+    return bool(case.fixed_output_contains or case.fixed_output_not_contains) or case.fixed_output_size is not None
+
+
+def fixed_issue_is_demonstrated(case: LabCase) -> bool:
+    """True when every fixed_* oracle the case declares is satisfied by the run output."""
+    output_path = case.report_dir / "playground-output.txt"
+    if case.fixed_output_size is not None:
+        try:
+            if output_path.stat().st_size != case.fixed_output_size:
+                return False
+        except OSError:
+            return False
+    if case.fixed_output_contains or case.fixed_output_not_contains:
+        try:
+            output_text = output_path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            return False
+        if any(item not in output_text for item in case.fixed_output_contains):
+            return False
+        if any(item in output_text for item in case.fixed_output_not_contains):
+            return False
+    return True
+
+
 def lab_progress(case: LabCase) -> str:
     if not issue_case(case):
         return "REFERENCE"
     if missing_evidence(case):
         return "BLOCKED"
-    return "OPEN" if expected_issue_is_present(case) else "FIXED"
+    if expected_issue_is_present(case):
+        return "OPEN"
+    if has_fixed_oracle(case):
+        return "FIXED" if fixed_issue_is_demonstrated(case) else "INDETERMINATE"
+    return "FIXED"
 
 
-def progress_counts(cases: list[LabCase]) -> tuple[int, int, int, int]:
+def progress_counts(cases: list[LabCase]) -> tuple[int, int, int, int, int]:
     issue_cases = [case for case in cases if issue_case(case)]
     fixed = sum(1 for case in issue_cases if lab_progress(case) == "FIXED")
     open_count = sum(1 for case in issue_cases if lab_progress(case) == "OPEN")
     blocked = sum(1 for case in issue_cases if lab_progress(case) == "BLOCKED")
-    return fixed, open_count, blocked, len(issue_cases)
+    indeterminate = sum(1 for case in issue_cases if lab_progress(case) == "INDETERMINATE")
+    return fixed, open_count, blocked, indeterminate, len(issue_cases)
 
 
 def case_phase(case: LabCase) -> str:
@@ -462,13 +492,13 @@ def phase_rows(cases: list[LabCase]) -> list[str]:
 
 
 def render_markdown(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
-    fixed, open_count, blocked, total = progress_counts(cases)
+    fixed, open_count, blocked, indeterminate, total = progress_counts(cases)
     lines = [
         "# p101 tool playground lab series",
         "",
         "This is a series of small, intentionally broken p101 programs inside the playground. Fix one issue, re-run the lab, and watch that lab move from OPEN to FIXED.",
         "",
-        f"- Progress: {fixed}/{total} issue labs fixed, {open_count} still open, {blocked} blocked",
+        f"- Progress: {fixed}/{total} issue labs fixed, {open_count} still open, {indeterminate} indeterminate, {blocked} blocked",
         f"- Instructor corpus oracle: {'PASS' if corpus_rc == 0 else 'CHANGED'}",
         f"- Corpus summary: [runs/summary.md](./runs/summary.md)",
         f"- HTML lab book: [index.html](./index.html)",
@@ -577,7 +607,7 @@ def render_markdown(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
 
 def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
     status = "PASS" if corpus_rc == 0 else "FAIL"
-    fixed, open_count, blocked, total = progress_counts(cases)
+    fixed, open_count, blocked, indeterminate, total = progress_counts(cases)
     cards: list[str] = []
     for case in cases:
         findings = collect_correlated_findings(case.report_dir)
@@ -596,6 +626,9 @@ def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
         if progress == "BLOCKED":
             missing = ", ".join(missing_evidence(case))
             fault_items = f"<li>This lab could not be judged because evidence is missing: {html.escape(missing)}.</li>"
+        progress_note = ""
+        if progress == "INDETERMINATE":
+            progress_note = '<p class="muted">The broken signal is gone, but the fixed-output oracle is not satisfied yet, so this lab does not count as fixed.</p>'
 
         expected = " ".join(f"<code>{html.escape(item)}</code>" for item in case.expected_findings)
         if case.expects_error_path_findings:
@@ -641,6 +674,7 @@ def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
               </div>
               <p><code>{html.escape(case.issue_id)}</code> · tracks {html.escape(', '.join(case.tracks))} · {html.escape(case_phase(case))} · {html.escape(case_difficulty(case))} · about {case_minutes(case)} min · scenario <code>{html.escape(case.scenario)}</code> · evidence <code>{html.escape(case.scenario_behavior)}</code></p>
               <p class="lesson">{html.escape(lesson_excerpt(case.lesson))}</p>
+              {progress_note}
               <dl>
                 <dt>Goal</dt><dd>{html.escape(case.fix_goal)}</dd>
                 <dt>Expected</dt><dd>{expected}</dd>
@@ -661,7 +695,7 @@ def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
         )
 
     css = """
-    :root { color-scheme: light dark; --ok: #207044; --bad: #a73535; --ref: #2868c7; --ink: #1f2933; --muted: #65717f; --card: #ffffff; --line: #d9e2ec; --bg: #f5f7fa; }
+    :root { color-scheme: light dark; --ok: #207044; --bad: #a73535; --ref: #2868c7; --wip: #7a4fbf; --ink: #1f2933; --muted: #65717f; --card: #ffffff; --line: #d9e2ec; --bg: #f5f7fa; }
     @media (prefers-color-scheme: dark) { :root { --ink: #ecf2f8; --muted: #aab7c4; --card: #121820; --line: #27313d; --bg: #0b1016; } }
     body { background: var(--bg); color: var(--ink); font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; }
     main { max-width: 1120px; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
@@ -677,6 +711,7 @@ def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
     .card.reference { border-top: .35rem solid var(--ref); }
     .card.fixed { border-top: .35rem solid var(--ok); }
     .card.open { border-top: .35rem solid var(--bad); }
+    .card.indeterminate { border-top: .35rem solid var(--wip); }
     .card.blocked { border-top: .35rem solid #a15c00; }
     .card.findings { border-top: .35rem solid var(--bad); }
     .card.missing { border-top: .35rem solid #a15c00; }
@@ -712,7 +747,7 @@ def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
 
   <h2>Progress board</h2>
   <section class="flow">
-    <div class="step"><strong>{fixed}/{total} fixed</strong><br>{open_count} issue labs still open; {blocked} blocked by missing evidence.</div>
+    <div class="step"><strong>{fixed}/{total} fixed</strong><br>{open_count} issue labs still open; {indeterminate} indeterminate (broken signal gone, fix not demonstrated); {blocked} blocked by missing evidence.</div>
     <div class="step"><strong>How to use it</strong><br>Fix one lab, rebuild if needed, run <code>./lab.sh</code>, and refresh this page.</div>
     <div class="step"><strong>Instructor oracle</strong><br>{html.escape(status)} means the committed broken fixtures still demonstrate the expected issues.</div>
     <div class="step"><strong>Recovery</strong><br>Run <code>./reset-labs.sh --show</code> to preview reset, or <code>./reset-labs.sh --yes</code> to restore fixtures.</div>
@@ -758,6 +793,8 @@ def run_corpus(root: Path, out_dir: Path, args: argparse.Namespace) -> int:
         command.append("--skip-html")
     if args.skip_bundle:
         command.append("--skip-bundle")
+    if args.strict_corpus:
+        command.append("--strict")
 
     logs_dir = out_dir / "logs"
     logs_dir.mkdir()
@@ -815,12 +852,16 @@ def main(argv: list[str]) -> int:
     print(f"Markdown: {out_dir / 'lab.md'}")
     if corpus_rc != 0:
         print(f"Corpus oracle changed; see {out_dir / 'logs' / 'corpus.log'}", file=sys.stderr)
-    fixed, open_count, blocked, total = progress_counts(cases)
+    fixed, open_count, blocked, indeterminate, total = progress_counts(cases)
     if blocked > 0:
         print(f"Lab progress is blocked: {blocked} issue labs are missing evidence", file=sys.stderr)
         return 2
-    if args.require_all_fixed and open_count > 0:
-        print(f"Lab progress is incomplete: {open_count} of {total} issue labs are still OPEN", file=sys.stderr)
+    if args.require_all_fixed and (open_count > 0 or indeterminate > 0):
+        print(
+            f"Lab progress is incomplete: {open_count} of {total} issue labs are still OPEN "
+            f"and {indeterminate} are INDETERMINATE (broken signal gone, fix not demonstrated)",
+            file=sys.stderr,
+        )
         return 1
     return corpus_rc if args.strict_corpus else 0
 

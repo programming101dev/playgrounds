@@ -13,10 +13,10 @@
   "lesson": "A newline inside untrusted text can forge a second log record.",
   "logic_issue_id": "P101-LOG-002",
   "expected_output_contains": [
-    "event=admin_login outcome=success"
+    "\nseverity=info event=admin_login"
   ],
   "fixed_output_not_contains": [
-    "event=admin_login outcome=success"
+    "\nseverity=info event=admin_login"
   ],
   "fixed_output_contains": [
     "user=mallory\\nseverity=info"
