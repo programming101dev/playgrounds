@@ -12,7 +12,7 @@ under test.
 Verify with:
 
 ```sh
-p101 verify -e expectations.txt analysis-directory
+../scripts/runtime/p101-model.py verify -e expectations.txt analysis-directory
 ```
 
 An expectation proves only that the admitted model satisfies the declared

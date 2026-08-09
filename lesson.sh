@@ -19,7 +19,7 @@ Usage: ./lesson.sh [all|wrappers|fd-leak|error-path|module-split] [-o <dir>]
 
 Runs a focused teaching demo and writes a short summary. The canonical p101
 runtime facade may be overridden with P101. Source tools may be overridden
-with P101_WRAPPER_AUDIT, P101_MODULE_MAP, and P101_TOOL_PLAYGROUND.
+with P101_AUDIT_WRAPPERS, P101_AUDIT_MODULES, and P101_TOOL_PLAYGROUND.
 USAGE
 }
 
@@ -165,9 +165,12 @@ assert_exists() {
 }
 
 playground="$(find_tool P101_TOOL_PLAYGROUND ./build-clang-22/p101-tool-playground ./build-clang/p101-tool-playground ./build-gcc-16/p101-tool-playground p101-tool-playground || true)"
-p101_dispatcher="$(find_tool P101 ../scripts/p101 p101 || true)"
-wrapper_audit="$(find_tool P101_WRAPPER_AUDIT ../programs/p101-wrapper-audit/p101-wrapper-audit p101-wrapper-audit || true)"
-module_map="$(find_tool P101_MODULE_MAP ../programs/p101-module-map/build-clang-22/p101-module-map ../programs/p101-module-map/build-clang/p101-module-map ../programs/p101-module-map/build-gcc-16/p101-module-map p101-module-map || true)"
+run_tool="$(find_tool P101_RUN ../scripts/runtime/p101-run.py || true)"
+capture_tool="$(find_tool P101_INSPECT_CAPTURE ../programs/p101-inspect/build-clang-22/inspect-capture ../programs/p101-inspect/build-clang/inspect-capture inspect-capture || true)"
+fault_tool="$(find_tool P101_TEST_FAULTS ../programs/p101-test/build-clang-22/test-faults ../programs/p101-test/build-clang/test-faults test-faults || true)"
+model_tool="$(find_tool P101_EVENT_MODEL ../libraries/lib_tool_event/build-clang-22/p101-event-model ../libraries/lib_tool_event/build-clang/p101-event-model p101-event-model || true)"
+wrapper_audit="$(find_tool P101_AUDIT_WRAPPERS ../programs/p101-audit/audit-wrappers audit-wrappers || true)"
+module_map="$(find_tool P101_AUDIT_MODULES ../programs/p101-audit/build-clang-22/audit-modules ../programs/p101-audit/build-clang/audit-modules audit-modules || true)"
 
 cat > "$summary" <<EOF
 # p101 playground lesson
@@ -179,14 +182,14 @@ Lesson: \`${lesson}\`
 EOF
 
 need_runtime_tools() {
-  [ -n "$playground" ] && [ -n "$p101_dispatcher" ]
+  [ -n "$playground" ] && [ -n "$run_tool" ] && [ -n "$capture_tool" ] && [ -n "$model_tool" ]
 }
 
 do_wrappers() {
   compile_db=""
 
   if [ -z "$wrapper_audit" ]; then
-    printf '| FAIL | wrapper boundary | p101-wrapper-audit not found |\n' >> "$summary"
+    printf '| FAIL | wrapper boundary | audit-wrappers not found |\n' >> "$summary"
     failures=1
     return 1
   fi
@@ -206,7 +209,7 @@ do_wrappers() {
     return 1
   fi
   run_step "wrapper boundary audit" "$out_dir/logs/wrappers.log" 0 "$wrapper_audit" --compile-db "$compile_db" src include || failures=1
-  assert_contains "wrapper audit produced a summary" "$out_dir/logs/wrappers.log" "p101-wrapper-audit summary" || failures=1
+  assert_contains "wrapper audit produced a summary" "$out_dir/logs/wrappers.log" "audit-wrappers summary" || failures=1
   assert_contains "wrapper audit parsed every admitted file" "$out_dir/logs/wrappers.log" "parse_failures:[[:space:]]*0" || failures=1
   assert_contains "wrapper audit found no missed wrappers" "$out_dir/logs/wrappers.log" "missed_wrappers:[[:space:]]*0" || failures=1
 }
@@ -217,26 +220,26 @@ do_fd_leak() {
     failures=1
     return 1
   fi
-  run_step "fd leak observation" "$out_dir/logs/fd-leak.log" 1 "$p101_dispatcher" run -o "$out_dir/fd-leak" -- "$playground" -s fd-leak -o "$out_dir/fd-leak-output.txt" || failures=1
+  run_step "fd leak observation" "$out_dir/logs/fd-leak.log" 1 "$run_tool" --observe-tool "$capture_tool" --model-tool "$model_tool" -o "$out_dir/fd-leak" -- "$playground" -s fd-leak -o "$out_dir/fd-leak-output.txt" || failures=1
   assert_contains "fd leak report uses the current schema" "$out_dir/fd-leak/analysis/resource-report.json" "\"schema\"[[:space:]]*:[[:space:]]*\"p101-resource-policy-findings-v1\"" || failures=1
   assert_findings_counted "fd leak is counted" "$out_dir/fd-leak/analysis/resource-report.json" || failures=1
 }
 
 do_error_path() {
-  if ! need_runtime_tools; then
+  if ! need_runtime_tools || [ -z "$fault_tool" ]; then
     printf '| FAIL | error path walk | runtime tools missing |\n' >> "$summary"
     failures=1
     return 1
   fi
   mkdir -p "$out_dir/fault-walk"
-  run_step "error path walk" "$out_dir/logs/error-path.log" "0 1" "$p101_dispatcher" walk -n 8 -l "$out_dir/fault-walk/case" -- "$playground" -s fault-lab -o "$out_dir/fault-output.txt" || failures=1
+  run_step "error path walk" "$out_dir/logs/error-path.log" "0 1" "$fault_tool" -U "$run_tool" -O "$capture_tool" -Y ../scripts/runtime/p101-analyze.py -B "$model_tool" -n 8 -l "$out_dir/fault-walk/case" -- "$playground" -s fault-lab -o "$out_dir/fault-output.txt" || failures=1
   assert_contains "fault walk produced evidence" "$out_dir/logs/error-path.log" "fault|case|finding|leak" || failures=1
   assert_exists "fault walk produced case artifacts" "$out_dir/fault-walk" || failures=1
 }
 
 do_module_split() {
   if [ -z "$module_map" ]; then
-    printf '| FAIL | module split map | p101-module-map not found |\n' >> "$summary"
+    printf '| FAIL | module split map | audit-modules not found |\n' >> "$summary"
     failures=1
     return 1
   fi

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the p101-tool-playground lesson corpus through p101 check."""
+"""Run the playground lesson corpus through the student workflow."""
 
 from __future__ import annotations
 
@@ -26,16 +26,16 @@ class CaseResult:
 
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Run p101-tool-playground corpus cases through p101 check.")
+    parser = argparse.ArgumentParser(description="Run playground corpus cases through the student workflow.")
     parser.add_argument("-o", "--output", type=Path, help="Output directory. Default: /tmp/p101-tool-playground-corpus-<pid>")
     parser.add_argument("--case", action="append", dest="cases", help="Run only this case name; may be repeated.")
     parser.add_argument("--track", choices=("c", "systems", "network"), help="Run only cases assigned to this playground track.")
     parser.add_argument("--quick", action="store_true", help="Run only the clean and fd-leak cases.")
     parser.add_argument("--keep-going", action="store_true", help="Continue after a failed case.")
-    parser.add_argument("--p101", type=Path, help="Path to the p101 dispatcher.")
+    parser.add_argument("--workflow", type=Path, help="Path to student-workflow.sh.")
     parser.add_argument("--playground", type=Path, help="Path to p101-tool-playground executable.")
-    parser.add_argument("--skip-html", action="store_true", help="Pass --skip-html to p101 check.")
-    parser.add_argument("--skip-bundle", action="store_true", help="Pass --skip-bundle to p101 check.")
+    parser.add_argument("--skip-html", action="store_true", help="Pass --skip-html to the workflow.")
+    parser.add_argument("--skip-bundle", action="store_true", help="Pass --skip-bundle to the workflow.")
     parser.add_argument("--strict", action="store_true", help="Fail on unexpected extra finding IDs, and require per-case opt-in for exit-code amnesty.")
     return parser.parse_args(argv)
 
@@ -171,7 +171,7 @@ def clean_runtime_with_module_findings(report_dir: Path) -> bool:
     )
 
 
-def run_case(root: Path, p101: Path, playground: Path, out_dir: Path, case: dict[str, Any], skip_html: bool, skip_bundle: bool, strict: bool = False) -> CaseResult:
+def run_case(root: Path, workflow: Path, playground: Path, out_dir: Path, case: dict[str, Any], skip_html: bool, skip_bundle: bool, strict: bool = False) -> CaseResult:
     name = str(case["name"])
     scenario = str(case["scenario"])
     case_out = out_dir / name
@@ -188,8 +188,7 @@ def run_case(root: Path, p101: Path, playground: Path, out_dir: Path, case: dict
     expected_output_missing = [str(item) for item in case.get("expected_output_missing", [])]
 
     command = [
-        str(p101),
-        "check",
+        str(workflow),
         "--skip-quality",
         "-p",
         str(root),
@@ -301,12 +300,12 @@ def main(argv: list[str]) -> int:
         print("p101 corpus: no cases selected", file=sys.stderr)
         return 2
 
-    p101 = args.p101.resolve() if args.p101 else find_executable([root / "../scripts/p101", "p101"])
+    workflow = args.workflow.resolve() if args.workflow else find_executable([root / "../scripts/runtime/student-workflow.sh"])
     playground = args.playground.resolve() if args.playground else find_executable(current_playground_candidates(root))
 
     results: list[CaseResult] = []
     for case in cases:
-        result = run_case(root, p101, playground, out_dir, case, args.skip_html, args.skip_bundle, args.strict)
+        result = run_case(root, workflow, playground, out_dir, case, args.skip_html, args.skip_bundle, args.strict)
         results.append(result)
         print(f"{result.status}: {result.name} ({result.message})")
         if result.status != "PASS" and not args.keep_going:

@@ -78,7 +78,7 @@ enforce — this workspace's own tools reach into shared model records by design
 Verify with:
 
 ```sh
-p101 module-map src include
+../programs/p101-audit/audit-modules src include
 ```
 
 Library mode cannot decide whether an exported symbol is unused by external

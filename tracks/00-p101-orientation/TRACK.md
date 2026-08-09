@@ -213,7 +213,7 @@ Build first if needed, then run:
 track_dir="$(pwd)"
 workspace_root="$(cd ../../.. && pwd)"
 build_dir="$(cat .last-build-dir)"
-"${workspace_root}/scripts/p101" run \
+"${workspace_root}/scripts/runtime/p101-run.py" \
   -o /tmp/p101-orientation-observe \
   -- "${track_dir}/${build_dir}/p101-track-p101-orientation"
 ```
@@ -255,7 +255,7 @@ Run:
 ```sh
 track_dir="$(pwd)"
 workspace_root="$(cd ../../.. && pwd)"
-"${workspace_root}/scripts/p101" audit "${track_dir}/src" "${track_dir}/include"
+"${workspace_root}/programs/p101-audit/audit-wrappers" "${track_dir}/src" "${track_dir}/include"
 ```
 
 The audit asks: did this code call a raw function when a p101 wrapper exists?
@@ -270,8 +270,10 @@ Run:
 ```sh
 track_dir="$(pwd)"
 workspace_root="$(cd ../../.. && pwd)"
-wrapper_audit="${workspace_root}/programs/p101-wrapper-audit/p101-wrapper-audit"
-"${workspace_root}/scripts/p101" module-map \
+audit_root="${workspace_root}/programs/p101-audit"
+audit_build_dir="$(cat "${audit_root}/.last-build-dir")"
+wrapper_audit="${audit_root}/audit-wrappers"
+"${audit_root}/${audit_build_dir}/audit-modules" \
   -o /tmp/p101-orientation-module-map.md \
   -F "${wrapper_audit}" \
   "${track_dir}/src" "${track_dir}/include"
@@ -295,12 +297,16 @@ Run:
 track_dir="$(pwd)"
 workspace_root="$(cd ../../.. && pwd)"
 build_dir="$(cat .last-build-dir)"
-wrapper_audit="${workspace_root}/programs/p101-wrapper-audit/p101-wrapper-audit"
-module_map="${workspace_root}/programs/p101-module-map/$(cat "${workspace_root}/programs/p101-module-map/.last-build-dir")/p101-module-map"
-"${workspace_root}/scripts/p101" doctor \
+audit_root="${workspace_root}/programs/p101-audit"
+audit_build_dir="$(cat "${audit_root}/.last-build-dir")"
+wrapper_audit="${audit_root}/audit-wrappers"
+error_contract="${audit_root}/${audit_build_dir}/audit-errors"
+module_map="${audit_root}/${audit_build_dir}/audit-modules"
+"${audit_root}/${audit_build_dir}/audit-doctor" \
   -o /tmp/p101-orientation-doctor \
   -s "${track_dir}/src" \
   -A "${wrapper_audit}" \
+  -E "${error_contract}" \
   -M "${module_map}" \
   -- "${track_dir}/${build_dir}/p101-track-p101-orientation"
 ```
@@ -311,7 +317,7 @@ Then read:
 sed -n '1,220p' /tmp/p101-orientation-doctor/summary.md
 ```
 
-`p101-doctor` is the source preflight conductor. It runs the static
+`audit-doctor` is the source preflight conductor. It runs the static
 boundary and module-shape checks, then puts the results in one place.
 
 ## Step 15 — make one safe edit

@@ -18,7 +18,7 @@ runtime behavior.
 Verify with:
 
 ```sh
-p101 audit --strict-external src include
+../programs/p101-audit/audit-wrappers --strict-external src include
 ```
 
 The audit is bounded by the compilation database and Clang translation units it

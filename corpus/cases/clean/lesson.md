@@ -3,7 +3,7 @@
 This case runs the playground `tour` scenario. It opens files, allocates and
 reallocates memory, uses a pipe, forks a child, and cleans everything up.
 
-Expected result: `p101 check` exits `0` and reports no resource findings.
+Expected result: `../scripts/runtime/student-workflow.sh` exits `0` and reports no resource findings.
 
 Use this lab as the reference implementation while fixing the rest of the
 series. The point is not that the code is fancy; it is that ownership is easy to

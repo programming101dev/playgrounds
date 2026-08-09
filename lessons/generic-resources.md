@@ -12,7 +12,7 @@ without first resolving who owns the earlier instance.
 Verify the repaired command with:
 
 ```sh
-p101 check -- ./your-program
+../scripts/runtime/student-workflow.sh -- ./your-program
 ```
 
 Only resources whose wrappers emit lifecycle events are visible. Pair a clean

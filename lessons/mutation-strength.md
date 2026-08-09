@@ -12,7 +12,7 @@ test that merely mirrors the implementation.
 Verify with:
 
 ```sh
-p101 mutation-check --test-command './test.sh' src
+../programs/p101-test/test-mutation --test-command './test.sh' src
 ```
 
 The available mutation operators are a sample of mistakes, not proof that the

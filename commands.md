@@ -21,15 +21,15 @@ Quick reference for the playground and the tools it is meant to show.
 
 | Command | What it shows |
 | --- | --- |
-| `p101 run -- p101-tool-playground -s tour` | Capture, model, and analyze a clean run |
-| `p101 run -- p101-tool-playground -s fd-leak` | Descriptor leak analysis |
-| `p101 resource analysis-dir` | Resource policy view |
-| `p101 resource -j analysis-dir` | Machine-readable resource policy |
-| `p101 trace analysis-dir` | Call tree |
-| `p101 trace -s analysis-dir` | Call summary |
-| `p101 report analysis-dir` | Correlated resource + trace narrative |
-| `p101 report -j analysis-dir` | Correlated JSON |
-| `p101 walk -- p101-tool-playground -s fault-lab` | Injected error-path resource audit |
+| `../scripts/runtime/p101-run.py -- p101-tool-playground -s tour` | Capture, model, and analyze a clean run |
+| `../scripts/runtime/p101-run.py -- p101-tool-playground -s fd-leak` | Descriptor leak analysis |
+| `../scripts/runtime/p101-view.py resource analysis-dir` | Resource policy view |
+| `../scripts/runtime/p101-view.py resource -j analysis-dir` | Machine-readable resource policy |
+| `../scripts/runtime/p101-view.py trace analysis-dir` | Call tree |
+| `../scripts/runtime/p101-view.py trace -s analysis-dir` | Call summary |
+| `../scripts/runtime/p101-view.py report analysis-dir` | Correlated resource + trace narrative |
+| `../scripts/runtime/p101-view.py report -j analysis-dir` | Correlated JSON |
+| `../scripts/runtime/student-workflow.sh -- p101-tool-playground -s fault-lab` | Injected error-path resource audit |
 
 ## Project quality tools
 

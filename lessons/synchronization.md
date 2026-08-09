@@ -13,7 +13,7 @@ incomplete; fix those before trusting a clean result.
 Verify with repeated and adversarial schedules:
 
 ```sh
-p101 check -- ./your-multithreaded-program
+../scripts/runtime/student-workflow.sh -- ./your-multithreaded-program
 ```
 
 Observed schedules cannot prove the absence of races or deadlocks. Combine the

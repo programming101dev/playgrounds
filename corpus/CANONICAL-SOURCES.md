@@ -8,7 +8,7 @@ added, map it to one or more of these sources and add a short lesson under
 Tool-produced diagnostic families that are better taught as concepts than as
 one broken fixture live under `lessons/`. The checked
 `lessons/manifest.json` joins both kinds of lesson and makes an unmapped emitted
-diagnostic fail `p101 lessons check`.
+diagnostic fail `scripts/runtime/p101_lessons.py check`.
 
 There is no single canonical list of all C mistakes. The useful canon is a
 crosswalk:
@@ -86,7 +86,7 @@ The status column is intentionally simple:
 | Race / TOCTOU | CWE-367, CERT POS rules | `covered`: `toctou` |
 | Data race / unsynchronized shared state | CWE-362, CERT CON rules | `covered`: `data-race` |
 | Thread argument lifetime | CWE-416 shape, CERT CON/MEM lifetime guidance | `covered`: `thread-argument-lifetime` |
-| Public API too broad / missing `static` | JPL narrow-scope rule, MISRA analyzability | `tool`: `p101-module-map` |
+| Public API too broad / missing `static` | JPL narrow-scope rule, MISRA analyzability | `tool`: `audit-modules` |
 | Preprocessor misuse | CERT PRE, MISRA preprocessor rules | `tool`: include doctor / module map |
 | Portability assumptions | CERT MSC/POS, MISRA implementation-defined behavior | `tool`: portability checks |
 
@@ -104,13 +104,13 @@ habits worth covering alongside the traps above.
 | Neutralize untrusted data before writing it to logs | OWASP Logging Cheat Sheet, CWE-117 | `covered`: `log-injection` |
 | Consistent error propagation using `p101_error` | CERT API04-C, ERR recommendations | `covered`: toolchain style, templates, wrapper examples |
 | Every resource has one owner and one cleanup path | CERT MEM12-C, JPL narrow-control-flow guidance | `covered`: clean fixtures and resource-leak fixes |
-| Prefer small functions with narrow scope and `static` internal helpers | MISRA analyzability, JPL narrow-scope guidance | `tool`: `p101-module-map` |
+| Prefer small functions with narrow scope and `static` internal helpers | MISRA analyzability, JPL narrow-scope guidance | `tool`: `audit-modules` |
 | Validate all external input at the boundary | CERT API00-C, CWE-20 | `covered`: `input-validation` |
 | Preserve the original value when acquisition/growth can fail | CERT MEM/realloc guidance | `covered`: `realloc-failure` |
 | Check return values or explicitly document intentional discard | CWE-252, JPL checked-return guidance | `tool`: static/tooling rule with commented fixture |
-| Make tests cover both happy paths and failure paths | NIST SSDF, CERT conformance/testing guidance | `covered`: corpus, `p101-error-path-walk` |
+| Make tests cover both happy paths and failure paths | NIST SSDF, CERT conformance/testing guidance | `covered`: corpus, `test-faults` |
 | Add fuzz targets around parsers and boundary-heavy code | NIST SSDF verification practices | `covered`: project scripts, `parser-fuzz` |
-| Keep a reproducible bug bundle for failures | NIST SSDF response/reproducibility practices | `covered`: `p101 bug-bundle` / `p101 check` |
+| Keep a reproducible bug bundle for failures | NIST SSDF response/reproducibility practices | `covered`: `p101-bug-bundle.sh` / `student-workflow.sh` |
 | Prefer source-visible, plain-text diagnostics for teaching tools | p101 teaching principle, SSDF traceability | `covered`: TSV logs and markdown/HTML reports |
 
 ## Prioritization rule

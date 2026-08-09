@@ -25,13 +25,13 @@ The point is to have one program that makes the whole toolchain visible:
 
 ```text
 p101-tool-playground
-  -> p101 run
-      -> p101-observe (capture)
+  -> scripts/runtime/p101-run.py
+      -> inspect-capture
       -> resources.log
       -> calls.log
       -> lib_tool_event causal model
       -> resource, synchronization, trace, and sanitizer policies
-  -> p101 walk
+  -> test-faults
       -> fail p101 call N
       -> per-run resource/call/fault/report artifacts
 ```
@@ -179,10 +179,11 @@ contracts under `expectations/`. Capture once, replay the current analyzers,
 then verify the lesson contract:
 
 ```bash
-../scripts/p101 observe -o /tmp/p101-tour -- \
+../programs/p101-inspect/build-clang/inspect-capture -o /tmp/p101-tour -- \
   ./build-clang/p101-tool-playground -s tour
-../scripts/p101 analyze /tmp/p101-tour
-../scripts/p101 verify -e "$(pwd -P)/expectations/tour.txt" /tmp/p101-tour.analysis
+../scripts/runtime/p101-analyze.py /tmp/p101-tour
+../scripts/runtime/p101-model.py verify \
+  -e "$(pwd -P)/expectations/tour.txt" /tmp/p101-tour.analysis
 ```
 
 Equivalent contracts exist for `fd-leak`, `alloc-leak`, and `double-close`.
@@ -207,10 +208,18 @@ For the regression/lesson corpus, run:
 ```
 
 The corpus lives under `corpus/cases/`. Each case has an `expected.json` oracle
-and a short `lesson.md`. The runner executes each scenario through `p101 check`,
+and a short `lesson.md`. The runner executes each scenario through
+`scripts/runtime/student-workflow.sh`,
 verifies expected exit status and diagnostic IDs, and writes a linked
 `summary.md` plus the full per-case HTML reports. This makes the playground both
 a demo target and the checked answer key for the toolchain.
+
+Lesson identities, finding IDs, locations, and public routes have one editable
+source of truth: [`lessons/manifest.json`](lessons/manifest.json). Native tools
+consume the checked C catalog generated from that JSON through
+`lib_tool_event`; they do not carry private route tables. After changing the
+manifest, run `../scripts/generators/generate-tool-lesson-catalog.py` and commit
+the generated header and source with the manifest change.
 
 New lessons should be mapped to the source-of-truth checklist in
 `corpus/CANONICAL-SOURCES.md`, which cross-references CERT C, CWE, ISO C secure
@@ -238,19 +247,21 @@ state. Students fix one issue, re-run `./lab.sh`, and watch that lab move from
 
 The machine-readable finding-to-lesson contract is
 [`lessons/manifest.json`](lessons/manifest.json). It combines the case lessons
-with concept lessons for source-analysis and tool-integrity findings. From the
-sibling scripts repository, `./p101 lesson <finding-id>` resolves one
-diagnostic, while `./p101 lessons check` proves that every emitted diagnostic
-has a lesson, prerequisites, native evidence, and a repair oracle.
+with concept lessons for source-analysis and tool-integrity findings. The
+`scripts/runtime/p101_lessons.py` engine resolves one diagnostic and proves
+that every emitted diagnostic has a lesson, prerequisites, native evidence,
+and a repair oracle.
 
 The curriculum is executable:
 
 ```sh
-../scripts/p101 lesson run P101-FD-001
-../scripts/p101 lesson verify P101-FD-001 /path/to/report.json
-../scripts/p101 lessons verify --quick
-../scripts/p101 lessons coverage
-../scripts/p101 lessons progress /path/to/student-receipts
+lesson_engine=../scripts/runtime/p101_lessons.py
+catalog=lessons/manifest.json
+python3 "$lesson_engine" --catalog "$catalog" run P101-FD-001
+python3 "$lesson_engine" --catalog "$catalog" verify-one P101-FD-001 /path/to/report.json
+python3 "$lesson_engine" --catalog "$catalog" verify --quick
+python3 "$lesson_engine" --catalog "$catalog" coverage
+python3 "$lesson_engine" --catalog "$catalog" progress /path/to/student-receipts
 ```
 
 Every diagnostic receives a canonical broken/repaired protocol pair. Native
@@ -259,7 +270,7 @@ while source-analysis lessons run the owning tool or policy test suite. The
 coverage matrix records the evidence kind and macOS/Linux/FreeBSD contract so a
 synthetic routing test cannot be mistaken for analyzer proof. Actual platform
 verification appears only when a successful full acceptance receipt from that
-platform is supplied to `p101 lessons coverage --receipts`.
+platform is supplied to `p101_lessons.py coverage --receipts`.
 
 The intended student loop is:
 
@@ -303,7 +314,7 @@ Build the playground:
 Run a clean observed tour:
 
 ```sh
-p101 run \
+../scripts/runtime/p101-run.py \
   -o /tmp/p101-playground-tour \
   -- ./build-clang/p101-tool-playground -s tour
 ```
@@ -311,7 +322,7 @@ p101 run \
 Run a descriptor leak:
 
 ```sh
-p101 run \
+../scripts/runtime/p101-run.py \
   -o /tmp/p101-playground-fd-leak \
   -- ./build-clang/p101-tool-playground -s fd-leak
 ```
@@ -319,25 +330,25 @@ p101 run \
 Inspect individual artifacts:
 
 ```sh
-p101 resource /tmp/p101-playground-fd-leak
-p101 resource -j /tmp/p101-playground-fd-leak
-p101 trace /tmp/p101-playground-fd-leak
-p101 report /tmp/p101-playground-fd-leak
-p101 report -j /tmp/p101-playground-fd-leak
+../scripts/runtime/p101-view.py resource /tmp/p101-playground-fd-leak/analysis
+../scripts/runtime/p101-view.py resource -j /tmp/p101-playground-fd-leak/analysis
+../scripts/runtime/p101-view.py trace /tmp/p101-playground-fd-leak/analysis
+../scripts/runtime/p101-view.py report /tmp/p101-playground-fd-leak/analysis
+../scripts/runtime/p101-view.py report -j /tmp/p101-playground-fd-leak/analysis
 ```
 
 Walk injected error paths:
 
 ```sh
-p101 walk \
-  -n 20 \
-  -l /tmp/p101-playground-walk \
+../scripts/runtime/student-workflow.sh \
+  --skip-quality -n 20 -p . -s src \
+  -o /tmp/p101-playground-walk \
   -- ./build-clang/p101-tool-playground -s fault-lab
 ```
 
 The `fault-lab` scenario is clean without injection. Its cleanup becomes
 intentionally sloppy only after a p101 setup call fails, so
-`p101-error-path-walk` can show exactly which injected failures leak resources.
+`test-faults` can show exactly which injected failures leak resources.
 
 ## Testing, fuzzing, and coverage
 
@@ -369,12 +380,12 @@ scenario stayed inside its expected resource model.
 
 ## Suggested classroom flow
 
-1. Run `tour` with `p101 run` and inspect `summary.txt`.
+1. Run `tour` with `scripts/runtime/p101-run.py` and inspect `summary.txt`.
 2. Run `fd-leak` and compare `resource-report.txt` with
    `correlated-report.txt`.
 3. Run `alloc-leak` and inspect `correlated-report.json`.
-4. Run `p101 trace` on the analysis directory.
-5. Run `fault-lab` through `p101 walk` and find the first injected
+4. Run `scripts/runtime/p101-view.py trace` on the analysis directory.
+5. Run `fault-lab` through `scripts/runtime/student-workflow.sh` and find the first injected
    failure that leaks.
 6. Run `./test.sh`, `./fuzz.sh`, and `./report.sh coverage` to show the static
    and dynamic quality workflow around the demo.

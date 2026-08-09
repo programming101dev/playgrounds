@@ -8,9 +8,7 @@
     "linux",
     "freebsd"
   ],
-  "ignored_diagnostic_ids": [
-    "P101-WRAP-000"
-  ],
+  "ignored_diagnostic_ids": [],
   "lessons": [
     {
       "lesson_id": "P101-LESSON-WRAPPER-BOUNDARIES",
@@ -28,7 +26,7 @@
         "P101-WRAP-900"
       ],
       "acceptance_profile": "wrapper-audit",
-      "verification": "p101 audit --strict-external <source-path>"
+      "verification": "programs/p101-audit/audit-wrappers --strict-external <source-path>"
     },
     {
       "lesson_id": "P101-LESSON-ERROR-CONTRACTS",
@@ -50,7 +48,7 @@
         "P101-ERR-009"
       ],
       "acceptance_profile": "error-contract",
-      "verification": "p101 doctor -s <source-path>"
+      "verification": "programs/p101-audit/audit-doctor -s <source-path>"
     },
     {
       "lesson_id": "P101-LESSON-MODULE-BOUNDARIES",
@@ -84,7 +82,7 @@
         "P101-MOD-027"
       ],
       "acceptance_profile": "module-map",
-      "verification": "p101 module-map <source-path>"
+      "verification": "programs/p101-audit/audit-modules <source-path>"
     },
     {
       "lesson_id": "P101-LESSON-GENERIC-RESOURCES",
@@ -104,7 +102,7 @@
         "P101-RESOURCE-005"
       ],
       "acceptance_profile": "runtime-resource",
-      "verification": "p101 check -- <command>"
+      "verification": "scripts/runtime/student-workflow.sh -- <command>"
     },
     {
       "lesson_id": "P101-LESSON-SYNCHRONIZATION",
@@ -120,7 +118,7 @@
         "P101-SYNC-003"
       ],
       "acceptance_profile": "runtime-synchronization",
-      "verification": "p101 check -- <multithreaded-command>"
+      "verification": "scripts/runtime/student-workflow.sh -- <multithreaded-command>"
     },
     {
       "lesson_id": "P101-LESSON-TRACE-INTEGRITY",
@@ -136,7 +134,7 @@
         "P101-TRACE-003"
       ],
       "acceptance_profile": "runtime-trace",
-      "verification": "p101 run -- <command>"
+      "verification": "scripts/runtime/p101-run.py -- <command>"
     },
     {
       "lesson_id": "P101-LESSON-SANITIZERS",
@@ -153,7 +151,7 @@
         "P101-SAN-004"
       ],
       "acceptance_profile": "runtime-sanitizers",
-      "verification": "p101 run -- <sanitized-command>"
+      "verification": "scripts/runtime/p101-run.py -- <sanitized-command>"
     },
     {
       "lesson_id": "P101-LESSON-MUTATION-STRENGTH",
@@ -167,7 +165,7 @@
         "P101-MUTATION-001"
       ],
       "acceptance_profile": "mutation-check",
-      "verification": "p101 mutation-check --test-command '<test-command>' <source-path>"
+      "verification": "programs/p101-test/test-mutation --test-command '<test-command>' <source-path>"
     },
     {
       "lesson_id": "P101-LESSON-API-COMPATIBILITY",
@@ -200,7 +198,7 @@
         "P101-POLICY-RESOURCE-003"
       ],
       "acceptance_profile": "policy-rules",
-      "verification": "p101 verify -e <expectations.txt> <analysis-directory>"
+      "verification": "scripts/runtime/p101-model.py verify -e <expectations.txt> <analysis-directory>"
     }
   ],
   "acceptance_profiles": [
@@ -218,10 +216,10 @@
       "command": [
         "./test.sh"
       ],
-      "cwd": "programs/p101-wrapper-audit",
+      "cwd": "programs/p101-audit",
       "evidence_paths": [
-        "programs/p101-wrapper-audit/src",
-        "programs/p101-wrapper-audit/test"
+        "programs/p101-audit/src",
+        "programs/p101-audit/test"
       ],
       "platforms": [
         "macos",
@@ -246,13 +244,13 @@
         "P101-ERR-009"
       ],
       "command": [
-        "./test.sh"
+        "../../test.sh"
       ],
-      "cwd": "programs/p101-error-contract",
+      "cwd": "programs/p101-audit/components/error-contract",
       "evidence_paths": [
-        "programs/p101-error-contract/src/contract.c",
-        "programs/p101-error-contract/test/contract_fixture.c",
-        "programs/p101-error-contract/test/test_cli.sh"
+        "programs/p101-audit/components/error-contract/src/contract.c",
+        "programs/p101-audit/components/error-contract/test/contract_fixture.c",
+        "programs/p101-audit/components/error-contract/test/test_cli.sh"
       ],
       "platforms": [
         "macos",
@@ -289,12 +287,12 @@
         "P101-MOD-027"
       ],
       "command": [
-        "./test.sh"
+        "../../test.sh"
       ],
-      "cwd": "programs/p101-module-map",
+      "cwd": "programs/p101-audit/components/module-map",
       "evidence_paths": [
-        "programs/p101-module-map/src/report.c",
-        "programs/p101-module-map/test/test_cli.sh"
+        "programs/p101-audit/components/module-map/src/report.c",
+        "programs/p101-audit/components/module-map/test/test_cli.sh"
       ],
       "platforms": [
         "macos",
@@ -415,13 +413,13 @@
         "P101-MUTATION-001"
       ],
       "command": [
-        "./test.sh"
+        "../../test.sh"
       ],
-      "cwd": "programs/p101-mutation-check",
+      "cwd": "programs/p101-test/components/mutation",
       "evidence_paths": [
-        "programs/p101-mutation-check/p101-mutation-check",
-        "programs/p101-mutation-check/src",
-        "programs/p101-mutation-check/test"
+        "programs/p101-test/config.cmake",
+        "programs/p101-test/components/mutation/src",
+        "programs/p101-test/components/mutation/test"
       ],
       "platforms": [
         "macos",

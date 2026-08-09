@@ -2,7 +2,7 @@
 
 This case tries to close an unopened positive descriptor.
 
-Expected result: `p101 check` exits `1` and the correlated report includes
+Expected result: `../scripts/runtime/student-workflow.sh` exits `1` and the correlated report includes
 `P101-FD-003`.
 
 Closing a descriptor you did not acquire is a privilege and correctness smell.

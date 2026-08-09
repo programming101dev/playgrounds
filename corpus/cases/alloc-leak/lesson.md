@@ -2,7 +2,7 @@
 
 This case intentionally leaves one heap allocation live at process exit.
 
-Expected result: `p101 check` exits `1` and the correlated report includes
+Expected result: `../scripts/runtime/student-workflow.sh` exits `1` and the correlated report includes
 `P101-ALLOC-001`.
 
 Heap leaks are not just “messy.” In long-running programs they become

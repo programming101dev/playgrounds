@@ -45,7 +45,7 @@ machine code.
 Verify with:
 
 ```sh
-p101 doctor -s src -s include
+../programs/p101-audit/audit-doctor -s src -s include
 ```
 
 The checker follows source-level contracts; it cannot prove that every runtime

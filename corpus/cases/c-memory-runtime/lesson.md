@@ -8,7 +8,7 @@ allocation, `realloc`, numeric helpers, multibyte conversion, parsing,
 environment variables, temporary files/directories, random helpers, pty helpers,
 process termination wrappers, and safe command execution.
 
-Expected result: `p101 check` exits `0`, reports no findings, and the output
+Expected result: `../scripts/runtime/student-workflow.sh` exits `0`, reports no findings, and the output
 contains:
 
 ```text

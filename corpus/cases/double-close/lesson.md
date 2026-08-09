@@ -2,7 +2,7 @@
 
 This case closes one descriptor twice.
 
-Expected result: `p101 check` exits `1` and the correlated report includes
+Expected result: `../scripts/runtime/student-workflow.sh` exits `1` and the correlated report includes
 `P101-FD-002`.
 
 Double release bugs are ownership bugs. With descriptors, a second close can be

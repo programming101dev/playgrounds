@@ -52,7 +52,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--track", choices=("c", "systems", "network"), help="Include only cases assigned to this playground track.")
     parser.add_argument("--quick", action="store_true", help="Use the short classroom set: clean and fd-leak.")
     parser.add_argument("--keep-going", action="store_true", help="Keep running corpus cases after a failed case.")
-    parser.add_argument("--p101", type=Path, help="Path to the p101 dispatcher.")
+    parser.add_argument("--workflow", type=Path, help="Path to student-workflow.sh.")
     parser.add_argument("--playground", type=Path, help="Path to the p101-tool-playground executable.")
     parser.add_argument("--skip-html", action="store_true", help="Skip per-case p101 check HTML generation.")
     parser.add_argument("--skip-bundle", action="store_true", help="Skip per-case bug bundles.")
@@ -62,7 +62,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
 
 
 def invocation_cwd() -> Path:
-    return Path(os.environ.get("P101_DISPATCH_CWD", os.getcwd())).resolve()
+    return Path(os.environ.get("P101_INVOCATION_CWD", os.getcwd())).resolve()
 
 
 def resolve_output(path: Path | None) -> Path:
@@ -785,8 +785,8 @@ def run_corpus(root: Path, out_dir: Path, args: argparse.Namespace) -> int:
         command.extend(["--track", args.track])
     for case_name in args.cases or []:
         command.extend(["--case", case_name])
-    if args.p101 is not None:
-        command.extend(["--p101", str(args.p101)])
+    if args.workflow is not None:
+        command.extend(["--workflow", str(args.workflow)])
     if args.playground is not None:
         command.extend(["--playground", str(args.playground)])
     if args.skip_html:
@@ -806,17 +806,17 @@ def run_corpus(root: Path, out_dir: Path, args: argparse.Namespace) -> int:
     return completed.returncode
 
 
-def find_p101_doctor(root: Path) -> Path | None:
+def find_audit_doctor(root: Path) -> Path | None:
     candidates = [
-        root / "../programs/p101-doctor/build-clang-22/p101-doctor",
-        root / "../programs/p101-doctor/build-clang/p101-doctor",
-        root / "../programs/p101-doctor/build-gcc-16/p101-doctor",
+        root / "../programs/p101-audit/build-clang-22/audit-doctor",
+        root / "../programs/p101-audit/build-clang/audit-doctor",
+        root / "../programs/p101-audit/build-gcc-16/audit-doctor",
     ]
     for candidate in candidates:
         path = candidate.resolve()
         if path.is_file() and os.access(path, os.X_OK):
             return path
-    resolved = shutil.which("p101-doctor")
+    resolved = shutil.which("audit-doctor")
     return Path(resolved).resolve() if resolved is not None else None
 
 
@@ -838,8 +838,8 @@ def main(argv: list[str]) -> int:
         print("p101 playground lab: no cases selected", file=sys.stderr)
         return 2
 
-    if find_p101_doctor(root) is None:
-        print("p101 playground lab: p101-doctor is required to judge lab progress; build/install p101-doctor first", file=sys.stderr)
+    if find_audit_doctor(root) is None:
+        print("p101 playground lab: audit-doctor is required to judge lab progress; build/install p101-audit first", file=sys.stderr)
         return 2
 
     corpus_rc = run_corpus(root, out_dir, args)

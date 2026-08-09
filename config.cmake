@@ -31,8 +31,13 @@ set(main_OUTPUT_NAME p101-tool-playground)
 
 set(main_SOURCES
         src/cli.c
+        src/lesson_demo.c
         src/main.c
+        src/ownership_defect_demo.c
         src/playground.c
+        src/playground_support.c
+        src/resource_defect_demo.c
+        src/runtime_demo.c
         src/scenario.c
 )
 

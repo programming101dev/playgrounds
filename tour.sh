@@ -3,7 +3,7 @@
 #
 # The playground is meant to show the whole p101 toolchain in one place:
 # strict build, tests, fuzzing, coverage, observation, resource tracking, call
-# tracing, correlated reports, error-path walking, and the p101-doctor conductor.
+# tracing, correlated reports, error-path walking, and the audit-doctor conductor.
 set -u
 set -o pipefail
 
@@ -27,7 +27,7 @@ Options:
   -o <dir>         Output directory.
                    Default: /tmp/p101-tool-playground-tour-<timestamp>-<pid>
   -t <seconds>    Fuzz smoke budget. Default: 5.
-  -n <count>      Fault-injection cases for p101-error-path-walk. Default: 8.
+  -n <count>      Fault-injection cases for test-faults. Default: 8.
   -c <cc>         C compiler used by quality/coverage builds. Default: clang.
   --skip-quality  Skip build/test/fuzz/coverage and only run runtime demos.
   --skip-coverage Skip coverage generation.
@@ -35,7 +35,8 @@ Options:
   -h, --help      Show this help.
 
 Tool paths may be overridden with:
-  P101, P101_WRAPPER_AUDIT, P101_ERROR_CONTRACT, P101_DOCTOR,
+  P101_AUDIT_WRAPPERS, P101_AUDIT_ERRORS, P101_AUDIT_MODULES,
+  P101_AUDIT_DOCTOR, P101_INSPECT_CAPTURE, P101_TEST_FAULTS,
   P101_TOOL_PLAYGROUND
 USAGE
 }
@@ -229,7 +230,7 @@ Generated: ${timestamp}
 This directory is a one-command tour of the p101 tooling stack: strict checks,
 unit tests, fuzzing, coverage, runtime observation, resource tracking, call
 tracing, correlated reports, fault-injected error-path walking, and the
-p101-doctor conductor.
+audit-doctor conductor.
 
 ## Results
 
@@ -270,8 +271,8 @@ EOF
     printf -- '- Fault walk: [fault-walk](./fault-walk/)\n' >> "$summary"
   fi
 
-  if [ -d "$out_dir/doctor" ]; then
-    printf -- '- Doctor: [doctor](./doctor/)\n' >> "$summary"
+  if [ -d "$out_dir/audit-doctor" ]; then
+    printf -- '- Doctor: [audit-doctor](./audit-doctor/)\n' >> "$summary"
   fi
 
   if [ -f "$out_dir/coverage/index.html" ]; then
@@ -299,12 +300,12 @@ EOF
     printf -- '- [fault-walk output](./logs/fault-walk.log)\n' >> "$summary"
   fi
 
-  if [ -f "$out_dir/doctor/summary.md" ]; then
-    printf -- '- [doctor/summary.md](./doctor/summary.md)\n' >> "$summary"
+  if [ -f "$out_dir/audit-doctor/summary.md" ]; then
+    printf -- '- [audit-doctor/summary.md](./audit-doctor/summary.md)\n' >> "$summary"
   fi
 
-  if [ -f "$out_dir/doctor/doctor.json" ]; then
-    printf -- '- [doctor/doctor.json](./doctor/doctor.json)\n' >> "$summary"
+  if [ -f "$out_dir/audit-doctor/audit-doctor.json" ]; then
+    printf -- '- [audit-doctor/audit-doctor.json](./audit-doctor/audit-doctor.json)\n' >> "$summary"
   fi
 }
 
@@ -343,40 +344,43 @@ else
 fi
 
 playground="$(find_tool P101_TOOL_PLAYGROUND "$(last_build_tool . p101-tool-playground)" ./build-clang-22/p101-tool-playground ./build-clang/p101-tool-playground ./build-gcc-16/p101-tool-playground p101-tool-playground)"
-p101_dispatcher="$(find_tool P101 ../scripts/p101 p101)"
-wrapper_audit="$(find_tool P101_WRAPPER_AUDIT ../programs/p101-wrapper-audit/p101-wrapper-audit p101-wrapper-audit)"
-error_contract="$(find_tool P101_ERROR_CONTRACT "$(last_build_tool ../programs/p101-error-contract p101-error-contract)" ../programs/p101-error-contract/build-clang-22/p101-error-contract ../programs/p101-error-contract/build-clang/p101-error-contract ../programs/p101-error-contract/build-gcc-16/p101-error-contract p101-error-contract)"
-module_map="$(find_tool P101_MODULE_MAP "$(last_build_tool ../programs/p101-module-map p101-module-map)" ../programs/p101-module-map/build-clang-22/p101-module-map ../programs/p101-module-map/build-clang/p101-module-map ../programs/p101-module-map/build-gcc-16/p101-module-map p101-module-map)"
-doctor="$(find_tool P101_DOCTOR "$(last_build_tool ../programs/p101-doctor p101-doctor)" ../programs/p101-doctor/build-clang-22/p101-doctor ../programs/p101-doctor/build-clang/p101-doctor ../programs/p101-doctor/build-gcc-16/p101-doctor p101-doctor)"
+run_analysis="$(find_tool P101_RUN ../scripts/runtime/p101-run.py)"
+fault_runner="$(find_tool P101_TEST_FAULTS "$(last_build_tool ../programs/p101-test test-faults)" ../programs/p101-test/build-clang-22/test-faults ../programs/p101-test/build-clang/test-faults ../programs/p101-test/build-gcc-16/test-faults test-faults)"
+capture_tool="$(find_tool P101_INSPECT_CAPTURE "$(last_build_tool ../programs/p101-inspect inspect-capture)" ../programs/p101-inspect/build-clang-22/inspect-capture ../programs/p101-inspect/build-clang/inspect-capture ../programs/p101-inspect/build-gcc-16/inspect-capture inspect-capture)"
+model_tool="$(find_tool P101_EVENT_MODEL "$(last_build_tool ../libraries/lib_tool_event p101-event-model)" ../libraries/lib_tool_event/build-clang-22/p101-event-model ../libraries/lib_tool_event/build-clang/p101-event-model ../libraries/lib_tool_event/build-gcc-16/p101-event-model p101-event-model)"
+wrapper_audit="$(find_tool P101_AUDIT_WRAPPERS ../programs/p101-audit/audit-wrappers audit-wrappers)"
+error_contract="$(find_tool P101_AUDIT_ERRORS "$(last_build_tool ../programs/p101-audit audit-errors)" ../programs/p101-audit/build-clang-22/audit-errors ../programs/p101-audit/build-clang/audit-errors ../programs/p101-audit/build-gcc-16/audit-errors audit-errors)"
+module_map="$(find_tool P101_AUDIT_MODULES "$(last_build_tool ../programs/p101-audit audit-modules)" ../programs/p101-audit/build-clang-22/audit-modules ../programs/p101-audit/build-clang/audit-modules ../programs/p101-audit/build-gcc-16/audit-modules audit-modules)"
+doctor="$(find_tool P101_AUDIT_DOCTOR "$(last_build_tool ../programs/p101-audit audit-doctor)" ../programs/p101-audit/build-clang-22/audit-doctor ../programs/p101-audit/build-clang/audit-doctor ../programs/p101-audit/build-gcc-16/audit-doctor audit-doctor)"
 
 if [ -z "$playground" ]; then
   record "FAIL" "locate playground binary" "run ./build.sh first"
-elif [ -z "$p101_dispatcher" ]; then
-  record "FAIL" "observed runtime demos" "p101 dispatcher not found"
+elif [ -z "$run_analysis" ] || [ -z "$capture_tool" ] || [ -z "$model_tool" ]; then
+  record "FAIL" "observed runtime demos" "capture or analysis engine not found"
 else
   reset_child_dir "$out_dir/observed-tour"
   reset_child_dir "$out_dir/observed-fd-leak"
   reset_child_dir "$out_dir/observed-alloc-leak"
   reset_child_dir "$out_dir/observed-double-close"
-  run_logged "observe full clean tour" "$log_dir/observe-tour.log" "0" "$p101_dispatcher" run -o "$out_dir/observed-tour" -- "$playground" -s tour -o "$out_dir/tour-output.txt" || true
-  run_logged "observe fd leak" "$log_dir/observe-fd-leak.log" "0 1" "$p101_dispatcher" run -o "$out_dir/observed-fd-leak" -- "$playground" -s fd-leak -o "$out_dir/fd-leak-output.txt" || true
-  run_logged "observe allocation leak" "$log_dir/observe-alloc-leak.log" "0 1" "$p101_dispatcher" run -o "$out_dir/observed-alloc-leak" -- "$playground" -s alloc-leak -o "$out_dir/alloc-leak-output.txt" || true
-  run_logged "observe double close" "$log_dir/observe-double-close.log" "0 1" "$p101_dispatcher" run -o "$out_dir/observed-double-close" -- "$playground" -s double-close -o "$out_dir/double-close-output.txt" || true
+  run_logged "observe full clean tour" "$log_dir/observe-tour.log" "0" "$run_analysis" -o "$out_dir/observed-tour" --observe-tool "$capture_tool" --model-tool "$model_tool" -- "$playground" -s tour -o "$out_dir/tour-output.txt" || true
+  run_logged "observe fd leak" "$log_dir/observe-fd-leak.log" "0 1" "$run_analysis" -o "$out_dir/observed-fd-leak" --observe-tool "$capture_tool" --model-tool "$model_tool" -- "$playground" -s fd-leak -o "$out_dir/fd-leak-output.txt" || true
+  run_logged "observe allocation leak" "$log_dir/observe-alloc-leak.log" "0 1" "$run_analysis" -o "$out_dir/observed-alloc-leak" --observe-tool "$capture_tool" --model-tool "$model_tool" -- "$playground" -s alloc-leak -o "$out_dir/alloc-leak-output.txt" || true
+  run_logged "observe double close" "$log_dir/observe-double-close.log" "0 1" "$run_analysis" -o "$out_dir/observed-double-close" --observe-tool "$capture_tool" --model-tool "$model_tool" -- "$playground" -s double-close -o "$out_dir/double-close-output.txt" || true
 fi
 
-if [ -z "$playground" ] || [ -z "$p101_dispatcher" ]; then
-  record "FAIL" "fault walk" "missing p101 dispatcher or playground"
+if [ -z "$playground" ] || [ -z "$run_analysis" ] || [ -z "$fault_runner" ] || [ -z "$capture_tool" ] || [ -z "$model_tool" ]; then
+  record "FAIL" "fault walk" "missing fault, capture, model, or playground engine"
 else
   reset_child_dir "$out_dir/fault-walk"
   mkdir -p "$out_dir/fault-walk"
-  run_logged "fault walk" "$log_dir/fault-walk.log" "0 1" "$p101_dispatcher" walk -n "$fault_count" -l "$out_dir/fault-walk/fault" -- "$playground" -s fault-lab -o "$out_dir/fault-lab-output.txt" || true
+  run_logged "fault walk" "$log_dir/fault-walk.log" "0 1" "$fault_runner" -U "$run_analysis" -O "$capture_tool" -Y ../scripts/runtime/p101-analyze.py -B "$model_tool" -n "$fault_count" -l "$out_dir/fault-walk/fault" -- "$playground" -s fault-lab -o "$out_dir/fault-lab-output.txt" || true
 fi
 
-if [ -z "$playground" ] || [ -z "$p101_dispatcher" ] || [ -z "$doctor" ] || [ -z "$wrapper_audit" ] || [ -z "$error_contract" ] || [ -z "$module_map" ]; then
-  record "FAIL" "doctor source audit" "missing p101 dispatcher or source-analysis tool"
+if [ -z "$playground" ] || [ -z "$doctor" ] || [ -z "$wrapper_audit" ] || [ -z "$error_contract" ] || [ -z "$module_map" ]; then
+  record "FAIL" "doctor source audit" "missing source-analysis engine"
 else
-  reset_child_dir "$out_dir/doctor"
-  run_logged "doctor source audit" "$log_dir/doctor.log" "0 1" "$p101_dispatcher" doctor -o "$out_dir/doctor" -s src -A "$wrapper_audit" -E "$error_contract" -M "$module_map" -- "$playground" -s clean-file -o "$out_dir/doctor-target-output.txt" || true
+  reset_child_dir "$out_dir/audit-doctor"
+  run_logged "doctor source audit" "$log_dir/doctor.log" "0 1" "$doctor" -o "$out_dir/audit-doctor" -s src -A "$wrapper_audit" -E "$error_contract" -M "$module_map" -- "$playground" -s clean-file -o "$out_dir/audit-doctor-target-output.txt" || true
 fi
 
 append_summary_footer
