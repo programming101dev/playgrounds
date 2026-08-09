@@ -61,7 +61,6 @@
         "P101-LESSON-ERROR-CONTRACTS"
       ],
       "finding_ids": [
-        "P101-MOD-001",
         "P101-MOD-002",
         "P101-MOD-003",
         "P101-MOD-004",
@@ -72,7 +71,17 @@
         "P101-MOD-010",
         "P101-MOD-011",
         "P101-MOD-012",
-        "P101-MOD-013"
+        "P101-MOD-013",
+        "P101-MOD-014",
+        "P101-MOD-015",
+        "P101-MOD-016",
+        "P101-MOD-017",
+        "P101-MOD-018",
+        "P101-MOD-019",
+        "P101-MOD-020",
+        "P101-MOD-021",
+        "P101-MOD-022",
+        "P101-MOD-027"
       ],
       "acceptance_profile": "module-map",
       "verification": "p101 module-map <source-path>"
@@ -257,7 +266,6 @@
       "kind": "native-tool-suite",
       "description": "The canonical P101FACT fixture exercises all module-boundary policies and a minimal fact stream remains clean.",
       "finding_ids": [
-        "P101-MOD-001",
         "P101-MOD-002",
         "P101-MOD-003",
         "P101-MOD-004",
@@ -268,7 +276,17 @@
         "P101-MOD-010",
         "P101-MOD-011",
         "P101-MOD-012",
-        "P101-MOD-013"
+        "P101-MOD-013",
+        "P101-MOD-014",
+        "P101-MOD-015",
+        "P101-MOD-016",
+        "P101-MOD-017",
+        "P101-MOD-018",
+        "P101-MOD-019",
+        "P101-MOD-020",
+        "P101-MOD-021",
+        "P101-MOD-022",
+        "P101-MOD-027"
       ],
       "command": [
         "./test.sh"
