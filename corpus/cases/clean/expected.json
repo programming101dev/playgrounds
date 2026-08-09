@@ -12,6 +12,7 @@
   "expected_exit": 0,
   "expected_status": "PASS",
   "expected_findings": [],
+  "exit_amnesty": "module-map",
   "fault_count": 1,
   "fix_goal": "Use this as the reference shape: acquire resources, check errors, release every owned resource exactly once.",
   "fix_steps": [

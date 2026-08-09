@@ -11,7 +11,7 @@
 #include <p101_convert/integer.h>
 #include <stdlib.h>
 
-void p101_tool_playground_arguments_init(const struct p101_env *env, struct arguments *args)
+void p101_tool_playground_arguments_set_defaults(const struct p101_env *env, struct arguments *args)
 {
     P101_TRACE_SCOPE(env);
     p101_memset(env, args, 0, sizeof(*args));
@@ -23,13 +23,23 @@ void p101_tool_playground_arguments_init(const struct p101_env *env, struct argu
 
 void p101_tool_playground_parse_arguments(const struct p101_env *env, struct p101_error *err, int argc, char *argv[], struct arguments *args)
 {
+    bool p101_bool_result_1;
+    int  p101_int_result_1;
+
     int opt;
 
     P101_TRACE_SCOPE(env);
     opterr = 0;
 
-    while((opt = p101_getopt(env, argc, argv, ":hvs:o:b:r:")) != -1 && p101_error_has_no_error(err))
+    while(true)
     {
+        opt                = p101_getopt(env, argc, argv, ":hvs:o:b:r:");
+        p101_bool_result_1 = p101_error_has_no_error(err);
+        if(opt == -1 || !p101_bool_result_1)
+        {
+            break;
+        }
+
         switch(opt)
         {
             case 'h':
@@ -74,7 +84,8 @@ void p101_tool_playground_parse_arguments(const struct p101_env *env, struct p10
             {
                 char msg[MSG_LEN];
 
-                if(p101_isprint(env, optopt))
+                p101_int_result_1 = p101_isprint(env, optopt);
+                if(p101_int_result_1)
                 {
                     p101_snprintf(env, err, msg, sizeof(msg), "Unknown option '-%c'.", optopt);
                 }
@@ -90,14 +101,16 @@ void p101_tool_playground_parse_arguments(const struct p101_env *env, struct p10
             {
                 char msg[MSG_LEN];
 
-                p101_snprintf(env, err, msg, sizeof(msg), "Internal error: unhandled option '-%c' returned by getopt.", p101_isprint(env, opt) ? opt : '?');
+                p101_int_result_1 = p101_isprint(env, opt);
+                p101_snprintf(env, err, msg, sizeof(msg), "Internal error: unhandled option '-%c' returned by getopt.", p101_int_result_1 ? opt : '?');
                 P101_ERROR_RAISE_USER(err, msg, ERR_USAGE);
                 break;
             }
         }
     }
 
-    if(p101_error_has_no_error(err) && optind < argc)
+    p101_bool_result_1 = p101_error_has_no_error(err);
+    if(p101_bool_result_1 && optind < argc)
     {
         P101_ERROR_RAISE_USER(err, "Unexpected positional argument.", ERR_USAGE);
     }
@@ -105,6 +118,8 @@ void p101_tool_playground_parse_arguments(const struct p101_env *env, struct p10
 
 void p101_tool_playground_check_arguments(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
 {
+    enum playground_scenario p101_enum_playground_scenario_result_1;
+
     bool ok;
 
     P101_TRACE_SCOPE(env);
@@ -115,7 +130,8 @@ void p101_tool_playground_check_arguments(const struct p101_env *env, struct p10
         goto done;
     }
 
-    (void)p101_tool_playground_scenario_from_name(env, args->scenario_str, &ok);
+    p101_enum_playground_scenario_result_1 = p101_tool_playground_scenario_from_name(env, args->scenario_str, &ok);
+    (void)p101_enum_playground_scenario_result_1;
     if(!ok)
     {
         P101_ERROR_RAISE_USER(err, "Unknown scenario.", ERR_USAGE);
@@ -146,6 +162,8 @@ done:
 
 void p101_tool_playground_convert_arguments(const struct p101_env *env, struct p101_error *err, struct arguments *args)
 {
+    bool p101_bool_result_1;
+
     bool ok;
 
     P101_TRACE_SCOPE(env);
@@ -161,7 +179,8 @@ void p101_tool_playground_convert_arguments(const struct p101_env *env, struct p
     {
         args->bytes = p101_parse_unsigned_int(env, err, args->bytes_str, DEFAULT_BYTES);
 
-        if(p101_error_has_error(err) || args->bytes == 0U || args->bytes > MAX_BYTES)
+        p101_bool_result_1 = p101_error_has_error(err);
+        if(p101_bool_result_1 || args->bytes == 0U || args->bytes > MAX_BYTES)
         {
             P101_ERROR_RAISE_USER(err, "The byte count must be between 1 and 4096.", ERR_USAGE);
             goto done;
@@ -172,7 +191,8 @@ void p101_tool_playground_convert_arguments(const struct p101_env *env, struct p
     {
         args->repeats = p101_parse_unsigned_int(env, err, args->repeats_str, DEFAULT_REPEATS);
 
-        if(p101_error_has_error(err) || args->repeats == 0U || args->repeats > MAX_REPEATS)
+        p101_bool_result_1 = p101_error_has_error(err);
+        if(p101_bool_result_1 || args->repeats == 0U || args->repeats > MAX_REPEATS)
         {
             P101_ERROR_RAISE_USER(err, "The repeat count must be between 1 and 32.", ERR_USAGE);
             goto done;
