@@ -807,13 +807,17 @@ def run_corpus(root: Path, out_dir: Path, args: argparse.Namespace) -> int:
 
 
 def find_audit_doctor(root: Path) -> Path | None:
-    candidates = [
+    candidates: list[Path | str] = []
+    configured = os.environ.get("P101_AUDIT_DOCTOR", "").strip()
+    if configured:
+        candidates.append(configured)
+    candidates.extend([
         root / "../programs/p101-audit/build-clang-22/audit-doctor",
         root / "../programs/p101-audit/build-clang/audit-doctor",
         root / "../programs/p101-audit/build-gcc-16/audit-doctor",
-    ]
+    ])
     for candidate in candidates:
-        path = candidate.resolve()
+        path = Path(candidate).expanduser().resolve()
         if path.is_file() and os.access(path, os.X_OK):
             return path
     resolved = shutil.which("audit-doctor")
