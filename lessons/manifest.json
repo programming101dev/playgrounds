@@ -244,9 +244,9 @@
         "P101-ERR-009"
       ],
       "command": [
-        "../../test.sh"
+        "./test.sh"
       ],
-      "cwd": "programs/p101-audit/components/error-contract",
+      "cwd": "programs/p101-audit",
       "evidence_paths": [
         "programs/p101-audit/components/error-contract/src/contract.c",
         "programs/p101-audit/components/error-contract/test/contract_fixture.c",
@@ -287,9 +287,9 @@
         "P101-MOD-027"
       ],
       "command": [
-        "../../test.sh"
+        "./test.sh"
       ],
-      "cwd": "programs/p101-audit/components/module-map",
+      "cwd": "programs/p101-audit",
       "evidence_paths": [
         "programs/p101-audit/components/module-map/src/report.c",
         "programs/p101-audit/components/module-map/test/test_cli.sh"
