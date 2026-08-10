@@ -10,11 +10,11 @@
 
 void p101_tool_playground_support_close_fd_preserving_error(const struct p101_env *env, struct p101_error *err, int *fd)
 {
-    bool p101_bool_result_1;
-
     P101_TRACE_SCOPE(env);
     if(fd != NULL && *fd != -1)
     {
+        bool p101_bool_result_1;
+
         p101_bool_result_1 = p101_error_has_no_error(err);
         if(p101_bool_result_1)
         {

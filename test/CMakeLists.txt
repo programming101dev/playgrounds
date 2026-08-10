@@ -5,6 +5,7 @@
 cmake_minimum_required(VERSION 3.14)
 project(p101_tests C)
 enable_testing()
+find_package(Python3 COMPONENTS Interpreter REQUIRED)
 
 add_library(unity STATIC unity/unity.c)
 target_include_directories(unity PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/unity")
@@ -51,3 +52,4 @@ function(p101_add_test name)
 endfunction()
 
 p101_add_test(test_arguments test_arguments.c ../src/cli.c ../src/scenario.c)
+add_test(NAME test_build_lab COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/test_build_lab.py")

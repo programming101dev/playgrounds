@@ -81,7 +81,6 @@ static int run_fork_demo(const struct p101_env *env, struct p101_error *err, con
 
 int p101_tool_playground_run(const struct p101_env *env, struct p101_error *err, const struct arguments *args)
 {
-    bool        p101_bool_result_1;
     const char *p101_const_char_pointer_result_1;
 
     int ret_val;
@@ -98,6 +97,8 @@ int p101_tool_playground_run(const struct p101_env *env, struct p101_error *err,
     {
         case SCENARIO_TOUR:
         {
+            bool p101_bool_result_1;
+
             ret_val            = run_clean_file(env, err, args);
             p101_bool_result_1 = p101_error_has_no_error(err);
             if(p101_bool_result_1)

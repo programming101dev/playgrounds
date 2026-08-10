@@ -26,13 +26,13 @@ void p101_tool_playground_parse_arguments(const struct p101_env *env, struct p10
     bool p101_bool_result_1;
     int  p101_int_result_1;
 
-    int opt;
-
     P101_TRACE_SCOPE(env);
     opterr = 0;
 
     while(true)
     {
+        int opt;
+
         opt                = p101_getopt(env, argc, argv, ":hvs:o:b:r:");
         p101_bool_result_1 = p101_error_has_no_error(err);
         if(opt == -1 || !p101_bool_result_1)
