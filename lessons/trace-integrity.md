@@ -11,7 +11,7 @@ producer or the code path that bypassed it.
 Verify with:
 
 ```sh
-../scripts/runtime/p101-run.py -- ./your-program
+p101-inspect run -- ./your-program
 ```
 
 The trace includes p101-aware functions only. It is deliberately not a complete

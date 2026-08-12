@@ -95,6 +95,7 @@
       ],
       "finding_ids": [
         "P101-ALLOC-004",
+        "P101-RESOURCE-000",
         "P101-RESOURCE-001",
         "P101-RESOURCE-002",
         "P101-RESOURCE-003",
@@ -134,7 +135,7 @@
         "P101-TRACE-003"
       ],
       "acceptance_profile": "runtime-trace",
-      "verification": "scripts/runtime/p101-run.py -- <command>"
+      "verification": "p101-inspect run -- <command>"
     },
     {
       "lesson_id": "P101-LESSON-SANITIZERS",
@@ -151,7 +152,7 @@
         "P101-SAN-004"
       ],
       "acceptance_profile": "runtime-sanitizers",
-      "verification": "scripts/runtime/p101-run.py -- <sanitized-command>"
+      "verification": "p101-inspect run -- <sanitized-command>"
     },
     {
       "lesson_id": "P101-LESSON-MUTATION-STRENGTH",
@@ -193,12 +194,13 @@
         "P101-LESSON-TRACE-INTEGRITY"
       ],
       "finding_ids": [
+        "P101-EXPECT-001",
         "P101-POLICY-RESOURCE-001",
         "P101-POLICY-RESOURCE-002",
         "P101-POLICY-RESOURCE-003"
       ],
       "acceptance_profile": "policy-rules",
-      "verification": "scripts/runtime/p101-model.py verify -e <expectations.txt> <analysis-directory>"
+      "verification": "p101-inspect model verify -e <expectations.txt> <analysis-directory>"
     }
   ],
   "acceptance_profiles": [
@@ -307,20 +309,18 @@
       "description": "Canonical causal models exercise every descriptor, allocation, and generic-resource lifecycle finding.",
       "finding_ids": [
         "P101-ALLOC-004",
+        "P101-RESOURCE-000",
         "P101-RESOURCE-001",
         "P101-RESOURCE-002",
         "P101-RESOURCE-003",
         "P101-RESOURCE-004",
         "P101-RESOURCE-005"
       ],
-      "command": [
-        "python3",
-        "scripts/tests/test-p101-runtime.py"
-      ],
-      "cwd": ".",
+      "command": ["./test.sh"],
+      "cwd": "programs/p101-inspect",
       "evidence_paths": [
-        "scripts/runtime/p101_runtime.py",
-        "scripts/tests/test-p101-runtime.py"
+        "programs/p101-inspect/test/test_native_cli.sh",
+        "libraries/lib_tool_event/src/analysis.c"
       ],
       "platforms": [
         "macos",
@@ -338,14 +338,11 @@
         "P101-SYNC-002",
         "P101-SYNC-003"
       ],
-      "command": [
-        "python3",
-        "tests/test-p101-runtime.py"
-      ],
-      "cwd": "scripts",
+      "command": ["./test.sh"],
+      "cwd": "programs/p101-inspect",
       "evidence_paths": [
-        "scripts/runtime/p101_runtime.py",
-        "scripts/tests/test-p101-runtime.py"
+        "programs/p101-inspect/test/test_native_cli.sh",
+        "libraries/lib_tool_event/src/analysis.c"
       ],
       "platforms": [
         "macos",
@@ -363,14 +360,11 @@
         "P101-TRACE-002",
         "P101-TRACE-003"
       ],
-      "command": [
-        "python3",
-        "scripts/tests/test-p101-runtime.py"
-      ],
-      "cwd": ".",
+      "command": ["./test.sh"],
+      "cwd": "programs/p101-inspect",
       "evidence_paths": [
-        "scripts/runtime/p101_runtime.py",
-        "scripts/tests/test-p101-runtime.py"
+        "programs/p101-inspect/test/test_native_cli.sh",
+        "libraries/lib_tool_event/src/analysis.c"
       ],
       "platforms": [
         "macos",
@@ -389,14 +383,11 @@
         "P101-SAN-003",
         "P101-SAN-004"
       ],
-      "command": [
-        "python3",
-        "scripts/tests/test-p101-runtime.py"
-      ],
-      "cwd": ".",
+      "command": ["./test.sh"],
+      "cwd": "programs/p101-inspect",
       "evidence_paths": [
-        "scripts/runtime/p101_runtime.py",
-        "scripts/tests/test-p101-runtime.py"
+        "programs/p101-inspect/test/test_native_cli.sh",
+        "libraries/lib_tool_event/src/analysis.c"
       ],
       "platforms": [
         "macos",
@@ -459,19 +450,16 @@
       "kind": "native-policy-suite",
       "description": "Clean and violating models exercise each resource expectation rule.",
       "finding_ids": [
+        "P101-EXPECT-001",
         "P101-POLICY-RESOURCE-001",
         "P101-POLICY-RESOURCE-002",
         "P101-POLICY-RESOURCE-003"
       ],
-      "command": [
-        "python3",
-        "scripts/tests/test-p101-model.py"
-      ],
-      "cwd": ".",
+      "command": ["./test.sh"],
+      "cwd": "programs/p101-inspect",
       "evidence_paths": [
-        "scripts/runtime/p101-model.py",
         "scripts/rules/resource-clean.json",
-        "scripts/tests/test-p101-model.py"
+        "programs/p101-inspect/test/test_native_cli.sh"
       ],
       "platforms": [
         "macos",

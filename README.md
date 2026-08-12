@@ -25,7 +25,7 @@ The point is to have one program that makes the whole toolchain visible:
 
 ```text
 p101-tool-playground
-  -> scripts/runtime/p101-run.py
+  -> p101-inspect run
       -> inspect-capture
       -> resources.log
       -> calls.log
@@ -181,8 +181,8 @@ then verify the lesson contract:
 ```bash
 ../programs/p101-inspect/build-clang/inspect-capture -o /tmp/p101-tour -- \
   ./build-clang/p101-tool-playground -s tour
-../scripts/runtime/p101-analyze.py /tmp/p101-tour
-../scripts/runtime/p101-model.py verify \
+p101-inspect analyze /tmp/p101-tour
+p101-inspect model verify \
   -e "$(pwd -P)/expectations/tour.txt" /tmp/p101-tour.analysis
 ```
 
@@ -314,7 +314,7 @@ Build the playground:
 Run a clean observed tour:
 
 ```sh
-../scripts/runtime/p101-run.py \
+p101-inspect run \
   -o /tmp/p101-playground-tour \
   -- ./build-clang/p101-tool-playground -s tour
 ```
@@ -322,7 +322,7 @@ Run a clean observed tour:
 Run a descriptor leak:
 
 ```sh
-../scripts/runtime/p101-run.py \
+p101-inspect run \
   -o /tmp/p101-playground-fd-leak \
   -- ./build-clang/p101-tool-playground -s fd-leak
 ```
@@ -330,11 +330,9 @@ Run a descriptor leak:
 Inspect individual artifacts:
 
 ```sh
-../scripts/runtime/p101-view.py resource /tmp/p101-playground-fd-leak/analysis
-../scripts/runtime/p101-view.py resource -j /tmp/p101-playground-fd-leak/analysis
-../scripts/runtime/p101-view.py trace /tmp/p101-playground-fd-leak/analysis
-../scripts/runtime/p101-view.py report /tmp/p101-playground-fd-leak/analysis
-../scripts/runtime/p101-view.py report -j /tmp/p101-playground-fd-leak/analysis
+p101-inspect view resource /tmp/p101-playground-fd-leak/analysis
+p101-inspect view trace /tmp/p101-playground-fd-leak/analysis
+p101-inspect view report /tmp/p101-playground-fd-leak/analysis
 ```
 
 Walk injected error paths:
@@ -380,11 +378,11 @@ scenario stayed inside its expected resource model.
 
 ## Suggested classroom flow
 
-1. Run `tour` with `scripts/runtime/p101-run.py` and inspect `summary.txt`.
+1. Run `tour` with `p101-inspect run` and inspect `summary.txt`.
 2. Run `fd-leak` and compare `resource-report.txt` with
    `correlated-report.txt`.
 3. Run `alloc-leak` and inspect `correlated-report.json`.
-4. Run `scripts/runtime/p101-view.py trace` on the analysis directory.
+4. Run `p101-inspect view trace` on the analysis directory.
 5. Run `fault-lab` through `scripts/runtime/student-workflow.sh` and find the first injected
    failure that leaks.
 6. Run `./test.sh`, `./fuzz.sh`, and `./report.sh coverage` to show the static

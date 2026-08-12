@@ -344,10 +344,9 @@ else
 fi
 
 playground="$(find_tool P101_TOOL_PLAYGROUND "$(last_build_tool . p101-tool-playground)" ./build-clang-22/p101-tool-playground ./build-clang/p101-tool-playground ./build-gcc-16/p101-tool-playground p101-tool-playground)"
-run_analysis="$(find_tool P101_RUN ../scripts/runtime/p101-run.py)"
+run_analysis="$(find_tool P101_INSPECT "$(last_build_tool ../programs/p101-inspect p101-inspect)" ../programs/p101-inspect/build-clang-22/p101-inspect ../programs/p101-inspect/build-clang/p101-inspect ../programs/p101-inspect/build-gcc-16/p101-inspect p101-inspect)"
 fault_runner="$(find_tool P101_TEST_FAULTS "$(last_build_tool ../programs/p101-test test-faults)" ../programs/p101-test/build-clang-22/test-faults ../programs/p101-test/build-clang/test-faults ../programs/p101-test/build-gcc-16/test-faults test-faults)"
 capture_tool="$(find_tool P101_INSPECT_CAPTURE "$(last_build_tool ../programs/p101-inspect inspect-capture)" ../programs/p101-inspect/build-clang-22/inspect-capture ../programs/p101-inspect/build-clang/inspect-capture ../programs/p101-inspect/build-gcc-16/inspect-capture inspect-capture)"
-model_tool="$(find_tool P101_EVENT_MODEL "$(last_build_tool ../libraries/lib_tool_event p101-event-model)" ../libraries/lib_tool_event/build-clang-22/p101-event-model ../libraries/lib_tool_event/build-clang/p101-event-model ../libraries/lib_tool_event/build-gcc-16/p101-event-model p101-event-model)"
 wrapper_audit="$(find_tool P101_AUDIT_WRAPPERS ../programs/p101-audit/audit-wrappers audit-wrappers)"
 error_contract="$(find_tool P101_AUDIT_ERRORS "$(last_build_tool ../programs/p101-audit audit-errors)" ../programs/p101-audit/build-clang-22/audit-errors ../programs/p101-audit/build-clang/audit-errors ../programs/p101-audit/build-gcc-16/audit-errors audit-errors)"
 module_map="$(find_tool P101_AUDIT_MODULES "$(last_build_tool ../programs/p101-audit audit-modules)" ../programs/p101-audit/build-clang-22/audit-modules ../programs/p101-audit/build-clang/audit-modules ../programs/p101-audit/build-gcc-16/audit-modules audit-modules)"
@@ -355,25 +354,25 @@ doctor="$(find_tool P101_AUDIT_DOCTOR "$(last_build_tool ../programs/p101-audit 
 
 if [ -z "$playground" ]; then
   record "FAIL" "locate playground binary" "run ./build.sh first"
-elif [ -z "$run_analysis" ] || [ -z "$capture_tool" ] || [ -z "$model_tool" ]; then
+elif [ -z "$run_analysis" ] || [ -z "$capture_tool" ]; then
   record "FAIL" "observed runtime demos" "capture or analysis engine not found"
 else
   reset_child_dir "$out_dir/observed-tour"
   reset_child_dir "$out_dir/observed-fd-leak"
   reset_child_dir "$out_dir/observed-alloc-leak"
   reset_child_dir "$out_dir/observed-double-close"
-  run_logged "observe full clean tour" "$log_dir/observe-tour.log" "0" "$run_analysis" -o "$out_dir/observed-tour" --observe-tool "$capture_tool" --model-tool "$model_tool" -- "$playground" -s tour -o "$out_dir/tour-output.txt" || true
-  run_logged "observe fd leak" "$log_dir/observe-fd-leak.log" "0 1" "$run_analysis" -o "$out_dir/observed-fd-leak" --observe-tool "$capture_tool" --model-tool "$model_tool" -- "$playground" -s fd-leak -o "$out_dir/fd-leak-output.txt" || true
-  run_logged "observe allocation leak" "$log_dir/observe-alloc-leak.log" "0 1" "$run_analysis" -o "$out_dir/observed-alloc-leak" --observe-tool "$capture_tool" --model-tool "$model_tool" -- "$playground" -s alloc-leak -o "$out_dir/alloc-leak-output.txt" || true
-  run_logged "observe double close" "$log_dir/observe-double-close.log" "0 1" "$run_analysis" -o "$out_dir/observed-double-close" --observe-tool "$capture_tool" --model-tool "$model_tool" -- "$playground" -s double-close -o "$out_dir/double-close-output.txt" || true
+  run_logged "observe full clean tour" "$log_dir/observe-tour.log" "0" "$run_analysis" run -o "$out_dir/observed-tour" --observe-tool "$capture_tool" -- "$playground" -s tour -o "$out_dir/tour-output.txt" || true
+  run_logged "observe fd leak" "$log_dir/observe-fd-leak.log" "0 1" "$run_analysis" run -o "$out_dir/observed-fd-leak" --observe-tool "$capture_tool" -- "$playground" -s fd-leak -o "$out_dir/fd-leak-output.txt" || true
+  run_logged "observe allocation leak" "$log_dir/observe-alloc-leak.log" "0 1" "$run_analysis" run -o "$out_dir/observed-alloc-leak" --observe-tool "$capture_tool" -- "$playground" -s alloc-leak -o "$out_dir/alloc-leak-output.txt" || true
+  run_logged "observe double close" "$log_dir/observe-double-close.log" "0 1" "$run_analysis" run -o "$out_dir/observed-double-close" --observe-tool "$capture_tool" -- "$playground" -s double-close -o "$out_dir/double-close-output.txt" || true
 fi
 
-if [ -z "$playground" ] || [ -z "$run_analysis" ] || [ -z "$fault_runner" ] || [ -z "$capture_tool" ] || [ -z "$model_tool" ]; then
+if [ -z "$playground" ] || [ -z "$run_analysis" ] || [ -z "$fault_runner" ] || [ -z "$capture_tool" ]; then
   record "FAIL" "fault walk" "missing fault, capture, model, or playground engine"
 else
   reset_child_dir "$out_dir/fault-walk"
   mkdir -p "$out_dir/fault-walk"
-  run_logged "fault walk" "$log_dir/fault-walk.log" "0 1" "$fault_runner" -U "$run_analysis" -O "$capture_tool" -Y ../scripts/runtime/p101-analyze.py -B "$model_tool" -n "$fault_count" -l "$out_dir/fault-walk/fault" -- "$playground" -s fault-lab -o "$out_dir/fault-lab-output.txt" || true
+  run_logged "fault walk" "$log_dir/fault-walk.log" "0 1" "$fault_runner" -U "$run_analysis" -O "$capture_tool" -n "$fault_count" -l "$out_dir/fault-walk/fault" -- "$playground" -s fault-lab -o "$out_dir/fault-lab-output.txt" || true
 fi
 
 if [ -z "$playground" ] || [ -z "$doctor" ] || [ -z "$wrapper_audit" ] || [ -z "$error_contract" ] || [ -z "$module_map" ]; then

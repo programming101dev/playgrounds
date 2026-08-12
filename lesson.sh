@@ -165,10 +165,9 @@ assert_exists() {
 }
 
 playground="$(find_tool P101_TOOL_PLAYGROUND ./build-clang-22/p101-tool-playground ./build-clang/p101-tool-playground ./build-gcc-16/p101-tool-playground p101-tool-playground || true)"
-run_tool="$(find_tool P101_RUN ../scripts/runtime/p101-run.py || true)"
+run_tool="$(find_tool P101_INSPECT ../programs/p101-inspect/build-clang-22/p101-inspect ../programs/p101-inspect/build-clang/p101-inspect p101-inspect || true)"
 capture_tool="$(find_tool P101_INSPECT_CAPTURE ../programs/p101-inspect/build-clang-22/inspect-capture ../programs/p101-inspect/build-clang/inspect-capture inspect-capture || true)"
 fault_tool="$(find_tool P101_TEST_FAULTS ../programs/p101-test/build-clang-22/test-faults ../programs/p101-test/build-clang/test-faults test-faults || true)"
-model_tool="$(find_tool P101_EVENT_MODEL ../libraries/lib_tool_event/build-clang-22/p101-event-model ../libraries/lib_tool_event/build-clang/p101-event-model p101-event-model || true)"
 wrapper_audit="$(find_tool P101_AUDIT_WRAPPERS ../programs/p101-audit/audit-wrappers audit-wrappers || true)"
 module_map="$(find_tool P101_AUDIT_MODULES ../programs/p101-audit/build-clang-22/audit-modules ../programs/p101-audit/build-clang/audit-modules audit-modules || true)"
 
@@ -182,7 +181,7 @@ Lesson: \`${lesson}\`
 EOF
 
 need_runtime_tools() {
-  [ -n "$playground" ] && [ -n "$run_tool" ] && [ -n "$capture_tool" ] && [ -n "$model_tool" ]
+  [ -n "$playground" ] && [ -n "$run_tool" ] && [ -n "$capture_tool" ]
 }
 
 do_wrappers() {
@@ -220,7 +219,7 @@ do_fd_leak() {
     failures=1
     return 1
   fi
-  run_step "fd leak observation" "$out_dir/logs/fd-leak.log" 1 "$run_tool" --observe-tool "$capture_tool" --model-tool "$model_tool" -o "$out_dir/fd-leak" -- "$playground" -s fd-leak -o "$out_dir/fd-leak-output.txt" || failures=1
+  run_step "fd leak observation" "$out_dir/logs/fd-leak.log" 1 "$run_tool" run --observe-tool "$capture_tool" -o "$out_dir/fd-leak" -- "$playground" -s fd-leak -o "$out_dir/fd-leak-output.txt" || failures=1
   assert_contains "fd leak report uses the current schema" "$out_dir/fd-leak/analysis/resource-report.json" "\"schema\"[[:space:]]*:[[:space:]]*\"p101-resource-policy-findings-v1\"" || failures=1
   assert_findings_counted "fd leak is counted" "$out_dir/fd-leak/analysis/resource-report.json" || failures=1
 }
@@ -232,7 +231,7 @@ do_error_path() {
     return 1
   fi
   mkdir -p "$out_dir/fault-walk"
-  run_step "error path walk" "$out_dir/logs/error-path.log" "0 1" "$fault_tool" -U "$run_tool" -O "$capture_tool" -Y ../scripts/runtime/p101-analyze.py -B "$model_tool" -n 8 -l "$out_dir/fault-walk/case" -- "$playground" -s fault-lab -o "$out_dir/fault-output.txt" || failures=1
+  run_step "error path walk" "$out_dir/logs/error-path.log" "0 1" "$fault_tool" -U "$run_tool" -O "$capture_tool" -n 8 -l "$out_dir/fault-walk/case" -- "$playground" -s fault-lab -o "$out_dir/fault-output.txt" || failures=1
   assert_contains "fault walk produced evidence" "$out_dir/logs/error-path.log" "fault|case|finding|leak" || failures=1
   assert_exists "fault walk produced case artifacts" "$out_dir/fault-walk" || failures=1
 }

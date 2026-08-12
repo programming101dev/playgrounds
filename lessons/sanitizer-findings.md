@@ -24,7 +24,7 @@ used invalid memory. Neither report proves that unexecuted paths are safe.
    synchronization invariant that was violated.
 3. Fix ownership or synchronization rather than suppressing the diagnostic.
 4. Rebuild with the same sanitizer set.
-5. Replay the exact command with `../scripts/runtime/p101-run.py` and confirm that the sanitizer and
+5. Replay the exact command with `p101-inspect run` and confirm that the sanitizer and
    p101 policy reports are both clean.
 
 Sanitizer output is execution evidence. Add a focused regression test for the

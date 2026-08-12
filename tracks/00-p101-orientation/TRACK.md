@@ -213,7 +213,7 @@ Build first if needed, then run:
 track_dir="$(pwd)"
 workspace_root="$(cd ../../.. && pwd)"
 build_dir="$(cat .last-build-dir)"
-"${workspace_root}/scripts/runtime/p101-run.py" \
+"${workspace_root}/programs/p101-inspect/build-clang/p101-inspect" run \
   -o /tmp/p101-orientation-observe \
   -- "${track_dir}/${build_dir}/p101-track-p101-orientation"
 ```
