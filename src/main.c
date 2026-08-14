@@ -36,7 +36,10 @@ int main(int argc, char *argv[])
     {
         p101_tool_playground_write_scenario_manifest(env, err, stdout);
         p101_bool_result_1 = p101_error_has_no_error(err);
-        ret_val            = p101_bool_result_1 ? EXIT_SUCCESS : EXIT_FAILURE;
+        if(p101_bool_result_1)
+        {
+            ret_val = EXIT_SUCCESS;
+        }
         goto done;
     }
 

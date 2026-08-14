@@ -7,7 +7,8 @@ enum playground_scenario_behavior
 {
     P101_SCENARIO_EXECUTABLE_CLEAN,
     P101_SCENARIO_EXECUTABLE_DEFECT,
-    P101_SCENARIO_MODELED_DEFECT
+    P101_SCENARIO_MODELED_DEFECT,
+    P101_SCENARIO_BEHAVIOR_COUNT
 };
 
 struct scenario_definition
@@ -27,6 +28,38 @@ static const struct scenario_definition SCENARIOS[] = {
 static bool scenario_is_valid(enum playground_scenario scenario)
 {
     return (scenario >= SCENARIO_TOUR && scenario < SCENARIO_COUNT) != 0;
+}
+
+static const char *scenario_behavior_name(enum playground_scenario_behavior behavior)
+{
+    const char *name;
+
+#ifdef __clang__
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wcovered-switch-default"
+#endif
+    switch(behavior)
+    {
+        case P101_SCENARIO_EXECUTABLE_CLEAN:
+            name = "executable-clean";
+            break;
+        case P101_SCENARIO_EXECUTABLE_DEFECT:
+            name = "executable-defect";
+            break;
+        case P101_SCENARIO_MODELED_DEFECT:
+            name = "modeled-defect";
+            break;
+        case P101_SCENARIO_BEHAVIOR_COUNT:
+            name = "invalid-sentinel";
+            break;
+        default:
+            name = "unknown";
+            break;
+    }
+#ifdef __clang__
+    #pragma clang diagnostic pop
+#endif
+    return name;
 }
 
 enum playground_scenario p101_tool_playground_scenario_from_name(const struct p101_env *env, const char *name, bool *ok)
@@ -85,36 +118,7 @@ void p101_tool_playground_print_scenarios(const struct p101_env *env, struct p10
             break;
         }
 
-#ifdef __clang__
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wcovered-switch-default"
-#endif
-        switch(SCENARIOS[index].behavior)
-        {
-            case P101_SCENARIO_EXECUTABLE_CLEAN:
-            {
-                behavior = "executable-clean";
-                break;
-            }
-            case P101_SCENARIO_EXECUTABLE_DEFECT:
-            {
-                behavior = "executable-defect";
-                break;
-            }
-            case P101_SCENARIO_MODELED_DEFECT:
-            {
-                behavior = "modeled-defect";
-                break;
-            }
-            default:
-            {
-                behavior = "unknown";
-                break;
-            }
-        }
-#ifdef __clang__
-    #pragma clang diagnostic pop
-#endif
+        behavior = scenario_behavior_name(SCENARIOS[index].behavior);
 
         p101_fprintf(env, err, stream, "  %-27s %-17s %s\n", SCENARIOS[index].name, behavior, SCENARIOS[index].description);
     }
@@ -135,21 +139,7 @@ void p101_tool_playground_write_scenario_manifest(const struct p101_env *env, st
         {
             break;
         }
-        switch(SCENARIOS[index].behavior)
-        {
-            case P101_SCENARIO_EXECUTABLE_CLEAN:
-                behavior = "executable-clean";
-                break;
-            case P101_SCENARIO_EXECUTABLE_DEFECT:
-                behavior = "executable-defect";
-                break;
-            case P101_SCENARIO_MODELED_DEFECT:
-                behavior = "modeled-defect";
-                break;
-            default:
-                behavior = "unknown";
-                break;
-        }
+        behavior = scenario_behavior_name(SCENARIOS[index].behavior);
         p101_fprintf(env, err, stream, "%s\t%s\t%s\n", SCENARIOS[index].name, behavior, SCENARIOS[index].description);
     }
 }
