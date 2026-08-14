@@ -12,9 +12,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from scenario_manifest import load_scenario_manifest
-
-
 @dataclass(frozen=True)
 class CaseResult:
     name: str
@@ -80,9 +77,40 @@ def case_tracks(case: dict[str, Any]) -> set[str]:
     return set()
 
 
-def load_cases(root: Path, cases_dir: Path, selected: set[str] | None, track: str | None) -> list[dict[str, Any]]:
+def load_scenario_manifest(playground: Path) -> dict[str, str]:
+    completed = subprocess.run(
+        [str(playground), "-S"],
+        check=False,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+    if completed.returncode != 0:
+        raise ValueError(
+            f"{playground} could not emit its scenario manifest: "
+            f"{completed.stderr.strip()}"
+        )
+    lines = completed.stdout.splitlines()
+    if not lines or lines[0] != "P101SCENARIOS\t1":
+        raise ValueError(f"{playground} emitted an invalid scenario manifest")
+    scenarios: dict[str, str] = {}
+    for line_number, line in enumerate(lines[1:], 2):
+        fields = line.split("\t")
+        if len(fields) != 3 or not fields[0] or not fields[1]:
+            raise ValueError(
+                f"{playground}: scenario manifest line {line_number} is invalid"
+            )
+        if fields[0] in scenarios:
+            raise ValueError(f"{playground}: duplicate scenario {fields[0]}")
+        scenarios[fields[0]] = fields[1]
+    if not scenarios:
+        raise ValueError(f"{playground} emitted an empty scenario manifest")
+    return scenarios
+
+
+def load_cases(playground: Path, cases_dir: Path, selected: set[str] | None, track: str | None) -> list[dict[str, Any]]:
     cases: list[dict[str, Any]] = []
-    scenarios = load_scenario_manifest(root)
+    scenarios = load_scenario_manifest(playground)
     for expected_path in sorted(cases_dir.glob("*/expected.json")):
         case = read_json(expected_path)
         case["case_dir"] = str(expected_path.parent)
@@ -90,7 +118,7 @@ def load_cases(root: Path, cases_dir: Path, selected: set[str] | None, track: st
         scenario = str(case.get("scenario", ""))
         if scenario not in scenarios:
             raise ValueError(f"{expected_path}: unknown scenario {scenario!r}")
-        case["scenario_behavior"] = scenarios[scenario].behavior
+        case["scenario_behavior"] = scenarios[scenario]
         if selected is not None and name not in selected:
             continue
         if track is not None and track not in case_tracks(case):
@@ -292,7 +320,8 @@ def main(argv: list[str]) -> int:
         selected = None
 
     try:
-        cases = load_cases(root, cases_dir, selected, args.track)
+        playground = args.playground.resolve() if args.playground else find_executable(current_playground_candidates(root))
+        cases = load_cases(playground, cases_dir, selected, args.track)
     except (OSError, ValueError) as exc:
         print(f"p101 corpus: {exc}", file=sys.stderr)
         return 2
@@ -301,7 +330,6 @@ def main(argv: list[str]) -> int:
         return 2
 
     workflow = args.workflow.resolve() if args.workflow else find_executable([root / "../scripts/runtime/student-workflow.sh"])
-    playground = args.playground.resolve() if args.playground else find_executable(current_playground_candidates(root))
 
     results: list[CaseResult] = []
     for case in cases:

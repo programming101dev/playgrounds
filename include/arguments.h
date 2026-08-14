@@ -22,6 +22,7 @@ struct arguments
     unsigned int             repeats;
     bool                     verbose;
     bool                     show_help;
+    bool                     show_scenario_manifest;
 };
 
 #endif    // P101_TOOL_PLAYGROUND_ARGUMENTS_H

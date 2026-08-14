@@ -14,9 +14,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from scenario_manifest import load_scenario_manifest
-
-
 @dataclass(frozen=True)
 class LabCase:
     name: str
@@ -73,6 +70,37 @@ def resolve_output(path: Path | None) -> Path:
     return (invocation_cwd() / path).resolve()
 
 
+def find_executable(candidates: list[Path | str]) -> Path:
+    for candidate in candidates:
+        path = candidate if isinstance(candidate, Path) else Path(candidate)
+        if path.is_file() and path.stat().st_mode & 0o111:
+            return path.resolve()
+        resolved = shutil.which(str(candidate))
+        if resolved is not None:
+            return Path(resolved).resolve()
+    raise FileNotFoundError("none of the candidate executables were found: " + ", ".join(str(c) for c in candidates))
+
+
+def current_playground_candidates(root: Path) -> list[Path | str]:
+    candidates: list[Path | str] = []
+    last_build = root / ".last-build-dir"
+    try:
+        build_dir = last_build.read_text(encoding="utf-8").strip()
+    except OSError:
+        build_dir = ""
+    if build_dir:
+        candidates.append(root / build_dir / "p101-tool-playground")
+    candidates.extend(
+        [
+            root / "build-clang/p101-tool-playground",
+            root / "build-clang-22/p101-tool-playground",
+            root / "build-gcc-16/p101-tool-playground",
+            "p101-tool-playground",
+        ]
+    )
+    return candidates
+
+
 def read_text(path: Path, fallback: str = "") -> str:
     try:
         return path.read_text(encoding="utf-8")
@@ -110,9 +138,40 @@ def expected_tracks(expected: dict[str, Any]) -> list[str]:
     return []
 
 
-def load_cases(root: Path, runs_dir: Path, selected: set[str] | None, track: str | None) -> list[LabCase]:
+def load_scenario_manifest(playground: Path) -> dict[str, str]:
+    completed = subprocess.run(
+        [str(playground), "-S"],
+        check=False,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+    if completed.returncode != 0:
+        raise ValueError(
+            f"{playground} could not emit its scenario manifest: "
+            f"{completed.stderr.strip()}"
+        )
+    lines = completed.stdout.splitlines()
+    if not lines or lines[0] != "P101SCENARIOS\t1":
+        raise ValueError(f"{playground} emitted an invalid scenario manifest")
+    scenarios: dict[str, str] = {}
+    for line_number, line in enumerate(lines[1:], 2):
+        fields = line.split("\t")
+        if len(fields) != 3 or not fields[0] or not fields[1]:
+            raise ValueError(
+                f"{playground}: scenario manifest line {line_number} is invalid"
+            )
+        if fields[0] in scenarios:
+            raise ValueError(f"{playground}: duplicate scenario {fields[0]}")
+        scenarios[fields[0]] = fields[1]
+    if not scenarios:
+        raise ValueError(f"{playground} emitted an empty scenario manifest")
+    return scenarios
+
+
+def load_cases(playground: Path, root: Path, runs_dir: Path, selected: set[str] | None, track: str | None) -> list[LabCase]:
     cases: list[LabCase] = []
-    scenarios = load_scenario_manifest(root)
+    scenarios = load_scenario_manifest(playground)
     for expected_path in sorted((root / "corpus" / "cases").glob("*/expected.json")):
         expected = load_expected(expected_path)
         name = str(expected["name"])
@@ -143,7 +202,7 @@ def load_cases(root: Path, runs_dir: Path, selected: set[str] | None, track: str
                 category=str(expected.get("category", "")),
                 tracks=tracks,
                 scenario=scenario,
-                scenario_behavior=scenarios[scenario].behavior,
+                scenario_behavior=scenarios[scenario],
                 expected_exit=int(expected["expected_exit"]),
                 expected_status=str(expected.get("expected_status", "")),
                 lesson=lesson,
@@ -834,7 +893,8 @@ def main(argv: list[str]) -> int:
     out_dir.mkdir(parents=True)
 
     try:
-        cases = load_cases(root, out_dir / "runs", selected_case_names(args), args.track)
+        playground = args.playground.resolve() if args.playground else find_executable(current_playground_candidates(root))
+        cases = load_cases(playground, root, out_dir / "runs", selected_case_names(args), args.track)
     except ValueError as exc:
         print(f"p101 playground lab: invalid corpus metadata: {exc}", file=sys.stderr)
         return 2

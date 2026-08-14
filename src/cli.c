@@ -33,7 +33,7 @@ void p101_tool_playground_parse_arguments(const struct p101_env *env, struct p10
     {
         int opt;
 
-        opt                = p101_getopt(env, argc, argv, ":hvs:o:b:r:");
+        opt                = p101_getopt(env, argc, argv, ":hvSs:o:b:r:");
         p101_bool_result_1 = p101_error_has_no_error(err);
         if(opt == -1 || !p101_bool_result_1)
         {
@@ -50,6 +50,11 @@ void p101_tool_playground_parse_arguments(const struct p101_env *env, struct p10
             case 'v':
             {
                 args->verbose = true;
+                break;
+            }
+            case 'S':
+            {
+                args->show_scenario_manifest = true;
                 break;
             }
             case 's':

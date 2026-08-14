@@ -692,7 +692,7 @@ def track_main(graph: dict[str, Any], track: dict[str, Any], index: int) -> str:
     if track["track"] == "c-memory-bytes":
         extra_includes = [
             "#include <inttypes.h>",
-            "#include <p101_util/endian.h>",
+            "#include <p101_endian/endian.h>",
         ]
         demo_function = [
             "",

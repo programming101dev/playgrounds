@@ -119,3 +119,37 @@ void p101_tool_playground_print_scenarios(const struct p101_env *env, struct p10
         p101_fprintf(env, err, stream, "  %-27s %-17s %s\n", SCENARIOS[index].name, behavior, SCENARIOS[index].description);
     }
 }
+
+void p101_tool_playground_write_scenario_manifest(const struct p101_env *env, struct p101_error *err, FILE *stream)
+{
+    size_t index;
+
+    p101_fputs(env, err, "P101SCENARIOS\t1\n", stream);
+    for(index = 0U; index < (size_t)SCENARIO_COUNT; index++)
+    {
+        const char *behavior;
+        bool        has_no_error;
+
+        has_no_error = p101_error_has_no_error(err);
+        if(!has_no_error)
+        {
+            break;
+        }
+        switch(SCENARIOS[index].behavior)
+        {
+            case P101_SCENARIO_EXECUTABLE_CLEAN:
+                behavior = "executable-clean";
+                break;
+            case P101_SCENARIO_EXECUTABLE_DEFECT:
+                behavior = "executable-defect";
+                break;
+            case P101_SCENARIO_MODELED_DEFECT:
+                behavior = "modeled-defect";
+                break;
+            default:
+                behavior = "unknown";
+                break;
+        }
+        p101_fprintf(env, err, stream, "%s\t%s\t%s\n", SCENARIOS[index].name, behavior, SCENARIOS[index].description);
+    }
+}

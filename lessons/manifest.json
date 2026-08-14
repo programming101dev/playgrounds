@@ -430,13 +430,12 @@
         "P101-API-004"
       ],
       "command": [
-        "python3",
-        "scripts/tests/test-p101-api-diff.py"
+        "scripts/tests/test-p101-api-diff.sh"
       ],
       "cwd": ".",
       "evidence_paths": [
-        "scripts/runtime/p101-api-diff.py",
-        "scripts/tests/test-p101-api-diff.py"
+        "programs/p101-audit/components/api/src/api.c",
+        "scripts/tests/test-p101-api-diff.sh"
       ],
       "platforms": [
         "macos",

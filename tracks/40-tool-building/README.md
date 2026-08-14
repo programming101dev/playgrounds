@@ -53,8 +53,8 @@ C facts, small analyzers, and writing tools that reason about p101 projects.
 - `p101_record_parse_size`
 - `p101_record_split`
 - `p101_record_unescape_field`
-- `p101_record_write_json_string`
-- `p101_record_write_json_string_contents`
+- `p101_json_write_string`
+- `p101_json_write_string_contents`
 - `p101_tool_event_fingerprint_file`
 - `p101_tool_event_lifecycle_create`
 - `p101_tool_event_lifecycle_destroy`
