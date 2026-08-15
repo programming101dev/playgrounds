@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/03-c-byte-strings
-./run.sh
-./test.sh
+../../track-runner.sh c-byte-strings
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

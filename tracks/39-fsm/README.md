@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/39-fsm
-./run.sh
-./test.sh
+../../track-runner.sh fsm
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

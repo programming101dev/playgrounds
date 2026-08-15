@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/36-error-handling
-./run.sh
-./test.sh
+../../track-runner.sh error-handling
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

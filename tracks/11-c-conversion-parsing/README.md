@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/11-c-conversion-parsing
-./run.sh
-./test.sh
+../../track-runner.sh c-conversion-parsing
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

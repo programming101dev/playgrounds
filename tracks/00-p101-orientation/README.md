@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/00-p101-orientation
-./run.sh
-./test.sh
+../../track-runner.sh p101-orientation
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/18-c-complex-exp-log-power
-./run.sh
-./test.sh
+../../track-runner.sh c-complex-exp-log-power
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/35-runtime-services
-./run.sh
-./test.sh
+../../track-runner.sh runtime-services
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

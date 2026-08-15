@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/28-network-sockets
-./run.sh
-./test.sh
+../../track-runner.sh network-sockets
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

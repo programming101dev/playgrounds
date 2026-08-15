@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/15-c-floating-point
-./run.sh
-./test.sh
+../../track-runner.sh c-floating-point
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

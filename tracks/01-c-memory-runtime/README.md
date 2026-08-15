@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/01-c-memory-runtime
-./run.sh
-./test.sh
+../../track-runner.sh c-memory-runtime
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

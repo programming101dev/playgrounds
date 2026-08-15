@@ -11,7 +11,7 @@ boundary.
 
 Wrapper implementations themselves have a separate executable contract:
 generated unit tests exercise normal return, failure, tracing entry/exit, and
-resource events. When writing a wrapper library, run that library's `./test.sh`
+resource events. When writing a wrapper library, run that library's `cmake -S . -B build -DP101_BUILD_LEVEL=2 && cmake --build build`
 as well as this boundary audit; a call-site audit cannot prove the wrapper's
 runtime behavior.
 

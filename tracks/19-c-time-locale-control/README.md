@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/19-c-time-locale-control
-./run.sh
-./test.sh
+../../track-runner.sh c-time-locale-control
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

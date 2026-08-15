@@ -25,7 +25,7 @@
   "fix_steps": [
     "Read src/main.c to find p101_error_create, p101_env_create, p101_env_destroy, and p101_error_destroy.",
     "Read the orientation scenario in src/playground.c.",
-    "Run ./tracks/00-p101-orientation/run.sh.",
+    "Run ./track-runner.sh p101-orientation.",
     "Open the generated observe/report artifacts and connect resource events back to the wrapper calls."
   ],
   "lesson": "Every p101 program starts with env/error setup, routes work through wrappers, and then uses the tools to make resource and call behavior visible."

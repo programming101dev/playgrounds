@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/38-event-streams
-./run.sh
-./test.sh
+../../track-runner.sh event-streams
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

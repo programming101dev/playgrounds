@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/06-c-wide-io-conversion
-./run.sh
-./test.sh
+../../track-runner.sh c-wide-io-conversion
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

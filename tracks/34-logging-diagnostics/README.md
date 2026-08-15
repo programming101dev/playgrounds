@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/34-logging-diagnostics
-./run.sh
-./test.sh
+../../track-runner.sh logging-diagnostics
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

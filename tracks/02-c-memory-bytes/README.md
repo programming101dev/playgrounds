@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/02-c-memory-bytes
-./run.sh
-./test.sh
+../../track-runner.sh c-memory-bytes
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

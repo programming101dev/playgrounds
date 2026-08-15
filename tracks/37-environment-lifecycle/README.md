@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/37-environment-lifecycle
-./run.sh
-./test.sh
+../../track-runner.sh environment-lifecycle
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

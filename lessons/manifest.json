@@ -216,7 +216,7 @@
         "P101-WRAP-900"
       ],
       "command": [
-        "./test.sh"
+        "../../templates/template-c/test.sh"
       ],
       "cwd": "programs/p101-audit",
       "evidence_paths": [
@@ -246,7 +246,7 @@
         "P101-ERR-009"
       ],
       "command": [
-        "./test.sh"
+        "../../templates/template-c/test.sh"
       ],
       "cwd": "programs/p101-audit",
       "evidence_paths": [
@@ -289,7 +289,7 @@
         "P101-MOD-027"
       ],
       "command": [
-        "./test.sh"
+        "../../templates/template-c/test.sh"
       ],
       "cwd": "programs/p101-audit",
       "evidence_paths": [
@@ -316,7 +316,7 @@
         "P101-RESOURCE-004",
         "P101-RESOURCE-005"
       ],
-      "command": ["./test.sh"],
+      "command": ["../../templates/template-c/test.sh"],
       "cwd": "programs/p101-inspect",
       "evidence_paths": [
         "programs/p101-inspect/test/test_native_cli.sh",
@@ -338,7 +338,7 @@
         "P101-SYNC-002",
         "P101-SYNC-003"
       ],
-      "command": ["./test.sh"],
+      "command": ["../../templates/template-c/test.sh"],
       "cwd": "programs/p101-inspect",
       "evidence_paths": [
         "programs/p101-inspect/test/test_native_cli.sh",
@@ -360,7 +360,7 @@
         "P101-TRACE-002",
         "P101-TRACE-003"
       ],
-      "command": ["./test.sh"],
+      "command": ["../../templates/template-c/test.sh"],
       "cwd": "programs/p101-inspect",
       "evidence_paths": [
         "programs/p101-inspect/test/test_native_cli.sh",
@@ -383,7 +383,7 @@
         "P101-SAN-003",
         "P101-SAN-004"
       ],
-      "command": ["./test.sh"],
+      "command": ["../../templates/template-c/test.sh"],
       "cwd": "programs/p101-inspect",
       "evidence_paths": [
         "programs/p101-inspect/test/test_native_cli.sh",
@@ -404,9 +404,9 @@
         "P101-MUTATION-001"
       ],
       "command": [
-        "../../test.sh"
+        "../../templates/template-c/test.sh"
       ],
-      "cwd": "programs/p101-test/components/mutation",
+      "cwd": "programs/p101-test",
       "evidence_paths": [
         "programs/p101-test/config.cmake",
         "programs/p101-test/components/mutation/src",
@@ -454,7 +454,7 @@
         "P101-POLICY-RESOURCE-002",
         "P101-POLICY-RESOURCE-003"
       ],
-      "command": ["./test.sh"],
+      "command": ["../../templates/template-c/test.sh"],
       "cwd": "programs/p101-inspect",
       "evidence_paths": [
         "scripts/rules/resource-clean.json",

@@ -43,10 +43,8 @@ if [[ -e "$out" ]]; then
 fi
 
 echo "==> build"
-./build.sh -q
-
-echo "==> unit tests"
-./test.sh
+cmake -S . -B build-submit -DP101_BUILD_LEVEL=2
+cmake --build build-submit
 
 echo "==> lab progress"
 ./lab.sh "${lab_args[@]}" --require-all-fixed -o "$out"

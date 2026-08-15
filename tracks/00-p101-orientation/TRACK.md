@@ -27,8 +27,8 @@ workspace_root="$(cd ../../.. && pwd)"
 ```
 
 This directory is a standalone project. It has its own source, build
-configuration, smoke test, and runner. The expensive shared pieces
-(`CMakeLists.txt`, `cmake/`, flags, and helper scripts) are symlinks.
+configuration and smoke test. The expensive shared CMake and compiler
+policy files are symlinks.
 
 ## Step 1 — identify the files
 
@@ -39,7 +39,6 @@ src/main.c
 include/track_info.h
 config.cmake
 test/CMakeLists.txt
-run.sh
 ```
 
 What to notice:
@@ -49,7 +48,7 @@ What to notice:
 - `config.cmake` declares the target, source files, headers, feature-test
   macros, and p101 libraries.
 - `test/CMakeLists.txt` proves the built program runs.
-- `run.sh` is only convenience glue: configure if needed, build, then run.
+- `../../track-runner.sh` is the one shared configure/build/run entry point.
 
 The first habit is boring but powerful: know which file is responsible for
 which part of the program.
@@ -59,8 +58,8 @@ which part of the program.
 Run:
 
 ```sh
-./change-compiler.sh -c clang
-./build.sh -q
+cmake -S . -B build -DP101_BUILD_LEVEL=2
+cmake --build build
 ```
 
 What this proves:
@@ -79,7 +78,7 @@ line. p101 projects are intentionally strict; warnings are treated as bugs.
 Run:
 
 ```sh
-./run.sh
+../../track-runner.sh p101-orientation
 ```
 
 The output should show the track number, purpose, and wrapper inventory.
@@ -198,7 +197,7 @@ Two details are deliberate:
 Run:
 
 ```sh
-./test.sh
+ctest --test-dir build --output-on-failure
 ```
 
 This track's test is simple: it runs the built binary with CTest. That is
@@ -326,9 +325,9 @@ Add a new line of output inside `src/main.c` using `p101_fprintf`, then
 rerun:
 
 ```sh
-./build.sh -q
-./test.sh
-./run.sh
+cmake --build build
+ctest --test-dir build --output-on-failure
+../../track-runner.sh p101-orientation
 ```
 
 Do not add raw `printf`. The point of the exercise is to practice staying

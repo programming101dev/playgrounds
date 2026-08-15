@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/24-thread-lifecycle
-./run.sh
-./test.sh
+../../track-runner.sh thread-lifecycle
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

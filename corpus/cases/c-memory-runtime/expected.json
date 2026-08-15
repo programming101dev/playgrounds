@@ -17,7 +17,7 @@
   ],
   "fix_goal": "Keep every c-memory-runtime wrapper compiling, linking, running, and visible to p101 observation.",
   "fix_steps": [
-    "Run ./tracks/01-c-memory-runtime/run.sh.",
+    "Run ./track-runner.sh c-memory-runtime.",
     "Confirm the c-memory-runtime smoke case passes.",
     "If it fails, identify the wrapper family named by the scenario output or compiler diagnostic.",
     "Fix the wrapper use or portability guard without removing the wrapper from the track inventory."

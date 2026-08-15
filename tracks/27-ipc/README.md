@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/27-ipc
-./run.sh
-./test.sh
+../../track-runner.sh ipc
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

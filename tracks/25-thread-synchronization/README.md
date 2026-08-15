@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/25-thread-synchronization
-./run.sh
-./test.sh
+../../track-runner.sh thread-synchronization
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

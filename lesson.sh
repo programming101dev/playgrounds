@@ -203,7 +203,7 @@ do_wrappers() {
     done
   fi
   if [ -z "$compile_db" ]; then
-    printf '| FAIL | wrapper boundary | compile_commands.json not found; run ./change-compiler.sh and ./build.sh first |\n' >> "$summary"
+    printf '| FAIL | wrapper boundary | compile_commands.json not found; configure and build with CMake first |\n' >> "$summary"
     failures=1
     return 1
   fi

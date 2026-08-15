@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/07-c-wide-classification
-./run.sh
-./test.sh
+../../track-runner.sh c-wide-classification
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

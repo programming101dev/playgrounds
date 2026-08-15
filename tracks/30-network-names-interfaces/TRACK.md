@@ -9,11 +9,10 @@ getaddrinfo/getnameinfo, protocol/service databases, interface enumeration, and 
 ## Student workflow
 
 ```sh
-./run.sh
+../../track-runner.sh network-names-interfaces
 # inspect src/main.c and include/track_info.h
-./change-compiler.sh -c clang
-./build.sh
-./test.sh
+cmake -S . -B build -DP101_BUILD_LEVEL=2
+cmake --build build
 ```
 
 Start with the valid code in `src/main.c`. Then add one small trap or
@@ -26,7 +25,7 @@ to the next wrapper family.
 - `include/track_info.h` — generated track metadata.
 - `config.cmake` — local target and link configuration.
 - `test/CMakeLists.txt` — local smoke test for this track binary.
-- `run.sh` — configure/build/run convenience entry point.
+- `../../track-runner.sh` — the single runner shared by every track.
 
 ## Habit to practice
 

@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/12-c-math-trig
-./run.sh
-./test.sh
+../../track-runner.sh c-math-trig
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/14-c-math-rounding
-./run.sh
-./test.sh
+../../track-runner.sh c-math-rounding
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

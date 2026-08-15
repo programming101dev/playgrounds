@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/31-network-dns-resolver
-./run.sh
-./test.sh
+../../track-runner.sh network-dns-resolver
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

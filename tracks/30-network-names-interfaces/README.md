@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/30-network-names-interfaces
-./run.sh
-./test.sh
+../../track-runner.sh network-names-interfaces
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

@@ -1,28 +1,17 @@
 #!/usr/bin/env bash
-# Canonical standalone playground-track runner.
-#
-# scripts/distribution/copy-playground-track-scripts.sh materializes this file as run.sh in
-# every track so copied tracks remain self-contained without allowing 41
-# private runner implementations to drift apart.
+# Run one playground track through its CMake project.
 set -euo pipefail
 
-track_dir="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-track_name="${track_dir##*/}"
-case "$track_name" in
-    [0-9][0-9]-*) program_name="p101-track-${track_name#??-}" ;;
-    *)
-        printf 'Error: track directory must begin with NN-: %s\n' "$track_name" >&2
-        exit 2 ;;
-esac
-cd -- "$track_dir"
+playground_root="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+track_id=""
 
 compiler="${CC:-clang}"
 reconfigure=0
-build_args=(-q)
+build_args=()
 program_args=()
 
 usage() {
-    printf 'usage: %s [-c compiler] [--reconfigure] [--verbose-build] [--] [track-args...]\n' "$0" >&2
+    printf 'usage: %s <track-id> [-c compiler] [--reconfigure] [--verbose-build] [--] [track-args...]\n' "$0" >&2
 }
 
 while [[ $# -gt 0 ]]; do
@@ -33,27 +22,39 @@ while [[ $# -gt 0 ]]; do
             compiler="$2"
             shift 2 ;;
         --reconfigure) reconfigure=1; shift ;;
-        --verbose-build) build_args=(); shift ;;
+        --verbose-build) build_args=(--verbose); shift ;;
         --) shift; program_args=("$@"); break ;;
-        *) program_args+=("$1"); shift ;;
+        *)
+            if [[ -z "$track_id" ]]; then
+                track_id="$1"
+            else
+                program_args+=("$1")
+            fi
+            shift ;;
     esac
 done
 
-if [[ "$reconfigure" -eq 1 || ! -f .last-build-dir ]]; then
-    ./change-compiler.sh -c "$compiler"
+[[ -n "$track_id" ]] || { usage; exit 2; }
+matches=("$playground_root"/tracks/[0-9][0-9]-"$track_id")
+[[ "${#matches[@]}" -eq 1 && -d "${matches[0]}" ]] || {
+    printf 'Error: unknown or ambiguous playground track: %s\n' "$track_id" >&2
+    exit 2
+}
+track_dir="${matches[0]}"
+track_name="${track_dir##*/}"
+program_name="p101-track-${track_name#??-}"
+build_dir="$track_dir/build-$(basename "$compiler")"
+
+if [[ "$reconfigure" -eq 1 || ! -f "$build_dir/CMakeCache.txt" ]]; then
+    rm -rf -- "$build_dir"
+    cmake -S "$track_dir" -B "$build_dir" \
+        -DCMAKE_C_COMPILER="$compiler" -DP101_BUILD_LEVEL=1 \
+        -DP101_USE_PROBED_FLAGS=OFF
 fi
 
-./build.sh ${build_args[@]+"${build_args[@]}"}
+cmake --build "$build_dir" ${build_args[@]+"${build_args[@]}"}
 
-IFS= read -r build_dir < .last-build-dir || {
-    echo "Error: could not read .last-build-dir." >&2
-    exit 1
-}
-[[ -n "$build_dir" ]] || {
-    echo "Error: .last-build-dir is empty." >&2
-    exit 1
-}
-program="$track_dir/$build_dir/$program_name"
+program="$build_dir/$program_name"
 [[ -x "$program" ]] || {
     printf 'Error: track executable was not produced: %s\n' "$program" >&2
     exit 1

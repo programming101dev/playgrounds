@@ -12,7 +12,6 @@ import json
 import os
 import re
 import shutil
-import stat
 import subprocess
 from pathlib import Path
 from typing import Any
@@ -59,9 +58,6 @@ P101_LIBRARIES = [
 
 SHARED_LINKS = {
     "CMakeLists.txt": "../../CMakeLists.txt",
-    "build.sh": "../../build.sh",
-    "change-compiler.sh": "../../change-compiler.sh",
-    "test.sh": "../../test.sh",
     "cmake": "../../cmake",
     ".flags": "../../../.flags",
     "sanitizers.txt": "../../../scripts/sanitizers.txt",
@@ -95,12 +91,6 @@ def domain_functions(graph: dict[str, Any], domain: str) -> list[str]:
 def write(path: Path, text: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(text, encoding="utf-8")
-
-
-def write_executable(path: Path, text: str) -> None:
-    write(path, text)
-    mode = path.stat().st_mode
-    path.chmod(mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
 
 def format_c(path: Path) -> None:
@@ -152,8 +142,7 @@ def track_readme(graph: dict[str, Any], track: dict[str, Any], index: int) -> st
         "",
         "```sh",
         f"cd tracks/{index:02d}-{slug(track['track'])}",
-        "./run.sh",
-        "./test.sh",
+        f"../../track-runner.sh {slug(track['track'])}",
         "```",
         "",
         "Curated lesson guide: [TRACK.md](./TRACK.md).",
@@ -226,11 +215,10 @@ def track_lesson(track: dict[str, Any], index: int) -> str:
             "## Student workflow",
             "",
             "```sh",
-            "./run.sh",
+            f"../../track-runner.sh {slug(track['track'])}",
             "# inspect src/main.c and include/track_info.h",
-            "./change-compiler.sh -c clang",
-            "./build.sh",
-            "./test.sh",
+            "cmake -S . -B build -DP101_BUILD_LEVEL=2",
+            "cmake --build build",
             "```",
             "",
             "Start with the valid code in `src/main.c`. Then add one small trap or",
@@ -243,7 +231,7 @@ def track_lesson(track: dict[str, Any], index: int) -> str:
             "- `include/track_info.h` — generated track metadata.",
             "- `config.cmake` — local target and link configuration.",
             "- `test/CMakeLists.txt` — local smoke test for this track binary.",
-            "- `run.sh` — configure/build/run convenience entry point.",
+            "- `../../track-runner.sh` — the single runner shared by every track.",
             "",
             "## Habit to practice",
             "",
@@ -298,8 +286,8 @@ def orientation_lesson() -> str:
             "```",
             "",
             "This directory is a standalone project. It has its own source, build",
-            "configuration, smoke test, and runner. The expensive shared pieces",
-            "(`CMakeLists.txt`, `cmake/`, flags, and helper scripts) are symlinks.",
+            "configuration and smoke test. The expensive shared CMake and compiler",
+            "policy files are symlinks.",
             "",
             "## Step 1 — identify the files",
             "",
@@ -310,7 +298,6 @@ def orientation_lesson() -> str:
             "include/track_info.h",
             "config.cmake",
             "test/CMakeLists.txt",
-            "run.sh",
             "```",
             "",
             "What to notice:",
@@ -320,7 +307,7 @@ def orientation_lesson() -> str:
             "- `config.cmake` declares the target, source files, headers, feature-test",
             "  macros, and p101 libraries.",
             "- `test/CMakeLists.txt` proves the built program runs.",
-            "- `run.sh` is only convenience glue: configure if needed, build, then run.",
+            "- `../../track-runner.sh` is the one shared configure/build/run entry point.",
             "",
             "The first habit is boring but powerful: know which file is responsible for",
             "which part of the program.",
@@ -330,8 +317,8 @@ def orientation_lesson() -> str:
             "Run:",
             "",
             "```sh",
-            "./change-compiler.sh -c clang",
-            "./build.sh -q",
+            "cmake -S . -B build -DP101_BUILD_LEVEL=2",
+            "cmake --build build",
             "```",
             "",
             "What this proves:",
@@ -350,7 +337,7 @@ def orientation_lesson() -> str:
             "Run:",
             "",
             "```sh",
-            "./run.sh",
+            "../../track-runner.sh p101-orientation",
             "```",
             "",
             "The output should show the track number, purpose, and wrapper inventory.",
@@ -469,7 +456,7 @@ def orientation_lesson() -> str:
             "Run:",
             "",
             "```sh",
-            "./test.sh",
+            "ctest --test-dir build --output-on-failure",
             "```",
             "",
             "This track's test is simple: it runs the built binary with CTest. That is",
@@ -597,9 +584,9 @@ def orientation_lesson() -> str:
             "rerun:",
             "",
             "```sh",
-            "./build.sh -q",
-            "./test.sh",
-            "./run.sh",
+            "cmake --build build",
+            "ctest --test-dir build --output-on-failure",
+            "../../track-runner.sh p101-orientation",
             "```",
             "",
             "Do not add raw `printf`. The point of the exercise is to practice staying",
@@ -1161,14 +1148,12 @@ def track_test_cmake(track: dict[str, Any]) -> str:
             f"project({binary_name}-tests C)",
             "enable_testing()",
             "",
-            "set(_P101_LAST_BUILD_DIR \"build-clang\")",
-            "if (EXISTS \"${CMAKE_CURRENT_SOURCE_DIR}/../.last-build-dir\")",
-            "    file(READ \"${CMAKE_CURRENT_SOURCE_DIR}/../.last-build-dir\" _P101_LAST_BUILD_DIR)",
-            "    string(STRIP \"${_P101_LAST_BUILD_DIR}\" _P101_LAST_BUILD_DIR)",
+            "if (NOT DEFINED P101_SOURCE_BUILD_DIR)",
+            "    message(FATAL_ERROR \"P101_SOURCE_BUILD_DIR is required; configure the track with P101_BUILD_LEVEL=2\")",
             "endif ()",
-            f"set(_P101_TRACK_BINARY \"${{CMAKE_CURRENT_SOURCE_DIR}}/../${{_P101_LAST_BUILD_DIR}}/{binary_name}\")",
+            f"set(_P101_TRACK_BINARY \"${{P101_SOURCE_BUILD_DIR}}/{binary_name}\")",
             "if (NOT EXISTS \"${_P101_TRACK_BINARY}\")",
-            "    message(FATAL_ERROR \"Track binary not found: ${_P101_TRACK_BINARY}. Run ../build.sh first.\")",
+            "    message(FATAL_ERROR \"Track binary not found: ${_P101_TRACK_BINARY}. Build the track first.\")",
             "endif ()",
             "",
             "add_test(NAME track-runs COMMAND \"${_P101_TRACK_BINARY}\")",
@@ -1184,6 +1169,11 @@ def materialize_track_project(graph: dict[str, Any], track: dict[str, Any], inde
     for name, target in SHARED_LINKS.items():
         ensure_symlink(track_dir / name, target)
 
+    for retired_name in ("build.sh", "change-compiler.sh", "test.sh", "run.sh"):
+        retired_path = track_dir / retired_name
+        if retired_path.is_symlink() or retired_path.is_file():
+            retired_path.unlink()
+
     # A track may be copied out of this repository for a class exercise. Keep
     # repository policy files materialized rather than symlinked so the copy
     # retains its license and ignore policy without the workspace.
@@ -1198,7 +1188,6 @@ def materialize_track_project(graph: dict[str, Any], track: dict[str, Any], inde
     format_c(main_source)
     write(track_dir / "config.cmake", track_config(track, index))
     write(track_dir / "test" / "CMakeLists.txt", track_test_cmake(track))
-    write_executable(track_dir / "run.sh", (PLAYGROUND / "track-runner.sh").read_text(encoding="utf-8"))
 
 
 def tracks_index(graph: dict[str, Any], tracks: list[dict[str, Any]]) -> str:

@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/29-network-io-addresses
-./run.sh
-./test.sh
+../../track-runner.sh network-io-addresses
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

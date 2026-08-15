@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/10-c-stdio-character-buffering
-./run.sh
-./test.sh
+../../track-runner.sh c-stdio-character-buffering
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

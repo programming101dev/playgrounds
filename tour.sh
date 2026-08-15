@@ -172,21 +172,6 @@ run_logged() {
   return 1
 }
 
-copy_coverage_report() {
-  coverage_dir=""
-  if [ -f .last-build-dir ]; then
-    build_dir="$(cat .last-build-dir)"
-    case "$build_dir" in
-      build-*) coverage_dir="coverage-${build_dir#build-}" ;;
-      *) coverage_dir="coverage" ;;
-    esac
-  fi
-  if [ -n "$coverage_dir" ] && [ -d "$coverage_dir" ]; then
-    rm -rf "$out_dir/coverage"
-    cp -R "$coverage_dir" "$out_dir/coverage"
-  fi
-}
-
 missing_tools() {
   missing=""
 
@@ -314,26 +299,30 @@ write_summary_header
 echo "p101-tool-playground tour output: $out_dir"
 
 if [ "$do_quality" -eq 1 ]; then
-  run_logged "configure quality build" "$log_dir/configure.log" "0" ./change-compiler.sh -c "$cc" || true
-  run_logged "strict build" "$log_dir/build.log" "0" ./build.sh -q || true
-  run_logged "unit tests" "$log_dir/tests.log" "0" ./test.sh || true
+  run_logged "configure quality build" "$log_dir/configure.log" "0" \
+    cmake -S . -B build-tour -DCMAKE_C_COMPILER="$cc" -DP101_BUILD_LEVEL=3 || true
+  run_logged "strict build and unit tests" "$log_dir/build.log" "0" \
+    cmake --build build-tour || true
 
-  if [ "$do_fuzz" -eq 1 ] && [ -x ./fuzz.sh ] && ./fuzz.sh --can-fuzz >/dev/null 2>&1; then
-    run_logged "fuzz smoke" "$log_dir/fuzz.log" "0" ./fuzz.sh -t "$fuzz_secs" || true
+  fuzz_runner="../templates/template-c/fuzz.sh"
+  if [ "$do_fuzz" -eq 1 ] && [ -x "$fuzz_runner" ] && P101_REPOSITORY_ROOT="$PWD" "$fuzz_runner" --can-fuzz >/dev/null 2>&1; then
+    run_logged "fuzz smoke" "$log_dir/fuzz.log" "0" \
+      env P101_REPOSITORY_ROOT="$PWD" "$fuzz_runner" -t "$fuzz_secs" || true
   elif [ "$do_fuzz" -eq 1 ]; then
     record "FAIL" "fuzz smoke" "no fuzzer-capable clang found"
   else
     record "SKIP" "fuzz smoke" "--skip-fuzz"
   fi
 
-  if [ "$do_coverage" -eq 1 ] && [ -x ./report.sh ] && command -v gcovr >/dev/null 2>&1; then
-    run_logged "configure coverage build" "$log_dir/configure-coverage.log" "0" ./change-compiler.sh -c "$cc" --coverage || true
-    run_logged "coverage build" "$log_dir/build-coverage.log" "0" ./build.sh -q || true
-    run_logged "coverage tests" "$log_dir/tests-coverage.log" "0" ./test.sh --coverage || true
-    run_logged "coverage report" "$log_dir/coverage.log" "0" ./report.sh coverage --no-open --min 1 -- -s tour || true
-    copy_coverage_report
-  elif [ "$do_coverage" -eq 1 ] && [ ! -x ./report.sh ]; then
-    record "FAIL" "coverage report" "report.sh not executable"
+  if [ "$do_coverage" -eq 1 ] && command -v gcovr >/dev/null 2>&1; then
+    run_logged "configure coverage build" "$log_dir/configure-coverage.log" "0" \
+      cmake -S . -B build-tour-coverage -DCMAKE_C_COMPILER="$cc" \
+        -DP101_BUILD_LEVEL=2 -DP101_COVERAGE_MODE=ON || true
+    run_logged "coverage build and tests" "$log_dir/build-coverage.log" "0" \
+      cmake --build build-tour-coverage || true
+    mkdir -p "$out_dir/coverage"
+    run_logged "coverage report" "$log_dir/coverage.log" "0" \
+      gcovr -r . --html-details "$out_dir/coverage/index.html" --fail-under-line 1 || true
   elif [ "$do_coverage" -eq 1 ]; then
     record "FAIL" "coverage report" "gcovr not found"
   else
@@ -343,7 +332,7 @@ else
   record "SKIP" "quality pipeline" "--skip-quality"
 fi
 
-playground="$(find_tool P101_TOOL_PLAYGROUND "$(last_build_tool . p101-tool-playground)" ./build-clang-22/p101-tool-playground ./build-clang/p101-tool-playground ./build-gcc-16/p101-tool-playground p101-tool-playground)"
+playground="$(find_tool P101_TOOL_PLAYGROUND ./build-tour/p101-tool-playground "$(last_build_tool . p101-tool-playground)" ./build-clang-22/p101-tool-playground ./build-clang/p101-tool-playground ./build-gcc-16/p101-tool-playground p101-tool-playground)"
 run_analysis="$(find_tool P101_INSPECT "$(last_build_tool ../programs/p101-inspect p101-inspect)" ../programs/p101-inspect/build-clang-22/p101-inspect ../programs/p101-inspect/build-clang/p101-inspect ../programs/p101-inspect/build-gcc-16/p101-inspect p101-inspect)"
 fault_runner="$(find_tool P101_TEST_FAULTS "$(last_build_tool ../programs/p101-test test-faults)" ../programs/p101-test/build-clang-22/test-faults ../programs/p101-test/build-clang/test-faults ../programs/p101-test/build-gcc-16/test-faults test-faults)"
 capture_tool="$(find_tool P101_INSPECT_CAPTURE "$(last_build_tool ../programs/p101-inspect inspect-capture)" ../programs/p101-inspect/build-clang-22/inspect-capture ../programs/p101-inspect/build-clang/inspect-capture ../programs/p101-inspect/build-gcc-16/inspect-capture inspect-capture)"
@@ -353,7 +342,7 @@ module_map="$(find_tool P101_AUDIT_MODULES "$(last_build_tool ../programs/p101-a
 doctor="$(find_tool P101_AUDIT_DOCTOR "$(last_build_tool ../programs/p101-audit audit-doctor)" ../programs/p101-audit/build-clang-22/audit-doctor ../programs/p101-audit/build-clang/audit-doctor ../programs/p101-audit/build-gcc-16/audit-doctor audit-doctor)"
 
 if [ -z "$playground" ]; then
-  record "FAIL" "locate playground binary" "run ./build.sh first"
+  record "FAIL" "locate playground binary" "configure and build the playground first"
 elif [ -z "$run_analysis" ] || [ -z "$capture_tool" ]; then
   record "FAIL" "observed runtime demos" "capture or analysis engine not found"
 else

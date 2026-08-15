@@ -12,7 +12,7 @@ test that merely mirrors the implementation.
 Verify with:
 
 ```sh
-../programs/p101-test/test-mutation --test-command './test.sh' src
+../programs/p101-test/test-mutation --test-command 'cmake -S . -B build -DP101_BUILD_LEVEL=2 && cmake --build build' src
 ```
 
 The available mutation operators are a sample of mistakes, not proof that the

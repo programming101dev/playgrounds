@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/04-c-char-classification
-./run.sh
-./test.sh
+../../track-runner.sh c-char-classification
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

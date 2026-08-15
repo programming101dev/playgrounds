@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/09-c-stdio-formatted
-./run.sh
-./test.sh
+../../track-runner.sh c-stdio-formatted
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

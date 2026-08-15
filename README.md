@@ -13,7 +13,7 @@ generated track map.
 Start with the orientation pre-track:
 
 ```sh
-./tracks/00-p101-orientation/run.sh
+./track-runner.sh p101-orientation
 ```
 
 That first pass introduces `struct p101_error`, `struct p101_env`, p101
@@ -278,7 +278,7 @@ The intended student loop is:
 ./lab.sh
 # choose the first OPEN lab
 # edit the matching scenario in src/playground.c
-./build.sh
+cmake --build build
 ./lab.sh
 ```
 
@@ -307,8 +307,8 @@ their expected diagnostics, add `--strict-corpus`:
 Build the playground:
 
 ```sh
-./change-compiler.sh -c clang
-./build.sh
+cmake -S . -B build -DCMAKE_C_COMPILER=clang -DP101_BUILD_LEVEL=1
+cmake --build build
 ```
 
 Run a clean observed tour:
@@ -353,20 +353,18 @@ intentionally sloppy only after a p101 setup call fails, so
 The playground also demonstrates the project pipeline itself:
 
 ```sh
-./test.sh
-./fuzz.sh -t 10
-./change-compiler.sh -c clang --coverage
-./build.sh
-./test.sh --coverage
-./report.sh coverage --no-open --min 50 -- -s tour
-./check.sh
+cmake -S . -B build -DP101_BUILD_LEVEL=2 && cmake --build build
+P101_REPOSITORY_ROOT="$PWD" ../templates/template-c/fuzz.sh -t 10
+cmake -S . -B build-coverage -DP101_BUILD_LEVEL=2 -DP101_COVERAGE_MODE=ON && cmake --build build-coverage
+cmake -S . -B build -DP101_BUILD_LEVEL=3 && cmake --build build
 ```
 
 - Tests cover argument parsing, scenario lookup, and validation.
 - The fuzz target pounds the command-line parser.
 - Coverage shows students what the tests and an instrumented demo run actually
   execute.
-- `check.sh` ties format, strict build, tests, and fuzz smoke together.
+- CMake levels tie formatting, strict analysis, tests, and fuzz prerequisites
+  together without repository-local command shims.
 
 ## Boundaries
 
@@ -385,7 +383,7 @@ scenario stayed inside its expected resource model.
 4. Run `p101-inspect view trace` on the analysis directory.
 5. Run `fault-lab` through `scripts/runtime/student-workflow.sh` and find the first injected
    failure that leaks.
-6. Run `./test.sh`, `./fuzz.sh`, and `./report.sh coverage` to show the static
+6. Run `cmake -S . -B build -DP101_BUILD_LEVEL=2 && cmake --build build`, `configure and run the fuzz/ CMake project`, and `configure with -DP101_COVERAGE_MODE=ON and run gcovr` to show the static
    and dynamic quality workflow around the demo.
 
 Or run `./lab.sh` first and use the generated `index.html` as the table of

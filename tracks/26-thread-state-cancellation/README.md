@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/26-thread-state-cancellation
-./run.sh
-./test.sh
+../../track-runner.sh thread-state-cancellation
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/08-c-stdio-streams
-./run.sh
-./test.sh
+../../track-runner.sh c-stdio-streams
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

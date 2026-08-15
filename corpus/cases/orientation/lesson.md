@@ -45,7 +45,7 @@ FSM state, and tool event streams.
 Run:
 
 ```sh
-./tracks/00-p101-orientation/run.sh
+./track-runner.sh p101-orientation
 ```
 
 Then open the generated summary. The important artifacts are:

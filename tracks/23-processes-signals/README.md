@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/23-processes-signals
-./run.sh
-./test.sh
+../../track-runner.sh processes-signals
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

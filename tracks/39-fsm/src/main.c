@@ -111,7 +111,7 @@ static int run_fsm_step_demo(const struct p101_env *env, struct p101_error *err)
         goto done;
     }
     status = p101_fsm_step(fsm, NULL, NULL, &result);
-    if(status != P101_FSM_STEP_EXITED || result.sequence != 1U || !p101_fsm_info_is_terminal(env, fsm))
+    if(status != P101_FSM_STEP_EXITED || result.sequence != 1U || !p101_fsm_info_is_terminal(fsm))
     {
         goto done;
     }

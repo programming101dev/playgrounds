@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/05-c-wide-strings
-./run.sh
-./test.sh
+../../track-runner.sh c-wide-strings
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

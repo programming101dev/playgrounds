@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/22-directories-patterns
-./run.sh
-./test.sh
+../../track-runner.sh directories-patterns
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

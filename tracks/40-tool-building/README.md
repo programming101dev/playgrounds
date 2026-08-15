@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/40-tool-building
-./run.sh
-./test.sh
+../../track-runner.sh tool-building
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

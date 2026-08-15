@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/17-c-complex-trig
-./run.sh
-./test.sh
+../../track-runner.sh c-complex-trig
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

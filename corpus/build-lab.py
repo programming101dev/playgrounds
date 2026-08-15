@@ -568,7 +568,7 @@ def render_markdown(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
         "",
         "1. Run `./lab.sh` and open the first `OPEN` lab.",
         "2. Edit the matching scenario function in `src/playground.c`.",
-        "3. Build with `./build.sh` if you changed C code.",
+        "3. Build with `cmake --build build` if you changed C code.",
         "4. Re-run `./lab.sh` and watch that lab move from `OPEN` to `FIXED`.",
         "5. Submit with `./submit-labs.sh` when your assigned labs are green.",
         "",

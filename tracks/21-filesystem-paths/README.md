@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/21-filesystem-paths
-./run.sh
-./test.sh
+../../track-runner.sh filesystem-paths
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

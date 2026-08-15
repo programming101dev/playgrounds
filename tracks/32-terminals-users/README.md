@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/32-terminals-users
-./run.sh
-./test.sh
+../../track-runner.sh terminals-users
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

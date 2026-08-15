@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/20-file-io
-./run.sh
-./test.sh
+../../track-runner.sh file-io
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).

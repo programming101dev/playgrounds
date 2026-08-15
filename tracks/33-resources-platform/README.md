@@ -12,8 +12,7 @@ driver.
 
 ```sh
 cd tracks/33-resources-platform
-./run.sh
-./test.sh
+../../track-runner.sh resources-platform
 ```
 
 Curated lesson guide: [TRACK.md](./TRACK.md).
