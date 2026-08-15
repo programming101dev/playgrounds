@@ -218,7 +218,7 @@ Lesson identities, finding IDs, locations, and public routes have one editable
 source of truth: [`lessons/manifest.json`](lessons/manifest.json). Native tools
 consume the checked C catalog generated from that JSON through
 `lib_tool_event`; they do not carry private route tables. After changing the
-manifest, run `../scripts/generators/generate-tool-lesson-catalog.py` and commit
+manifest, run `../scripts/generators/generate-tool-lesson-catalog.sh` and commit
 the generated header and source with the manifest change.
 
 New lessons should be mapped to the source-of-truth checklist in
