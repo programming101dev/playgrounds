@@ -6,8 +6,8 @@ Its admitted teaching surface is exactly the diagnostic IDs registered in
 
 At present that means:
 
-- 76 defect-and-repair examples;
-- 11 shared concept lessons;
+- 111 defect-and-repair examples;
+- 14 shared concept lessons;
 - one stable lesson route for every registered diagnostic;
 - no course, week, assignment, project, quiz, or grading structure;
 - no unrelated collection of general C or security mistakes.

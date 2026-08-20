@@ -42,7 +42,10 @@
         "P101-ERR-006",
         "P101-ERR-007",
         "P101-ERR-008",
-        "P101-ERR-009"
+        "P101-ERR-009",
+        "P101-ERR-010",
+        "P101-ERR-011",
+        "P101-ERR-012"
       ],
       "acceptance_profile": "error-contract",
       "reference_examples": [
@@ -114,7 +117,9 @@
         "P101-RESOURCE-002",
         "P101-RESOURCE-003",
         "P101-RESOURCE-004",
-        "P101-RESOURCE-005"
+        "P101-RESOURCE-005",
+        "P101-RESOURCE-007",
+        "P101-PROC-001"
       ],
       "reference_examples": [
         {
@@ -133,7 +138,13 @@
       "finding_ids": [
         "P101-SYNC-001",
         "P101-SYNC-002",
-        "P101-SYNC-003"
+        "P101-SYNC-003",
+        "P101-SYNC-004",
+        "P101-SYNC-005",
+        "P101-SYNC-007",
+        "P101-SYNC-008",
+        "P101-SYNC-009",
+        "P101-SYNC-010"
       ],
       "acceptance_profile": "runtime-synchronization",
       "reference_examples": [
@@ -209,7 +220,12 @@
         "P101-API-001",
         "P101-API-002",
         "P101-API-003",
-        "P101-API-004"
+        "P101-API-004",
+        "P101-API-005",
+        "P101-API-006",
+        "P101-API-007",
+        "P101-API-008",
+        "P101-API-009"
       ],
       "acceptance_profile": "api-diff",
       "reference_examples": [
@@ -269,6 +285,73 @@
         }
       ],
       "verification": "cmake --build <build-directory> --target p101-test_test_all"
+    },
+    {
+      "lesson_id": "P101-LESSON-COMMAND-CONTRACTS",
+      "title": "Keep command evidence bounded, deterministic, and private",
+      "path": "command-contracts.md",
+      "finding_ids": [
+        "P101-TEST-DETERMINISM-001",
+        "P101-DATA-001",
+        "P101-RESOURCE-006",
+        "P101-TIME-001",
+        "P101-TEST-RECOVERY-001",
+        "P101-SCHEMA-001",
+        "P101-TEST-SIDE-EFFECT-001"
+      ],
+      "acceptance_profile": "command-contracts",
+      "reference_examples": [
+        {
+          "repository": "lib_record_examples",
+          "path": "fields/main.c",
+          "url": "https://github.com/programming101dev/lib_record_examples/blob/main/fields/main.c"
+        }
+      ],
+      "verification": "programs/p101-test/test/test_command_contract.sh <test-command-contract>"
+    },
+    {
+      "lesson_id": "P101-LESSON-OPERATIONAL-SEMANTICS",
+      "title": "Preserve progress and process obligations",
+      "path": "operational-semantics.md",
+      "finding_ids": [
+        "P101-IO-001",
+        "P101-RETRY-001",
+        "P101-SYNC-006",
+        "P101-PROC-002"
+      ],
+      "acceptance_profile": "error-contract",
+      "reference_examples": [
+        {
+          "repository": "c-examples",
+          "path": "process/wait/main.c",
+          "url": "https://github.com/programming101dev/c-examples/blob/main/process/wait/main.c"
+        }
+      ],
+      "verification": "programs/p101-audit/components/error-contract/test/test_cli.sh <audit-errors>"
+    },
+    {
+      "lesson_id": "P101-LESSON-SECURE-SEMANTICS",
+      "title": "Make security-sensitive lifetime and callback obligations explicit",
+      "path": "secure-semantics.md",
+      "finding_ids": [
+        "P101-THREAD-001",
+        "P101-SIGNAL-001",
+        "P101-SIGNAL-002",
+        "P101-ENV-001",
+        "P101-FILE-001",
+        "P101-MEM-001",
+        "P101-MEM-002",
+        "P101-MOD-028"
+      ],
+      "acceptance_profile": "error-contract",
+      "reference_examples": [
+        {
+          "repository": "c-examples",
+          "path": "memory/malloc-free/main.c",
+          "url": "https://github.com/programming101dev/c-examples/blob/main/memory/malloc-free/main.c"
+        }
+      ],
+      "verification": "programs/p101-audit/components/error-contract/test/test_cli.sh <audit-errors>"
     }
   ],
   "acceptance_profiles": [
@@ -313,7 +396,22 @@
         "P101-ERR-006",
         "P101-ERR-007",
         "P101-ERR-008",
-        "P101-ERR-009"
+        "P101-ERR-009",
+        "P101-ERR-010",
+        "P101-ERR-011",
+        "P101-ERR-012",
+        "P101-IO-001",
+        "P101-RETRY-001",
+        "P101-SYNC-006",
+        "P101-PROC-002",
+        "P101-THREAD-001",
+        "P101-SIGNAL-001",
+        "P101-SIGNAL-002",
+        "P101-ENV-001",
+        "P101-FILE-001",
+        "P101-MEM-001",
+        "P101-MEM-002",
+        "P101-MOD-028"
       ],
       "command": [
         "components/error-contract/test/test_cli.sh",
@@ -393,7 +491,9 @@
         "P101-RESOURCE-002",
         "P101-RESOURCE-003",
         "P101-RESOURCE-004",
-        "P101-RESOURCE-005"
+        "P101-RESOURCE-005",
+        "P101-RESOURCE-007",
+        "P101-PROC-001"
       ],
       "command": [
         "test/test_native_cli.sh",
@@ -419,7 +519,13 @@
       "finding_ids": [
         "P101-SYNC-001",
         "P101-SYNC-002",
-        "P101-SYNC-003"
+        "P101-SYNC-003",
+        "P101-SYNC-004",
+        "P101-SYNC-005",
+        "P101-SYNC-007",
+        "P101-SYNC-008",
+        "P101-SYNC-009",
+        "P101-SYNC-010"
       ],
       "command": [
         "test/test_native_cli.sh",
@@ -519,12 +625,17 @@
     {
       "profile_id": "api-diff",
       "kind": "native-tool-suite",
-      "description": "API snapshots detect removals, ownership moves, header moves, and platform-support loss.",
+      "description": "API snapshots detect removals, library and header moves, platform-support loss, function-type drift, and semantic ownership-role drift.",
       "finding_ids": [
         "P101-API-001",
         "P101-API-002",
         "P101-API-003",
-        "P101-API-004"
+        "P101-API-004",
+        "P101-API-005",
+        "P101-API-006",
+        "P101-API-007",
+        "P101-API-008",
+        "P101-API-009"
       ],
       "command": [
         "scripts/tests/test-p101-api-diff.sh",
@@ -570,6 +681,35 @@
       "quick": false
     },
     {
+      "profile_id": "command-contracts",
+      "kind": "native-tool-suite",
+      "description": "The command-contract runner rejects nondeterministic bytes, disclosed probes, output or time beyond admitted budgets, failed caller recovery, and rejected retained schema fixtures.",
+      "finding_ids": [
+        "P101-TEST-DETERMINISM-001",
+        "P101-DATA-001",
+        "P101-RESOURCE-006",
+        "P101-TIME-001",
+        "P101-TEST-RECOVERY-001",
+        "P101-SCHEMA-001",
+        "P101-TEST-SIDE-EFFECT-001"
+      ],
+      "command": [
+        "test/test_command_contract.sh",
+        "${P101_TEST_COMMAND_CONTRACT}"
+      ],
+      "cwd": "programs/p101-test",
+      "evidence_paths": [
+        "programs/p101-test/components/command-contract/src/main.c",
+        "programs/p101-test/test/test_command_contract.sh"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "freebsd"
+      ],
+      "quick": true
+    },
+    {
       "profile_id": "policy-rules",
       "kind": "native-policy-suite",
       "description": "Clean and violating models exercise each resource expectation rule.",
@@ -607,7 +747,7 @@
   ],
   "scope": {
     "admitted_content": "Exactly one defect-and-repair example section for every registered diagnostic ID.",
-    "example_count": 76,
+    "example_count": 111,
     "supporting_responsibilities": [
       {
         "id": "lesson-routing",

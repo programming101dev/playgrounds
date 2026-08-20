@@ -416,6 +416,65 @@ Expected clean result:
 No P101-RESOURCE-005 finding is emitted for the repaired input.
 ```
 
+<a id="P101-RESOURCE-007"></a>
+
+## P101-RESOURCE-007 — a resource is used while it is not live
+
+Broken input:
+
+```text
+RESOURCE_RELEASE handle
+RESOURCE_USE handle
+```
+
+Expected diagnostic:
+
+```text
+P101-RESOURCE-007: resource was used before acquisition, after release, or after ownership transfer
+```
+
+Repaired input:
+
+```text
+RESOURCE_ACQUIRE handle
+RESOURCE_USE handle
+RESOURCE_RELEASE handle
+```
+
+Expected clean result:
+
+```text
+No P101-RESOURCE-007 finding is emitted for the repaired event sequence.
+```
+
+<a id="P101-PROC-001"></a>
+
+## P101-PROC-001 — a child or joinable thread obligation remains live
+
+Broken input:
+
+```text
+spawn child or create joinable thread; return without wait/join/detach
+```
+
+Expected diagnostic:
+
+```text
+P101-PROC-001: child process was not reaped or joinable thread was not joined or detached
+```
+
+Repaired input:
+
+```text
+wait for the child; join or detach the thread on every path
+```
+
+Expected clean result:
+
+```text
+No P101-PROC-001 finding is emitted when the observed lifecycle obligation is released.
+```
+
 ## Platform boundary
 
 Only resources observed through the instrumented wrappers are modeled; direct native calls and unobserved third-party ownership remain blind spots on every platform.

@@ -7,7 +7,7 @@ p101 tool can emit. `lessons/manifest.json` is the source of truth. Every
 registered finding ID must appear exactly once as a level-two example heading
 in its declared lesson, and no unregistered example heading is permitted.
 
-The current admitted set is 76 diagnostic examples in 11 lesson pages.
+The current admitted set is 111 diagnostic examples in 14 lesson pages.
 
 ## Supporting work that remains outside the playground
 

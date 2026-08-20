@@ -295,6 +295,104 @@ Expected clean result:
 No P101-ERR-009 finding is emitted for the repaired input.
 ```
 
+<a id="P101-ERR-010"></a>
+
+## P101-ERR-010 — fallible output is consumed before its error is checked
+
+Broken input:
+
+```text
+value = p101_read_value(env, err);
+consume(value);
+failed = p101_error_has_error(err);
+```
+
+Expected diagnostic:
+
+```text
+P101-ERR-010: fallible output is consumed before its error is checked
+```
+
+Repaired input:
+
+```text
+value = p101_read_value(env, err);
+failed = p101_error_has_error(err);
+if(!failed)
+{
+    consume(value);
+}
+```
+
+Expected clean result:
+
+```text
+No P101-ERR-010 finding is emitted for the repaired input.
+```
+
+<a id="P101-ERR-011"></a>
+
+## P101-ERR-011 — a semantic must-check result is discarded
+
+Broken input:
+
+```text
+operation_with_must_check_contract();
+```
+
+The declaration carries the `p101:result:must-check` semantic role. This p101 rule is reserved for a project contract that is not already enforced by ordinary compiler unused-result diagnostics.
+
+Expected diagnostic:
+
+```text
+P101-ERR-011: the result of an operation with the p101:result:must-check role was discarded
+```
+
+Repaired input:
+
+```text
+status = operation_with_must_check_contract();
+if(status != 0) { handle_failure(status); }
+```
+
+Expected clean result:
+
+```text
+No P101-ERR-011 finding is emitted for the repaired input.
+```
+
+<a id="P101-ERR-012"></a>
+
+## P101-ERR-012 — cleanup can replace the primary error
+
+Broken input:
+
+```text
+failed = p101_error_has_error(err);
+if(failed) { fallible_cleanup(env, err); }
+```
+
+Expected diagnostic:
+
+```text
+P101-ERR-012: fallible cleanup reused the primary p101_error object
+```
+
+Repaired input:
+
+```text
+failed = p101_error_has_error(err);
+if(failed) { fallible_cleanup(env, P101_ERROR_OPTIONAL); }
+```
+
+Expected clean result:
+
+```text
+No P101-ERR-012 finding is emitted for the repaired input.
+```
+
+This check is admitted only for cleanup declarations carrying the semantic role `p101:cleanup:fallible`; it does not infer cleanup from a function name.
+
 ## Platform boundary
 
 These contracts are checked from each platform's parsed C declarations and definitions; absence of source for a platform is not evidence of compliance.
