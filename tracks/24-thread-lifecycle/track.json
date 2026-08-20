@@ -5,7 +5,7 @@
   "generated": true,
   "wrapper_count": 35,
   "purpose": "Thread creation, joining, detaching, identity, scheduling hooks, and basic lifecycle ownership.",
-  "behavior_demonstration": null,
+  "reference_example": null,
   "coverage_claim": "inventory-and-linkage",
   "domains": [
     {

@@ -5,7 +5,7 @@
   "generated": true,
   "wrapper_count": 25,
   "purpose": "File descriptors, open/read/write/close, vectored I/O, short reads/writes, async I/O, descriptor ownership, and cleanup.",
-  "behavior_demonstration": null,
+  "reference_example": null,
   "coverage_claim": "inventory-and-linkage",
   "domains": [
     {

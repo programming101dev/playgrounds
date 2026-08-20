@@ -5,7 +5,7 @@
   "generated": true,
   "wrapper_count": 21,
   "purpose": "Directory traversal, glob/fnmatch/wordexp, path decomposition, and tree walking.",
-  "behavior_demonstration": null,
+  "reference_example": null,
   "coverage_claim": "inventory-and-linkage",
   "domains": [
     {

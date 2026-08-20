@@ -15,13 +15,15 @@ cmake -S . -B build -DP101_BUILD_LEVEL=2
 cmake --build build
 ```
 
-Start with the valid code in `src/main.c`. Then add one small trap or
-exercise at a time, run the p101 tools, and fix the result before moving
-to the next wrapper family.
+A complete lesson begins with an intentional corpus defect, not with this
+neutral inventory harness. When the lesson catalog names a case, run it,
+read its diagnostic, repair the invariant, and replay the same oracle.
+Without that case, this track remains a curriculum map rather than a
+finished exercise.
 
 ## Local files
 
-- `src/main.c` — small valid program for this track.
+- `src/main.c` — neutral inventory/linkage harness, not a good-path example.
 - `include/track_info.h` — generated track metadata.
 - `config.cmake` — local target and link configuration.
 - `test/CMakeLists.txt` — local smoke test for this track binary.
@@ -33,20 +35,16 @@ Keep functions file-local with `static` unless they are part of the
 track's real API, pass `env`/`err` through code that can fail, use p101
 wrappers instead of direct libc/POSIX calls, and make cleanup visible.
 
-## Behavior work still to complete
+## Correct-use reference
 
-`src/main.c` currently proves project shape, linkage, environment/error
-ownership, and the wrapper inventory. It does **not** claim behavior
-coverage for this wrapper family. Choose one small ownership or data-flow
-story from the inventory and add a checked valid example before adding a
-broken case. Inventory membership is not executable curriculum.
+No canonical example is linked for this family yet. Add correct-use code
+to the owning `examples/<repo>` repository, then add only its reference
+here. Do not put the good-path implementation in the playground.
 
-## Progression
+## Repair progression
 
-1. Run the valid example and record its output.
-2. Add one focused behavior assertion to `test/CMakeLists.txt` or a local
-   test source.
-3. Introduce one documented failure or common trap.
-4. Use the p101 tools to explain the failure, not merely observe a nonzero
-   exit status.
-5. Fix it and keep the regression test.
+1. Run the lesson catalog's intentional defect with `programs/p101-test/test-corpus`.
+2. Read its stable finding ID and linked playground lesson.
+3. State the invariant the defect violates.
+4. Repair the code and replay the same case.
+5. Keep the oracle so the mistake cannot silently return.

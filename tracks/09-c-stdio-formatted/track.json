@@ -5,7 +5,7 @@
   "generated": true,
   "wrapper_count": 13,
   "purpose": "printf/scanf families, varargs wrappers, format checking, and formatted conversion hazards.",
-  "behavior_demonstration": null,
+  "reference_example": null,
   "coverage_claim": "inventory-and-linkage",
   "domains": [
     {

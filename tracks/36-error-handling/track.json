@@ -5,8 +5,13 @@
   "generated": true,
   "wrapper_count": 50,
   "purpose": "Error objects, errno mapping, assertions/check helpers, reporting, and failure-aware control flow.",
-  "behavior_demonstration": "raise, inspect, reset, and destroy an error",
-  "coverage_claim": "executable-behavior",
+  "reference_example": {
+    "repository": "lib_error_examples",
+    "path": "lifecycle/main.c",
+    "workspace_path": "examples/lib_error_examples/lifecycle/main.c",
+    "url": "https://github.com/programming101dev/lib_error_examples/blob/main/lifecycle/main.c"
+  },
+  "coverage_claim": "inventory-and-linkage",
   "domains": [
     {
       "name": "support/assertions",

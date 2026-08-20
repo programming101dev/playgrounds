@@ -50,3 +50,13 @@ Verify with:
 
 The checker follows source-level contracts; it cannot prove that every runtime
 path handles an error correctly. Pair it with fault injection.
+
+## Correct-use references
+
+The good path is owned outside the playground:
+
+- [error lifecycle](https://github.com/programming101dev/lib_error_examples/blob/main/lifecycle/main.c)
+- [environment tracer access](https://github.com/programming101dev/lib_env_examples/blob/main/env/get_tracer/main.c)
+
+Use these as API-shape references. The playground cases own the mistakes and
+repair oracles.

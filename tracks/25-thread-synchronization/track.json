@@ -5,7 +5,7 @@
   "generated": true,
   "wrapper_count": 38,
   "purpose": "Mutexes, condition variables, read/write locks, and synchronization cleanup rules.",
-  "behavior_demonstration": null,
+  "reference_example": null,
   "coverage_claim": "inventory-and-linkage",
   "domains": [
     {

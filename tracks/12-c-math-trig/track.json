@@ -5,7 +5,7 @@
   "generated": true,
   "wrapper_count": 39,
   "purpose": "Trigonometric and hyperbolic math families, including float/double/long double variants.",
-  "behavior_demonstration": null,
+  "reference_example": null,
   "coverage_claim": "inventory-and-linkage",
   "domains": [
     {

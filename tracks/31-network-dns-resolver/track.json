@@ -5,7 +5,7 @@
   "generated": true,
   "wrapper_count": 0,
   "purpose": "Resolver state, DNS message parsing/packing, compressed names, and resolver validation helpers.",
-  "behavior_demonstration": null,
+  "reference_example": null,
   "coverage_claim": "inventory-and-linkage",
   "domains": [],
   "local_project": {

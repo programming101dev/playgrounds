@@ -5,7 +5,7 @@
   "generated": true,
   "wrapper_count": 47,
   "purpose": "Terminal control, user/group lookup, identity APIs, tty databases, utmpx records, and interactive program boundaries.",
-  "behavior_demonstration": null,
+  "reference_example": null,
   "coverage_claim": "inventory-and-linkage",
   "domains": [
     {

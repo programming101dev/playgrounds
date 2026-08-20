@@ -5,7 +5,7 @@
   "generated": true,
   "wrapper_count": 47,
   "purpose": "Floating-point environment, NaN/nextafter/fma/min/max style helpers, and numerical edge cases.",
-  "behavior_demonstration": null,
+  "reference_example": null,
   "coverage_claim": "inventory-and-linkage",
   "domains": [
     {

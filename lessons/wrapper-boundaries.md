@@ -23,3 +23,8 @@ Verify with:
 
 The audit is bounded by the compilation database and Clang translation units it
 can parse. A clean result does not prove that third-party code is instrumented.
+
+For a small correct wrapper call, see the
+[lib_c `abs` example](https://github.com/programming101dev/lib_c_examples/blob/main/stdlib/abs/main.c).
+The example repository owns the good path; this lesson owns the missed-wrapper
+defect and its repair.

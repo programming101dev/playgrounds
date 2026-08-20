@@ -23,7 +23,6 @@ paths=(
   test/test_arguments.c
   corpus/CANONICAL-SOURCES.md
   corpus/build-lab.py
-  corpus/run-corpus.py
   corpus/cases
 )
 

@@ -6,9 +6,9 @@ Track number: `10`
 
 Wrapper count: `19`
 
-This directory is a standalone track project. You can enter it, build it,
-run it, and edit its source without depending on the top-level playground
-driver.
+This directory is a defect-and-repair curriculum map. Its small executable
+is only a neutral inventory/linkage harness; it is not the canonical correct
+example for this wrapper family.
 
 ```sh
 cd tracks/10-c-stdio-character-buffering
@@ -27,13 +27,21 @@ Character/line I/O, pushback, EOF/error state, flushing, and buffering mode.
 - `c/stdio-character-io-extensions` (4 wrappers)
 - `c/stdio-state-buffering` (5 wrappers)
 
-## Suggested lesson arc
+## Defect-and-repair lesson arc
 
-1. Start with a valid, idiomatic example that uses only p101 wrappers.
-2. Introduce one broken fixture or commented-out trap.
-3. Run the playground/tooling check and read the diagnostic.
-4. Fix the code, re-run the check, and compare the event/report output.
-5. Add one regression test or corpus expectation before moving on.
+1. When present, read the intentional defect and its `expected.json` oracle.
+2. Run that case with the p101-test corpus engine and read its diagnostic ID.
+3. Use the linked correct example only as a reference for normal API use.
+4. Repair the defect without copying unrelated example code.
+5. Re-run the same oracle and keep the repaired behavior as evidence.
+
+## Correct-use reference
+
+- Workspace: `../../../examples/lib_c_examples/stdio/puts/main.c`
+- GitHub: [lib_c_examples/stdio/puts/main.c](https://github.com/programming101dev/lib_c_examples/blob/main/stdio/puts/main.c)
+
+The example repository owns the good path. This playground owns the
+mistake, its diagnostic, and the repair exercise.
 
 ## Wrapper inventory
 

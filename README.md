@@ -1,25 +1,27 @@
 # p101-tool-playground
 
-`p101-tool-playground` is a full-featured demo target for the Programming 101
-runtime tools. It deliberately exercises files, heap allocations, realloc,
-pipes, forked children, clean cleanup, intentional leaks, bad closes, fault
-injection, tests, fuzzing, and coverage.
+`p101-tool-playground` is the defect-and-repair curriculum for the Programming
+101 runtime tools. It deliberately presents common programming mistakes,
+records the diagnostic that should explain each mistake, and gives students a
+repeatable way to repair and replay the same case.
 
-This repository is the single playground home for the wrapper curriculum. It is
-organized as many small tracks rather than one broad `systems` bucket or a pile
-of standalone example repos. See [tracks/README.md](./tracks/README.md) for the
-generated track map.
+This repository is not the home for canonical correct programs. Those live in
+the corresponding `examples/<repo>` repositories. The generated track map
+groups defect families and links to a correct-use example when one is useful;
+it does not copy the example into the playground. See
+[tracks/README.md](./tracks/README.md).
 
-Start with the orientation pre-track:
+Start with the orientation case, which is a negative control used to establish
+what a clean diagnostic receipt looks like before the intentional defects:
 
 ```sh
 ./track-runner.sh p101-orientation
 ```
 
 That first pass introduces `struct p101_error`, `struct p101_env`, p101
-wrappers, and the tools before the wrapper-family tracks begin. Every track
-directory is also a standalone mini-project with its own `src/`, `include/`,
-`config.cmake`, `test/`, and `run.sh`.
+wrappers, and the tools before the defect families begin. Track-local binaries
+are inventory/linkage harnesses only. They are not correct-example ownership
+and are not behavior coverage.
 
 The point is to have one program that makes the whole toolchain visible:
 
@@ -201,19 +203,20 @@ For shorter classroom slices, use the lesson script:
 ./lesson.sh module-split
 ```
 
-For the regression/lesson corpus, run:
+For the regression/lesson corpus, use the execution engine owned by
+`programs/p101-test`:
 
 ```sh
-./corpus.sh --quick
-./corpus.sh
+../programs/p101-test/test-corpus --quick --strict -o /tmp/p101-corpus
+../programs/p101-test/test-corpus --keep-going --strict -o /tmp/p101-corpus-full
 ```
 
 The corpus lives under `corpus/cases/`. Each case has an `expected.json` oracle
-and a short `lesson.md`. The runner executes each scenario through
+and a short `lesson.md`. `p101-test` executes each scenario through
 `scripts/runtime/student-workflow.sh`,
 verifies expected exit status and diagnostic IDs, and writes a linked
-`summary.md` plus the full per-case HTML reports. This makes the playground both
-a demo target and the checked answer key for the toolchain.
+`summary.md`, `receipt.json`, and the full per-case HTML reports. The playground
+owns the teaching fixtures; it does not own the regression engine.
 
 Lesson identities, finding IDs, locations, and public routes have one editable
 source of truth: [`lessons/manifest.json`](lessons/manifest.json). Native tools
@@ -233,18 +236,20 @@ fuzzing, coverage, and reproducible bug bundles.
 For the student-facing lab series, run:
 
 ```sh
-./lab.sh --quick
-./lab.sh
-./lab.sh --track c
-./lab.sh --track systems
-./lab.sh --track network
+../programs/p101-test/test-corpus --keep-going -o /tmp/p101-corpus
+./lab.sh --receipt /tmp/p101-corpus/receipt.json --quick
+./lab.sh --receipt /tmp/p101-corpus/receipt.json
+./lab.sh --receipt /tmp/p101-corpus/receipt.json --track c
+./lab.sh --receipt /tmp/p101-corpus/receipt.json --track systems
+./lab.sh --receipt /tmp/p101-corpus/receipt.json --track network
 ```
 
-The lab generator runs the same checked corpus and writes a self-contained
-`index.html` plus `lab.md`. It is a series, not a single worksheet: each issue
-has an ordered lab ID, a dedicated `lesson.md`, a fix checklist, and a progress
-state. Students fix one issue, re-run `./lab.sh`, and watch that lab move from
-`OPEN` to `FIXED`.
+The lab generator consumes the completed, passing `p101-test` receipt and writes
+`index.html` plus `lab.md`; it never executes or re-judges the corpus. It is a
+series, not a single worksheet: each issue has an ordered lab ID, a dedicated
+`lesson.md`, a fix checklist, and a progress state. Students fix one issue,
+rerun `test-corpus`, render its new receipt with `./lab.sh`, and watch that lab
+move from `OPEN` to `FIXED`.
 
 The machine-readable finding-to-lesson contract is
 [`lessons/manifest.json`](lessons/manifest.json). It combines the case lessons
@@ -276,11 +281,13 @@ platform is supplied to `p101_lessons.py coverage --receipts`.
 The intended student loop is:
 
 ```sh
-./lab.sh
+../programs/p101-test/test-corpus --keep-going -o /tmp/p101-corpus
+./lab.sh --receipt /tmp/p101-corpus/receipt.json
 # choose the first OPEN lab
 # edit the matching scenario in src/playground.c
 cmake --build build
-./lab.sh
+../programs/p101-test/test-corpus --keep-going -o /tmp/p101-corpus-next
+./lab.sh --receipt /tmp/p101-corpus-next/receipt.json
 ```
 
 If an experiment goes sideways, preview the reset with `./reset-labs.sh --show`
@@ -291,18 +298,19 @@ submission, run:
 ./submit-labs.sh
 ```
 
-Networking wrapper inventories live in this repository as focused tracks rather
-than a separate playground repo. They are reference/linkage tracks until a
-track explicitly declares and tests executable behavior. TCP, UDP, interfaces,
-socket nonblocking behavior, protocol framing, and the port-forwarder capstone
-should become executable lessons under the relevant `network-*` track
-directories as those lessons are filled in.
+Networking wrapper inventories live here as focused defect maps. Executable
+correct-use programs belong in the relevant `examples/<repo>` repository;
+network playground tracks retain only intentional failures, their diagnostic
+oracles, repair instructions, and links to those examples. TCP, UDP,
+interfaces, nonblocking sockets, protocol framing, and port-forwarder lessons
+should follow that same ownership boundary as they are filled in.
 
 For instructor/CI checks that prove the committed broken fixtures still produce
-their expected diagnostics, add `--strict-corpus`:
+their expected diagnostics, make the `p101-test` execution strict:
 
 ```sh
-./lab.sh --strict-corpus
+../programs/p101-test/test-corpus --strict --keep-going -o /tmp/p101-corpus-strict
+./lab.sh --receipt /tmp/p101-corpus-strict/receipt.json
 ```
 
 Build the playground:
@@ -387,5 +395,6 @@ scenario stayed inside its expected resource model.
 6. Run `cmake -S . -B build -DP101_BUILD_LEVEL=2 && cmake --build build`, `configure and run the fuzz/ CMake project`, and `configure with -DP101_COVERAGE_MODE=ON and run gcovr` to show the static
    and dynamic quality workflow around the demo.
 
-Or run `./lab.sh` first and use the generated `index.html` as the table of
-contents for the whole lesson.
+Or execute `../programs/p101-test/test-corpus -o /tmp/p101-corpus`, then run
+`./lab.sh --receipt /tmp/p101-corpus/receipt.json` and use the generated
+`index.html` as the table of contents for the whole lesson.

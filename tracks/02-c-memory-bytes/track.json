@@ -5,8 +5,13 @@
   "generated": true,
   "wrapper_count": 30,
   "purpose": "Raw byte memory operations and the difference between object bytes and strings.",
-  "behavior_demonstration": "host/network byte-order round trip",
-  "coverage_claim": "executable-behavior",
+  "reference_example": {
+    "repository": "lib_endian_examples",
+    "path": "round_trip/main.c",
+    "workspace_path": "examples/lib_endian_examples/round_trip/main.c",
+    "url": "https://github.com/programming101dev/lib_endian_examples/blob/main/round_trip/main.c"
+  },
+  "coverage_claim": "inventory-and-linkage",
   "domains": [
     {
       "name": "c/byte-utility",

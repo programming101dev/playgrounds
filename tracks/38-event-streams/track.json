@@ -5,7 +5,7 @@
   "generated": true,
   "wrapper_count": 37,
   "purpose": "Resource events, call tracing, fault injection, event-log formatting, and observer configuration.",
-  "behavior_demonstration": null,
+  "reference_example": null,
   "coverage_claim": "inventory-and-linkage",
   "domains": [
     {

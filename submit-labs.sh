@@ -5,6 +5,7 @@ set -euo pipefail
 CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
 
 out="/tmp/p101-tool-playground-submit"
+corpus_out=""
 lab_args=()
 
 while (($#)); do
@@ -36,8 +37,10 @@ while (($#)); do
   esac
 done
 
-if [[ -e "$out" ]]; then
-  echo "submit-labs: output path already exists: $out" >&2
+corpus_out="${out}.corpus"
+
+if [[ -e "$out" || -e "$corpus_out" ]]; then
+  echo "submit-labs: output path already exists: $out or $corpus_out" >&2
   echo "Choose another path, or remove the old directory." >&2
   exit 2
 fi
@@ -47,7 +50,15 @@ cmake -S . -B build-submit -DP101_BUILD_LEVEL=2
 cmake --build build-submit
 
 echo "==> lab progress"
-./lab.sh "${lab_args[@]}" --require-all-fixed -o "$out"
+set +e
+../programs/p101-test/test-corpus --strict --keep-going -o "$corpus_out"
+corpus_status=$?
+set -e
+if ((corpus_status > 1)) || [[ ! -f "$corpus_out/receipt.json" ]]; then
+  echo "submit-labs: corpus execution did not produce a complete receipt" >&2
+  exit 2
+fi
+./lab.sh "${lab_args[@]}" --receipt "$corpus_out/receipt.json" --require-all-fixed -o "$out"
 
 echo "Submission check output: $out"
 echo "Open: $out/index.html"

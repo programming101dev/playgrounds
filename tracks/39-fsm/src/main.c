@@ -3,7 +3,6 @@
 #include <p101_c/p101_stdlib.h>
 #include <p101_env/env.h>
 #include <p101_error/error.h>
-#include <p101_fsm/fsm.h>
 #include <stddef.h>
 #include <stdlib.h>
 
@@ -71,63 +70,6 @@ static int write_wrapper_inventory(const struct p101_env *env, struct p101_error
     return ret_val;
 }
 
-static void finish_state(const struct p101_env *env, struct p101_error *err, void *arg, struct p101_fsm_effect_sink *sink, struct p101_fsm_decision *decision)
-{
-    (void)env;
-    (void)err;
-    (void)arg;
-    (void)sink;
-    p101_fsm_decide_exit(decision);
-}
-
-static int run_fsm_step_demo(const struct p101_env *env, struct p101_error *err)
-{
-    struct p101_error                      *fsm_err;
-    struct p101_env                        *fsm_env;
-    struct p101_fsm_info                   *fsm;
-    struct p101_fsm_step_result             result;
-    p101_fsm_step_status                    status;
-    int                                     ret_val;
-    static const struct p101_fsm_transition transitions[] = {
-        {P101_FSM_INIT, P101_FSM_USER_START, finish_state},
-    };
-
-    ret_val = EXIT_FAILURE;
-    fsm     = NULL;
-    fsm_env = NULL;
-    fsm_err = p101_error_create(false);
-    if(fsm_err == NULL)
-    {
-        goto done;
-    }
-    fsm_env = p101_env_create(fsm_err, NULL);
-    if(fsm_env == NULL || p101_error_has_error(fsm_err))
-    {
-        goto done;
-    }
-    fsm = p101_fsm_info_create(env, err, "teaching-fsm", fsm_env, fsm_err, transitions, sizeof(transitions) / sizeof(transitions[0]), NULL);
-    if(fsm == NULL || p101_error_has_error(err) || p101_error_has_error(fsm_err))
-    {
-        goto done;
-    }
-    status = p101_fsm_step(fsm, NULL, NULL, &result);
-    if(status != P101_FSM_STEP_EXITED || result.sequence != 1U || !p101_fsm_info_is_terminal(fsm))
-    {
-        goto done;
-    }
-    if(p101_fprintf(env, err, stdout, "FSM %s exited at step %zu\n", p101_fsm_info_get_name(env, fsm), result.sequence) < 0 || p101_error_has_error(err))
-    {
-        goto done;
-    }
-    ret_val = EXIT_SUCCESS;
-
-done:
-    p101_fsm_info_destroy(env, fsm_err, &fsm);
-    p101_env_destroy(fsm_env);
-    p101_error_destroy(fsm_err);
-    return ret_val;
-}
-
 int main(void)
 {
     struct p101_error *err;
@@ -164,11 +106,6 @@ int main(void)
         goto done;
     }
     if(write_wrapper_inventory(env, err) != EXIT_SUCCESS)
-    {
-        goto done;
-    }
-
-    if(run_fsm_step_demo(env, err) != EXIT_SUCCESS)
     {
         goto done;
     }

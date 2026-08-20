@@ -28,6 +28,8 @@ Quick reference for the playground and the tools it is meant to show.
 | `p101-inspect view trace analysis-dir` | Call tree |
 | `p101-inspect view report analysis-dir` | Correlated resource + trace narrative |
 | `../scripts/runtime/student-workflow.sh -- p101-tool-playground -s fault-lab` | Injected error-path resource audit |
+| `../programs/p101-test/test-corpus --strict --keep-going -o /tmp/p101-corpus` | Execute and verify the lesson corpus, producing a versioned receipt |
+| `./lab.sh --receipt /tmp/p101-corpus/receipt.json` | Render student progress from completed corpus evidence without rerunning it |
 
 ## Project quality tools
 

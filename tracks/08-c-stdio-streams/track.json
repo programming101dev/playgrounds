@@ -5,7 +5,7 @@
   "generated": true,
   "wrapper_count": 27,
   "purpose": "Opening, closing, positioning, reading, writing, renaming, temporary files, and stream ownership.",
-  "behavior_demonstration": null,
+  "reference_example": null,
   "coverage_claim": "inventory-and-linkage",
   "domains": [
     {

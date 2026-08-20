@@ -12,9 +12,10 @@ answer key is the fixed signal for each lab, not a giant patch file:
 Generate the current answer-key view with:
 
 ```sh
-./lab.sh --strict-corpus
-./lab.sh --track c --strict-corpus
-./lab.sh --track systems --strict-corpus
+../programs/p101-test/test-corpus --strict --keep-going -o /tmp/p101-corpus
+./lab.sh --receipt /tmp/p101-corpus/receipt.json
+./lab.sh --receipt /tmp/p101-corpus/receipt.json --track c
+./lab.sh --receipt /tmp/p101-corpus/receipt.json --track systems
 ```
 
 Open `lab.md` or `index.html` and look for “Instructor answer key signal” on

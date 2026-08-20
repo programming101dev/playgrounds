@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a self-contained lab series from the playground corpus."""
+"""Render a playground lab series from a verified p101-test corpus receipt."""
 
 from __future__ import annotations
 
@@ -7,8 +7,6 @@ import argparse
 import html
 import json
 import os
-import shutil
-import subprocess
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -48,12 +46,8 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--case", action="append", dest="cases", help="Include only this case name; may be repeated.")
     parser.add_argument("--track", choices=("c", "systems", "network"), help="Include only cases assigned to this playground track.")
     parser.add_argument("--quick", action="store_true", help="Use the short classroom set: clean and fd-leak.")
-    parser.add_argument("--keep-going", action="store_true", help="Keep running corpus cases after a failed case.")
-    parser.add_argument("--workflow", type=Path, help="Path to student-workflow.sh.")
-    parser.add_argument("--playground", type=Path, help="Path to the p101-tool-playground executable.")
-    parser.add_argument("--skip-html", action="store_true", help="Skip per-case p101 check HTML generation.")
-    parser.add_argument("--skip-bundle", action="store_true", help="Skip per-case bug bundles.")
-    parser.add_argument("--strict-corpus", action="store_true", help="Exit nonzero if the committed issue corpus no longer matches its oracle.")
+    parser.add_argument("--receipt", type=Path, required=True, help="Verified p101-test corpus receipt to render.")
+    parser.add_argument("--require-corpus-pass", action="store_true", help="Exit nonzero unless the p101-test corpus oracle passed.")
     parser.add_argument("--require-all-fixed", action="store_true", help="Exit nonzero unless every selected issue lab is FIXED.")
     return parser.parse_args(argv)
 
@@ -68,37 +62,6 @@ def resolve_output(path: Path | None) -> Path:
     if path.is_absolute():
         return path.resolve()
     return (invocation_cwd() / path).resolve()
-
-
-def find_executable(candidates: list[Path | str]) -> Path:
-    for candidate in candidates:
-        path = candidate if isinstance(candidate, Path) else Path(candidate)
-        if path.is_file() and path.stat().st_mode & 0o111:
-            return path.resolve()
-        resolved = shutil.which(str(candidate))
-        if resolved is not None:
-            return Path(resolved).resolve()
-    raise FileNotFoundError("none of the candidate executables were found: " + ", ".join(str(c) for c in candidates))
-
-
-def current_playground_candidates(root: Path) -> list[Path | str]:
-    candidates: list[Path | str] = []
-    last_build = root / ".last-build-dir"
-    try:
-        build_dir = last_build.read_text(encoding="utf-8").strip()
-    except OSError:
-        build_dir = ""
-    if build_dir:
-        candidates.append(root / build_dir / "p101-tool-playground")
-    candidates.extend(
-        [
-            root / "build-clang/p101-tool-playground",
-            root / "build-clang-22/p101-tool-playground",
-            root / "build-gcc-16/p101-tool-playground",
-            "p101-tool-playground",
-        ]
-    )
-    return candidates
 
 
 def read_text(path: Path, fallback: str = "") -> str:
@@ -138,43 +101,53 @@ def expected_tracks(expected: dict[str, Any]) -> list[str]:
     return []
 
 
-def load_scenario_manifest(playground: Path) -> dict[str, str]:
-    completed = subprocess.run(
-        [str(playground), "-S"],
-        check=False,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-    )
-    if completed.returncode != 0:
-        raise ValueError(
-            f"{playground} could not emit its scenario manifest: "
-            f"{completed.stderr.strip()}"
-        )
-    lines = completed.stdout.splitlines()
-    if not lines or lines[0] != "P101SCENARIOS\t1":
-        raise ValueError(f"{playground} emitted an invalid scenario manifest")
-    scenarios: dict[str, str] = {}
-    for line_number, line in enumerate(lines[1:], 2):
-        fields = line.split("\t")
-        if len(fields) != 3 or not fields[0] or not fields[1]:
-            raise ValueError(
-                f"{playground}: scenario manifest line {line_number} is invalid"
-            )
-        if fields[0] in scenarios:
-            raise ValueError(f"{playground}: duplicate scenario {fields[0]}")
-        scenarios[fields[0]] = fields[1]
-    if not scenarios:
-        raise ValueError(f"{playground} emitted an empty scenario manifest")
-    return scenarios
+def load_receipt(path: Path, root: Path) -> tuple[dict[str, Any], dict[str, dict[str, Any]]]:
+    document = read_json(path)
+    if document.get("schema") != "p101-corpus-receipt-v1":
+        raise ValueError(f"{path}: unsupported corpus receipt schema")
+    if not isinstance(document.get("passed"), bool):
+        raise ValueError(f"{path}: corpus receipt has no verification result")
+    fixture_path = document.get("fixtures")
+    if not isinstance(fixture_path, str) or Path(fixture_path).resolve() != root.resolve():
+        raise ValueError(f"{path}: receipt was produced for a different fixture repository")
+    records = document.get("cases")
+    if not isinstance(records, list):
+        raise ValueError(f"{path}: corpus receipt has no case records")
+    cases: dict[str, dict[str, Any]] = {}
+    for record in records:
+        if not isinstance(record, dict) or not isinstance(record.get("name"), str):
+            raise ValueError(f"{path}: corpus receipt contains an invalid case record")
+        name = str(record["name"])
+        if name in cases:
+            raise ValueError(f"{path}: duplicate corpus receipt case {name}")
+        if record.get("status") not in {"PASS", "FAIL"}:
+            raise ValueError(f"{path}: case {name} has no verification status")
+        cases[name] = record
+    if len(cases) != document.get("selected_cases") or len(cases) != document.get("completed_cases"):
+        raise ValueError(f"{path}: corpus receipt is incomplete")
+    return document, cases
 
 
-def load_cases(playground: Path, root: Path, runs_dir: Path, selected: set[str] | None, track: str | None) -> list[LabCase]:
+def receipt_report_dir(receipt_path: Path, record: dict[str, Any]) -> Path:
+    report = record.get("report")
+    if not isinstance(report, str) or not report or Path(report).is_absolute():
+        raise ValueError(f"{receipt_path}: invalid report path in corpus receipt")
+    receipt_root = receipt_path.parent.resolve()
+    report_dir = (receipt_root / report).resolve()
+    if os.path.commonpath((str(receipt_root), str(report_dir))) != str(receipt_root):
+        raise ValueError(f"{receipt_path}: report path escapes the corpus output")
+    return report_dir
+
+
+def load_cases(root: Path, receipt_path: Path, receipt_cases: dict[str, dict[str, Any]], selected: set[str] | None, track: str | None) -> list[LabCase]:
     cases: list[LabCase] = []
-    scenarios = load_scenario_manifest(playground)
     for expected_path in sorted((root / "corpus" / "cases").glob("*/expected.json")):
         expected = load_expected(expected_path)
         name = str(expected["name"])
+        if name not in receipt_cases:
+            if selected is not None and name in selected:
+                raise ValueError(f"{receipt_path}: selected case {name} is absent from the receipt")
+            continue
         if selected is not None and name not in selected:
             continue
         tracks = expected_tracks(expected)
@@ -182,8 +155,12 @@ def load_cases(playground: Path, root: Path, runs_dir: Path, selected: set[str] 
             continue
         case_dir = Path(expected["case_dir"])
         scenario = str(expected["scenario"])
-        if scenario not in scenarios:
-            raise ValueError(f"{expected_path}: unknown scenario {scenario!r}")
+        receipt_case = receipt_cases[name]
+        if receipt_case.get("scenario") != scenario:
+            raise ValueError(f"{receipt_path}: scenario mismatch for case {name}")
+        scenario_behavior = receipt_case.get("scenario_behavior")
+        if not isinstance(scenario_behavior, str) or not scenario_behavior:
+            raise ValueError(f"{receipt_path}: missing scenario behavior for case {name}")
         lesson = read_text(case_dir / "lesson.md", str(expected.get("lesson", ""))).strip()
         expected_findings = [str(item) for item in expected.get("expected_findings", [])]
         fix_steps = [str(item) for item in expected.get("fix_steps", [])]
@@ -202,7 +179,7 @@ def load_cases(playground: Path, root: Path, runs_dir: Path, selected: set[str] 
                 category=str(expected.get("category", "")),
                 tracks=tracks,
                 scenario=scenario,
-                scenario_behavior=scenarios[scenario],
+                scenario_behavior=scenario_behavior,
                 expected_exit=int(expected["expected_exit"]),
                 expected_status=str(expected.get("expected_status", "")),
                 lesson=lesson,
@@ -218,7 +195,7 @@ def load_cases(playground: Path, root: Path, runs_dir: Path, selected: set[str] 
                 fix_goal=str(expected.get("fix_goal", "")),
                 fix_steps=fix_steps,
                 case_dir=case_dir,
-                report_dir=runs_dir / name,
+                report_dir=receipt_report_dir(receipt_path, receipt_case),
             )
         )
     cases.sort(key=lambda item: (item.order, item.name))
@@ -243,7 +220,7 @@ def validate_case_identity(cases: list[LabCase]) -> None:
 
 
 def rel(from_dir: Path, path: Path) -> str:
-    return path.relative_to(from_dir).as_posix()
+    return Path(os.path.relpath(path, from_dir)).as_posix()
 
 
 def link_if_exists(out_dir: Path, path: Path, label: str) -> str:
@@ -550,7 +527,7 @@ def phase_rows(cases: list[LabCase]) -> list[str]:
     return rows
 
 
-def render_markdown(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
+def render_markdown(out_dir: Path, cases: list[LabCase], receipt_path: Path, passed: bool, strict: bool) -> str:
     fixed, open_count, blocked, indeterminate, total = progress_counts(cases)
     lines = [
         "# p101 tool playground lab series",
@@ -558,18 +535,19 @@ def render_markdown(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
         "This is a series of small, intentionally broken p101 programs inside the playground. Fix one issue, re-run the lab, and watch that lab move from OPEN to FIXED.",
         "",
         f"- Progress: {fixed}/{total} issue labs fixed, {open_count} still open, {indeterminate} indeterminate, {blocked} blocked",
-        f"- Instructor corpus oracle: {'PASS' if corpus_rc == 0 else 'CHANGED'}",
-        f"- Corpus summary: [runs/summary.md](./runs/summary.md)",
+        f"- p101-test corpus verification: {'PASS' if passed else 'CHANGED'} ({'strict' if strict else 'standard'})",
+        f"- Corpus receipt: [{receipt_path.name}]({rel(out_dir, receipt_path)})",
+        f"- Corpus summary: [summary.md]({rel(out_dir, receipt_path.parent / 'summary.md')})",
         f"- HTML lab book: [index.html](./index.html)",
         "",
         "Use `./lab.sh --track c`, `./lab.sh --track systems`, or `./lab.sh --track network` for coarse lab slices. The full wrapper curriculum map lives in `tracks/README.md`.",
         "",
         "## Student workflow",
         "",
-        "1. Run `./lab.sh` and open the first `OPEN` lab.",
+        "1. Run `../programs/p101-test/test-corpus -o /tmp/p101-corpus --keep-going`, then `./lab.sh --receipt /tmp/p101-corpus/receipt.json` and open the first `OPEN` lab.",
         "2. Edit the matching scenario function in `src/playground.c`.",
         "3. Build with `cmake --build build` if you changed C code.",
-        "4. Re-run `./lab.sh` and watch that lab move from `OPEN` to `FIXED`.",
+        "4. Re-run `test-corpus`, then render its new receipt with `./lab.sh --receipt ...` and watch that lab move from `OPEN` to `FIXED`.",
         "5. Submit with `./submit-labs.sh` when your assigned labs are green.",
         "",
         "If you get lost, run `./reset-labs.sh --show` to preview the reset command, or `./reset-labs.sh --yes` to restore the committed lab fixtures.",
@@ -633,7 +611,7 @@ def render_markdown(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
                 f"- Expected status: `{case.expected_status}`",
                 f"- Expected exit: `{case.expected_exit}`",
                 f"- Progress: `{lab_progress(case)}`",
-                f"- Report: [runs/{case.name}/index.html](./runs/{case.name}/index.html)",
+                f"- Report: [case report]({rel(out_dir, case.report_dir / 'index.html')})",
                 "",
                 f"Goal: {case.fix_goal}",
                 "",
@@ -655,8 +633,8 @@ def render_markdown(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
         )
     lines.append("## Generated files")
     lines.append("")
-    lines.append("- `runs/`: checked corpus output")
-    lines.append("- `logs/corpus.log`: command transcript for the corpus run")
+    lines.append(f"- `{receipt_path}`: verified p101-test corpus receipt")
+    lines.append(f"- `{receipt_path.parent}`: checked corpus reports and command logs")
     lines.append("- `index.html`: self-contained instructor/student lab view")
     lines.append("- `./reset-labs.sh`: restore committed fixtures after an experiment goes sideways")
     lines.append("- `./submit-labs.sh`: run the student-facing build/test/lab checks")
@@ -664,8 +642,10 @@ def render_markdown(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
     return "\n".join(lines)
 
 
-def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
-    status = "PASS" if corpus_rc == 0 else "FAIL"
+def render_html(out_dir: Path, cases: list[LabCase], receipt_path: Path, passed: bool, strict: bool) -> str:
+    status = "PASS" if passed else "CHANGED"
+    if strict:
+        status += " (strict)"
     fixed, open_count, blocked, indeterminate, total = progress_counts(cases)
     cards: list[str] = []
     for case in cases:
@@ -801,7 +781,7 @@ def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
     <h1>p101 tool playground lab series</h1>
     <p>This is the 10x playground: a sequence of intentionally broken, fixable labs. Students fix one issue at a time, re-run the lab, and see the progress board move from OPEN to FIXED.</p>
     <p>Use <code>./lab.sh --track c</code>, <code>./lab.sh --track systems</code>, or <code>./lab.sh --track network</code> for coarse lab slices. The full wrapper curriculum map lives in <code>tracks/README.md</code>.</p>
-    <p><a href="runs/summary.md">Corpus summary</a> · <a href="lab.md">Markdown lab</a> · <a href="logs/corpus.log">Corpus command log</a></p>
+    <p><a href="{html.escape(rel(out_dir, receipt_path.parent / 'summary.md'))}">Corpus summary</a> · <a href="{html.escape(rel(out_dir, receipt_path))}">Corpus receipt</a> · <a href="lab.md">Markdown lab</a></p>
   </section>
 
   <h2>Progress board</h2>
@@ -834,58 +814,10 @@ def render_html(out_dir: Path, cases: list[LabCase], corpus_rc: int) -> str:
 """
 
 
-def run_corpus(root: Path, out_dir: Path, args: argparse.Namespace) -> int:
-    runs_dir = out_dir / "runs"
-    command = [sys.executable, str(root / "corpus" / "run-corpus.py"), "-o", str(runs_dir)]
-    command.append("--keep-going")
-    if args.quick:
-        command.append("--quick")
-    if args.track is not None:
-        command.extend(["--track", args.track])
-    for case_name in args.cases or []:
-        command.extend(["--case", case_name])
-    if args.workflow is not None:
-        command.extend(["--workflow", str(args.workflow)])
-    if args.playground is not None:
-        command.extend(["--playground", str(args.playground)])
-    if args.skip_html:
-        command.append("--skip-html")
-    if args.skip_bundle:
-        command.append("--skip-bundle")
-    if args.strict_corpus:
-        command.append("--strict")
-
-    logs_dir = out_dir / "logs"
-    logs_dir.mkdir()
-    log_path = logs_dir / "corpus.log"
-    with log_path.open("w", encoding="utf-8") as log:
-        log.write("$ " + " ".join(command) + "\n\n")
-        log.flush()
-        completed = subprocess.run(command, cwd=root, stdout=log, stderr=subprocess.STDOUT, check=False)
-    return completed.returncode
-
-
-def find_audit_doctor(root: Path) -> Path | None:
-    candidates: list[Path | str] = []
-    configured = os.environ.get("P101_AUDIT_DOCTOR", "").strip()
-    if configured:
-        candidates.append(configured)
-    candidates.extend([
-        root / "../programs/p101-audit/build-clang-22/audit-doctor",
-        root / "../programs/p101-audit/build-clang/audit-doctor",
-        root / "../programs/p101-audit/build-gcc-16/audit-doctor",
-    ])
-    for candidate in candidates:
-        path = Path(candidate).expanduser().resolve()
-        if path.is_file() and os.access(path, os.X_OK):
-            return path
-    resolved = shutil.which("audit-doctor")
-    return Path(resolved).resolve() if resolved is not None else None
-
-
 def main(argv: list[str]) -> int:
     args = parse_args(argv)
     root = Path(__file__).resolve().parents[1]
+    receipt_path = args.receipt.resolve()
     out_dir = resolve_output(args.output)
     if out_dir.exists():
         print(f"p101 playground lab: output path already exists: {out_dir}", file=sys.stderr)
@@ -893,30 +825,27 @@ def main(argv: list[str]) -> int:
     out_dir.mkdir(parents=True)
 
     try:
-        playground = args.playground.resolve() if args.playground else find_executable(current_playground_candidates(root))
-        cases = load_cases(playground, root, out_dir / "runs", selected_case_names(args), args.track)
-    except ValueError as exc:
-        print(f"p101 playground lab: invalid corpus metadata: {exc}", file=sys.stderr)
+        receipt, receipt_cases = load_receipt(receipt_path, root)
+        cases = load_cases(root, receipt_path, receipt_cases, selected_case_names(args), args.track)
+    except (OSError, json.JSONDecodeError, ValueError) as exc:
+        print(f"p101 playground lab: invalid corpus receipt or metadata: {exc}", file=sys.stderr)
         return 2
     if not cases:
         print("p101 playground lab: no cases selected", file=sys.stderr)
         return 2
 
-    if find_audit_doctor(root) is None:
-        print("p101 playground lab: audit-doctor is required to judge lab progress; build/install p101-audit first", file=sys.stderr)
-        return 2
-
-    corpus_rc = run_corpus(root, out_dir, args)
-
-    (out_dir / "lab.md").write_text(render_markdown(out_dir, cases, corpus_rc), encoding="utf-8")
-    (out_dir / "index.html").write_text(render_html(out_dir, cases, corpus_rc), encoding="utf-8")
+    strict = receipt.get("strict") is True
+    passed = receipt.get("passed") is True
+    (out_dir / "lab.md").write_text(render_markdown(out_dir, cases, receipt_path, passed, strict), encoding="utf-8")
+    (out_dir / "index.html").write_text(render_html(out_dir, cases, receipt_path, passed, strict), encoding="utf-8")
 
     print(f"p101 playground lab output: {out_dir}")
     print(f"HTML: {out_dir / 'index.html'}")
     print(f"Markdown: {out_dir / 'lab.md'}")
-    if corpus_rc != 0:
-        print(f"Corpus oracle changed; see {out_dir / 'logs' / 'corpus.log'}", file=sys.stderr)
     fixed, open_count, blocked, indeterminate, total = progress_counts(cases)
+    if args.require_corpus_pass and not passed:
+        print(f"Corpus oracle changed; see {receipt_path}", file=sys.stderr)
+        return 1
     if blocked > 0:
         print(f"Lab progress is blocked: {blocked} issue labs are missing evidence", file=sys.stderr)
         return 2
@@ -927,7 +856,7 @@ def main(argv: list[str]) -> int:
             file=sys.stderr,
         )
         return 1
-    return corpus_rc if args.strict_corpus else 0
+    return 0
 
 
 if __name__ == "__main__":

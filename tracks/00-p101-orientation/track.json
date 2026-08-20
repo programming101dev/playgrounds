@@ -5,8 +5,13 @@
   "generated": true,
   "wrapper_count": 0,
   "purpose": "Learn env/error setup, the p101 wrapper boundary, and how the playground tools report what they observe.",
-  "behavior_demonstration": "environment/error ownership, wrapper use, and the tool workflow",
-  "coverage_claim": "executable-behavior",
+  "reference_example": {
+    "repository": "lib_env_examples",
+    "path": "env/get_tracer/main.c",
+    "workspace_path": "examples/lib_env_examples/env/get_tracer/main.c",
+    "url": "https://github.com/programming101dev/lib_env_examples/blob/main/env/get_tracer/main.c"
+  },
+  "coverage_claim": "inventory-and-linkage",
   "domains": [],
   "local_project": {
     "source": "src/main.c",

@@ -6,13 +6,20 @@
     "track": "p101-orientation",
     "directory": "00-p101-orientation",
     "function_count": 0,
-    "purpose": "Hand-authored pre-track for env, err, wrappers, and tools."
+    "purpose": "Generated negative-control pre-track for env, err, wrappers, and tools.",
+    "reference_example": {
+      "repository": "lib_env_examples",
+      "path": "env/get_tracer/main.c",
+      "workspace_path": "examples/lib_env_examples/env/get_tracer/main.c",
+      "url": "https://github.com/programming101dev/lib_env_examples/blob/main/env/get_tracer/main.c"
+    },
+    "coverage_claim": "negative-control-and-linkage"
   },
   "track_count": 40,
   "covered_function_count": 1237,
   "uncovered_function_count": 0,
   "coverage_definition": "Each wrapper is assigned to one primary track; assignment alone is not behavior coverage.",
-  "behavior_demonstration_track_count": 8,
+  "reference_example_track_count": 8,
   "tracks": [
     {
       "index": 1,
@@ -20,8 +27,13 @@
       "directory": "01-c-memory-runtime",
       "function_count": 37,
       "purpose": "Allocation, process termination, environment variables, sorting/searching helpers, and common stdlib extensions.",
-      "behavior_demonstration": "allocation ownership and integer helpers",
-      "coverage_claim": "executable-behavior",
+      "reference_example": {
+        "repository": "lib_c_examples",
+        "path": "stdlib/abs/main.c",
+        "workspace_path": "examples/lib_c_examples/stdlib/abs/main.c",
+        "url": "https://github.com/programming101dev/lib_c_examples/blob/main/stdlib/abs/main.c"
+      },
+      "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
           "name": "c/random",
@@ -80,8 +92,13 @@
       "directory": "02-c-memory-bytes",
       "function_count": 30,
       "purpose": "Raw byte memory operations and the difference between object bytes and strings.",
-      "behavior_demonstration": "host/network byte-order round trip",
-      "coverage_claim": "executable-behavior",
+      "reference_example": {
+        "repository": "lib_endian_examples",
+        "path": "round_trip/main.c",
+        "workspace_path": "examples/lib_endian_examples/round_trip/main.c",
+        "url": "https://github.com/programming101dev/lib_endian_examples/blob/main/round_trip/main.c"
+      },
+      "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
           "name": "c/byte-utility",
@@ -139,7 +156,7 @@
       "directory": "03-c-byte-strings",
       "function_count": 83,
       "purpose": "NUL-terminated byte strings, comparisons, searching, collation, and common string extensions.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -245,8 +262,13 @@
       "directory": "04-c-char-classification",
       "function_count": 14,
       "purpose": "Character classification, case mapping, locale-sensitive predicates, and signed-char pitfalls.",
-      "behavior_demonstration": "safe character classification",
-      "coverage_claim": "executable-behavior",
+      "reference_example": {
+        "repository": "lib_c_examples",
+        "path": "ctype/isalpha/main.c",
+        "workspace_path": "examples/lib_c_examples/ctype/isalpha/main.c",
+        "url": "https://github.com/programming101dev/lib_c_examples/blob/main/ctype/isalpha/main.c"
+      },
+      "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
           "name": "c/char-classification",
@@ -276,7 +298,7 @@
       "directory": "05-c-wide-strings",
       "function_count": 20,
       "purpose": "Wide string copying, comparison, searching, transformation, and wide-memory operations.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -319,7 +341,7 @@
       "directory": "06-c-wide-io-conversion",
       "function_count": 37,
       "purpose": "Wide-character I/O, multibyte conversion state, numeric conversion, and locale-sensitive text boundaries.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -379,7 +401,7 @@
       "directory": "07-c-wide-classification",
       "function_count": 18,
       "purpose": "Wide character classification, mapping, and locale-aware wide-character predicates.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -414,7 +436,7 @@
       "directory": "08-c-stdio-streams",
       "function_count": 27,
       "purpose": "Opening, closing, positioning, reading, writing, renaming, temporary files, and stream ownership.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -464,7 +486,7 @@
       "directory": "09-c-stdio-formatted",
       "function_count": 13,
       "purpose": "printf/scanf families, varargs wrappers, format checking, and formatted conversion hazards.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -500,8 +522,13 @@
       "directory": "10-c-stdio-character-buffering",
       "function_count": 19,
       "purpose": "Character/line I/O, pushback, EOF/error state, flushing, and buffering mode.",
-      "behavior_demonstration": "checked line output",
-      "coverage_claim": "executable-behavior",
+      "reference_example": {
+        "repository": "lib_c_examples",
+        "path": "stdio/puts/main.c",
+        "workspace_path": "examples/lib_c_examples/stdio/puts/main.c",
+        "url": "https://github.com/programming101dev/lib_c_examples/blob/main/stdio/puts/main.c"
+      },
+      "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
           "name": "c/stdio-character-io",
@@ -548,7 +575,7 @@
       "directory": "11-c-conversion-parsing",
       "function_count": 46,
       "purpose": "Integer parsing, inttypes helpers, option parsing, and defensive conversion practice.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -623,7 +650,7 @@
       "directory": "12-c-math-trig",
       "function_count": 39,
       "purpose": "Trigonometric and hyperbolic math families, including float/double/long double variants.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -679,7 +706,7 @@
       "directory": "13-c-math-exp-log-power",
       "function_count": 48,
       "purpose": "Exponentials, logarithms, roots, powers, and gamma/error-function families.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -744,7 +771,7 @@
       "directory": "14-c-math-rounding",
       "function_count": 54,
       "purpose": "Rounding, remainder, scaling, decomposition, and integer-result math APIs.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -815,7 +842,7 @@
       "directory": "15-c-floating-point",
       "function_count": 47,
       "purpose": "Floating-point environment, NaN/nextafter/fma/min/max style helpers, and numerical edge cases.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -891,7 +918,7 @@
       "directory": "16-c-complex-components",
       "function_count": 18,
       "purpose": "Complex absolute value, phase, real/imaginary access, conjugation, and projection helpers.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -926,7 +953,7 @@
       "directory": "17-c-complex-trig",
       "function_count": 30,
       "purpose": "Complex trigonometric and hyperbolic function families.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -973,7 +1000,7 @@
       "directory": "18-c-complex-exp-log-power",
       "function_count": 12,
       "purpose": "Complex exponentials, logarithms, powers, and square roots.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -1002,7 +1029,7 @@
       "directory": "19-c-time-locale-control",
       "function_count": 37,
       "purpose": "Time, locale, atomics, setjmp/signal-style control flow, and their common extensions.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -1074,7 +1101,7 @@
       "directory": "20-file-io",
       "function_count": 25,
       "purpose": "File descriptors, open/read/write/close, vectored I/O, short reads/writes, async I/O, descriptor ownership, and cleanup.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -1122,7 +1149,7 @@
       "directory": "21-filesystem-paths",
       "function_count": 33,
       "purpose": "Paths, permissions, stat, links, directories-as-filesystem-objects, timestamps, and filesystem mutation.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -1172,7 +1199,7 @@
       "directory": "22-directories-patterns",
       "function_count": 21,
       "purpose": "Directory traversal, glob/fnmatch/wordexp, path decomposition, and tree walking.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -1210,7 +1237,7 @@
       "directory": "23-processes-signals",
       "function_count": 63,
       "purpose": "fork, exec, wait, spawn, signals, inherited resources, CLOEXEC, and process failure paths.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -1290,7 +1317,7 @@
       "directory": "24-thread-lifecycle",
       "function_count": 35,
       "purpose": "Thread creation, joining, detaching, identity, scheduling hooks, and basic lifecycle ownership.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -1348,7 +1375,7 @@
       "directory": "25-thread-synchronization",
       "function_count": 38,
       "purpose": "Mutexes, condition variables, read/write locks, and synchronization cleanup rules.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -1415,7 +1442,7 @@
       "directory": "26-thread-state-cancellation",
       "function_count": 9,
       "purpose": "Thread-local storage, once initialization, cancellation state, cancellation points, and cleanup hazards.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -1447,7 +1474,7 @@
       "directory": "27-ipc",
       "function_count": 20,
       "purpose": "POSIX and XSI IPC: message queues, semaphores, shared memory, keys, readiness, cleanup, and permissions.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -1490,7 +1517,7 @@
       "directory": "28-network-sockets",
       "function_count": 12,
       "purpose": "socket, bind, listen, accept, connect, socketpair, shutdown, socket options, and socket metadata.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -1519,7 +1546,7 @@
       "directory": "29-network-io-addresses",
       "function_count": 23,
       "purpose": "send/recv families, byte order, inet conversion, and network address helper functions.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -1571,7 +1598,7 @@
       "directory": "30-network-names-interfaces",
       "function_count": 23,
       "purpose": "getaddrinfo/getnameinfo, protocol/service databases, interface enumeration, and Ethernet helpers.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -1623,7 +1650,7 @@
       "directory": "31-network-dns-resolver",
       "function_count": 0,
       "purpose": "Resolver state, DNS message parsing/packing, compressed names, and resolver validation helpers.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": []
     },
@@ -1633,7 +1660,7 @@
       "directory": "32-terminals-users",
       "function_count": 47,
       "purpose": "Terminal control, user/group lookup, identity APIs, tty databases, utmpx records, and interactive program boundaries.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -1697,7 +1724,7 @@
       "directory": "33-resources-platform",
       "function_count": 30,
       "purpose": "Resource limits, priorities, clocks/time, memory mapping/locking, host/system configuration, and portable platform administration APIs.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -1756,7 +1783,7 @@
       "directory": "34-logging-diagnostics",
       "function_count": 8,
       "purpose": "syslog, err/warn-style diagnostics, formatted messages, and teachable logging/error-reporting practice.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -1781,7 +1808,7 @@
       "directory": "35-runtime-services",
       "function_count": 40,
       "purpose": "Dynamic loading, regex, iconv, locale/message catalogs, legacy DBM, and libc search structures.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -1862,8 +1889,13 @@
       "directory": "36-error-handling",
       "function_count": 50,
       "purpose": "Error objects, errno mapping, assertions/check helpers, reporting, and failure-aware control flow.",
-      "behavior_demonstration": "raise, inspect, reset, and destroy an error",
-      "coverage_claim": "executable-behavior",
+      "reference_example": {
+        "repository": "lib_error_examples",
+        "path": "lifecycle/main.c",
+        "workspace_path": "examples/lib_error_examples/lifecycle/main.c",
+        "url": "https://github.com/programming101dev/lib_error_examples/blob/main/lifecycle/main.c"
+      },
+      "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
           "name": "support/assertions",
@@ -1941,8 +1973,13 @@
       "directory": "37-environment-lifecycle",
       "function_count": 12,
       "purpose": "Creating, configuring, labeling, duplicating, and destroying p101 environments.",
-      "behavior_demonstration": "duplicate and configure an environment and tracer",
-      "coverage_claim": "executable-behavior",
+      "reference_example": {
+        "repository": "lib_env_examples",
+        "path": "env/get_tracer/main.c",
+        "workspace_path": "examples/lib_env_examples/env/get_tracer/main.c",
+        "url": "https://github.com/programming101dev/lib_env_examples/blob/main/env/get_tracer/main.c"
+      },
+      "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
           "name": "support/environment-lifecycle",
@@ -1970,7 +2007,7 @@
       "directory": "38-event-streams",
       "function_count": 37,
       "purpose": "Resource events, call tracing, fault injection, event-log formatting, and observer configuration.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
@@ -2036,8 +2073,13 @@
       "directory": "39-fsm",
       "function_count": 31,
       "purpose": "Finite-state-machine structure, state transitions, callbacks, invalid transitions, and lifecycle ownership.",
-      "behavior_demonstration": "one typed, observable FSM step with separate FSM env/error state",
-      "coverage_claim": "executable-behavior",
+      "reference_example": {
+        "repository": "lib_fsm_examples",
+        "path": "fsm_run/main.c",
+        "workspace_path": "examples/lib_fsm_examples/fsm_run/main.c",
+        "url": "https://github.com/programming101dev/lib_fsm_examples/blob/main/fsm_run/main.c"
+      },
+      "coverage_claim": "inventory-and-linkage",
       "domains": [
         {
           "name": "support/fsm",
@@ -2084,7 +2126,7 @@
       "directory": "40-tool-building",
       "function_count": 51,
       "purpose": "C facts, small analyzers, and writing tools that reason about p101 projects.",
-      "behavior_demonstration": null,
+      "reference_example": null,
       "coverage_claim": "inventory-and-linkage",
       "domains": [
         {

@@ -52,42 +52,6 @@ static int write_wrapper_inventory(const struct p101_env *env, struct p101_error
     return ret_val;
 }
 
-static int run_memory_runtime_demo(const struct p101_env *env, struct p101_error *err)
-{
-    enum
-    {
-        FIRST_MAGNITUDE  = 42,
-        SECOND_MAGNITUDE = 7,
-        EXPECTED_SUM     = 49
-    };
-
-    int *values;
-    int  ret_val;
-
-    ret_val = EXIT_FAILURE;
-    values  = (int *)p101_calloc(env, err, 3U, sizeof(*values));
-    if(values == NULL || p101_error_has_error(err))
-    {
-        goto done;
-    }
-    values[0] = p101_abs(env, err, -FIRST_MAGNITUDE);
-    values[1] = p101_abs(env, err, -SECOND_MAGNITUDE);
-    values[2] = values[0] + values[1];
-    if(p101_error_has_error(err) || values[2] != EXPECTED_SUM)
-    {
-        goto done;
-    }
-    if(p101_fprintf(env, err, stdout, "Checked allocation result: %d\n", values[2]) < 0 || p101_error_has_error(err))
-    {
-        goto done;
-    }
-    ret_val = EXIT_SUCCESS;
-
-done:
-    p101_free(env, values);
-    return ret_val;
-}
-
 int main(void)
 {
     struct p101_error *err;
@@ -124,11 +88,6 @@ int main(void)
         goto done;
     }
     if(write_wrapper_inventory(env, err) != EXIT_SUCCESS)
-    {
-        goto done;
-    }
-
-    if(run_memory_runtime_demo(env, err) != EXIT_SUCCESS)
     {
         goto done;
     }

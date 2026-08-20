@@ -5,8 +5,13 @@
   "generated": true,
   "wrapper_count": 31,
   "purpose": "Finite-state-machine structure, state transitions, callbacks, invalid transitions, and lifecycle ownership.",
-  "behavior_demonstration": "one typed, observable FSM step with separate FSM env/error state",
-  "coverage_claim": "executable-behavior",
+  "reference_example": {
+    "repository": "lib_fsm_examples",
+    "path": "fsm_run/main.c",
+    "workspace_path": "examples/lib_fsm_examples/fsm_run/main.c",
+    "url": "https://github.com/programming101dev/lib_fsm_examples/blob/main/fsm_run/main.c"
+  },
+  "coverage_claim": "inventory-and-linkage",
   "domains": [
     {
       "name": "support/fsm",

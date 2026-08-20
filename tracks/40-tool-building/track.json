@@ -5,7 +5,7 @@
   "generated": true,
   "wrapper_count": 51,
   "purpose": "C facts, small analyzers, and writing tools that reason about p101 projects.",
-  "behavior_demonstration": null,
+  "reference_example": null,
   "coverage_claim": "inventory-and-linkage",
   "domains": [
     {

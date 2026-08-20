@@ -5,7 +5,7 @@
   "generated": true,
   "wrapper_count": 12,
   "purpose": "socket, bind, listen, accept, connect, socketpair, shutdown, socket options, and socket metadata.",
-  "behavior_demonstration": null,
+  "reference_example": null,
   "coverage_claim": "inventory-and-linkage",
   "domains": [
     {

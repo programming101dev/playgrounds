@@ -5,7 +5,7 @@
   "generated": true,
   "wrapper_count": 18,
   "purpose": "Wide character classification, mapping, and locale-aware wide-character predicates.",
-  "behavior_demonstration": null,
+  "reference_example": null,
   "coverage_claim": "inventory-and-linkage",
   "domains": [
     {

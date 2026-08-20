@@ -5,7 +5,7 @@
   "generated": true,
   "wrapper_count": 23,
   "purpose": "send/recv families, byte order, inet conversion, and network address helper functions.",
-  "behavior_demonstration": null,
+  "reference_example": null,
   "coverage_claim": "inventory-and-linkage",
   "domains": [
     {

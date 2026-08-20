@@ -17,3 +17,7 @@ Verify the repaired command with:
 
 Only resources whose wrappers emit lifecycle events are visible. Pair a clean
 report with the wrapper completeness audit.
+
+For a compact correct create/use/destroy shape, see the
+[lib_error lifecycle example](https://github.com/programming101dev/lib_error_examples/blob/main/lifecycle/main.c).
+The concrete resource type differs, but the ownership boundary is the same.

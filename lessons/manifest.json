@@ -26,6 +26,13 @@
         "P101-WRAP-900"
       ],
       "acceptance_profile": "wrapper-audit",
+      "reference_examples": [
+        {
+          "repository": "lib_c_examples",
+          "path": "stdlib/abs/main.c",
+          "url": "https://github.com/programming101dev/lib_c_examples/blob/main/stdlib/abs/main.c"
+        }
+      ],
       "verification": "programs/p101-audit/audit-wrappers --strict-external <source-path>"
     },
     {
@@ -48,6 +55,18 @@
         "P101-ERR-009"
       ],
       "acceptance_profile": "error-contract",
+      "reference_examples": [
+        {
+          "repository": "lib_error_examples",
+          "path": "lifecycle/main.c",
+          "url": "https://github.com/programming101dev/lib_error_examples/blob/main/lifecycle/main.c"
+        },
+        {
+          "repository": "lib_env_examples",
+          "path": "env/get_tracer/main.c",
+          "url": "https://github.com/programming101dev/lib_env_examples/blob/main/env/get_tracer/main.c"
+        }
+      ],
       "verification": "programs/p101-audit/audit-doctor -s <source-path>"
     },
     {
@@ -94,13 +113,27 @@
         "P101-LAB-102"
       ],
       "finding_ids": [
+        "P101-ALLOC-001",
+        "P101-ALLOC-002",
+        "P101-ALLOC-003",
         "P101-ALLOC-004",
+        "P101-FD-001",
+        "P101-FD-002",
+        "P101-FD-003",
+        "P101-FD-004",
         "P101-RESOURCE-000",
         "P101-RESOURCE-001",
         "P101-RESOURCE-002",
         "P101-RESOURCE-003",
         "P101-RESOURCE-004",
         "P101-RESOURCE-005"
+      ],
+      "reference_examples": [
+        {
+          "repository": "lib_error_examples",
+          "path": "lifecycle/main.c",
+          "url": "https://github.com/programming101dev/lib_error_examples/blob/main/lifecycle/main.c"
+        }
       ],
       "acceptance_profile": "runtime-resource",
       "verification": "scripts/runtime/student-workflow.sh -- <command>"
@@ -201,6 +234,22 @@
       ],
       "acceptance_profile": "policy-rules",
       "verification": "p101-inspect model verify -e <expectations.txt> <analysis-directory>"
+    },
+    {
+      "lesson_id": "P101-LESSON-TEST-EVIDENCE",
+      "title": "Keep test evidence complete and replayable",
+      "path": "test-evidence.md",
+      "track": "tool-building",
+      "prerequisites": [
+        "P101-LAB-ORIENTATION"
+      ],
+      "finding_ids": [
+        "P101-TEST-CONFORMANCE-001",
+        "P101-TEST-CONFORMANCE-002",
+        "P101-TEST-RECEIPT-001"
+      ],
+      "acceptance_profile": "wrapper-conformance",
+      "verification": "programs/p101-test/test-conformance --help"
     }
   ],
   "acceptance_profiles": [
@@ -308,7 +357,14 @@
       "kind": "native-policy-suite",
       "description": "Canonical causal models exercise every descriptor, allocation, and generic-resource lifecycle finding.",
       "finding_ids": [
+        "P101-ALLOC-001",
+        "P101-ALLOC-002",
+        "P101-ALLOC-003",
         "P101-ALLOC-004",
+        "P101-FD-001",
+        "P101-FD-002",
+        "P101-FD-003",
+        "P101-FD-004",
         "P101-RESOURCE-000",
         "P101-RESOURCE-001",
         "P101-RESOURCE-002",
@@ -443,6 +499,31 @@
         "freebsd"
       ],
       "quick": true
+    },
+    {
+      "profile_id": "wrapper-conformance",
+      "kind": "native-tool-suite",
+      "description": "Wrapper conformance and repository receipt fixtures reject incomplete or malformed test evidence.",
+      "finding_ids": [
+        "P101-TEST-CONFORMANCE-001",
+        "P101-TEST-CONFORMANCE-002",
+        "P101-TEST-RECEIPT-001"
+      ],
+      "command": [
+        "../../templates/template-c/test.sh"
+      ],
+      "cwd": "programs/p101-test",
+      "evidence_paths": [
+        "programs/p101-test/components/conformance/src/main.c",
+        "programs/p101-test/components/repository-receipt/src/main.c",
+        "programs/p101-test/test"
+      ],
+      "platforms": [
+        "macos",
+        "linux",
+        "freebsd"
+      ],
+      "quick": false
     },
     {
       "profile_id": "policy-rules",
