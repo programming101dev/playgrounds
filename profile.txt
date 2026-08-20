@@ -1,4 +1,0 @@
-# Profiling (gprof). Set to 1 to build this project with profiling.
-# Off by default. Select it with -DP101_PROFILE_MODE=ON or the workspace
-# update/setup profile option.
-0

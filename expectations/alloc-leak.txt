@@ -1,7 +1,0 @@
-p101-expectations-v1
-result=findings
-require=P101-ALLOC-001
-require_call=p101_malloc
-require_resource=allocation
-require_edge=call-caused-event
-min_nodes=2

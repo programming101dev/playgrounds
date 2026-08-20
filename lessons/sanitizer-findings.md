@@ -1,31 +1,138 @@
-# Use sanitizer evidence alongside wrapper evidence
+# Use compiler runtime evidence to find unwrapped defects
 
-The p101 event stream explains operations that passed through p101 wrappers.
-Compiler sanitizers observe a different boundary: invalid memory access,
-undefined behavior, leaks, and data races in instrumented code, including code
-that did not emit a p101 event.
+These examples cover sanitizer reports admitted from an instrumented execution.
+Each section gives a broken input, its expected diagnostic, a repaired input, and the expected clean result.
+Canonical correct programs remain in the corresponding example repository; native detection evidence remains in the owning tool suite.
 
-The two sources complement each other. A resource report can explain which
-wrapper acquired an object, while a sanitizer can show where the program later
-used invalid memory. Neither report proves that unexecuted paths are safe.
+<a id="P101-SAN-001"></a>
 
-## Findings
+## P101-SAN-001 — AddressSanitizer reports invalid memory access
 
-- `P101-SAN-001` is an AddressSanitizer memory-access failure.
-- `P101-SAN-002` is a LeakSanitizer leak report.
-- `P101-SAN-003` is an UndefinedBehaviorSanitizer runtime error.
-- `P101-SAN-004` is a ThreadSanitizer race or synchronization report.
+Broken input:
 
-## Repair workflow
+```text
+AddressSanitizer: heap-use-after-free
+```
 
-1. Start with the first sanitizer finding, because later reports may be
-   consequences of the first corrupted state.
-2. Open the reported source location and identify the lifetime, bounds, or
-   synchronization invariant that was violated.
-3. Fix ownership or synchronization rather than suppressing the diagnostic.
-4. Rebuild with the same sanitizer set.
-5. Replay the exact command with `p101-inspect run` and confirm that the sanitizer and
-   p101 policy reports are both clean.
+Expected diagnostic:
 
-Sanitizer output is execution evidence. Add a focused regression test for the
-repaired path so the fix does not depend on manually repeating one run.
+```text
+P101-SAN-001: AddressSanitizer reports invalid memory access
+```
+
+Repaired input:
+
+```text
+pointer = allocate();
+value = *pointer;
+release(pointer);
+```
+
+Expected clean result:
+
+```text
+No P101-SAN-001 finding is emitted for the repaired input.
+```
+
+<a id="P101-SAN-002"></a>
+
+## P101-SAN-002 — LeakSanitizer reports leaked memory
+
+Broken input:
+
+```text
+LeakSanitizer: detected memory leaks
+```
+
+Expected diagnostic:
+
+```text
+P101-SAN-002: LeakSanitizer reports leaked memory
+```
+
+Repaired input:
+
+```text
+pointer = allocate();
+release(pointer);
+```
+
+Expected clean result:
+
+```text
+No P101-SAN-002 finding is emitted for the repaired input.
+```
+
+<a id="P101-SAN-003"></a>
+
+## P101-SAN-003 — UndefinedBehaviorSanitizer reports undefined behavior
+
+Broken input:
+
+```text
+runtime error: signed integer overflow
+```
+
+Expected diagnostic:
+
+```text
+P101-SAN-003: UndefinedBehaviorSanitizer reports undefined behavior
+```
+
+Repaired input:
+
+```text
+if(left <= INT_MAX - right)
+{
+    result = left + right;
+}
+```
+
+Expected clean result:
+
+```text
+No P101-SAN-003 finding is emitted for the repaired input.
+```
+
+<a id="P101-SAN-004"></a>
+
+## P101-SAN-004 — ThreadSanitizer reports a race
+
+Broken input:
+
+```text
+ThreadSanitizer: data race
+```
+
+Expected diagnostic:
+
+```text
+P101-SAN-004: ThreadSanitizer reports a race
+```
+
+Repaired input:
+
+```text
+lock(mutex);
+shared_value = value;
+unlock(mutex);
+```
+
+Expected clean result:
+
+```text
+No P101-SAN-004 finding is emitted for the repaired input.
+```
+
+## Platform boundary
+
+All three platforms test normalization of admitted sanitizer output. This does not claim that every sanitizer is supplied or usable by every platform compiler.
+
+## Correct reference
+
+See [a matched allocation and release](https://github.com/programming101dev/c-examples/blob/main/memory/malloc-free/main.c).
+
+## Verification boundary
+
+Run `p101-inspect run -- <sanitized-command>`. The example explains the repair; the owning tool suite proves the diagnostic behavior.
+A clean result is bounded by the files, events, manifests, and platform evidence admitted by that tool.

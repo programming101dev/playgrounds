@@ -1,4 +1,0 @@
-# Code coverage (gcov). Set to 1 to build this project with coverage.
-# Off by default. Select it with -DP101_COVERAGE_MODE=ON or the workspace
-# update/setup coverage option.
-0

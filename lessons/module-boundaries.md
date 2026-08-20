@@ -1,85 +1,606 @@
 # Reduce module coupling and public API surface
 
-Start with file scope. Functions, types, and macros used by only one translation
-unit should stay private, and private functions should normally be `static`.
-Headers should expose only declarations required by another module. A
-non-static function with no header declaration at all is clang-tidy's call
-(`misc-use-internal-linkage`); the module map speaks up about the harder
-question of whether anything actually uses the interface you did declare.
+These examples cover AST-backed module shape and the few explicitly lexical C interface conventions.
+Each section gives a broken input, its expected diagnostic, a repaired input, and the expected clean result.
+Canonical correct programs remain in the corresponding example repository; native detection evidence remains in the owning tool suite.
 
-Break dependency cycles by moving the shared concept to a narrower module or by
-reversing control through a callback. Avoid dumping unrelated helpers into
-`util.c`; name a module after the responsibility it owns. Treat size thresholds
-as prompts for judgment rather than automatic proof of bad design.
+<a id="P101-MOD-002"></a>
 
-Name idioms carry the same weight as structure. Pair every `_create` with a
-`_destroy` that takes the caller's pointer by address and nulls it, so a freed
-handle cannot be used again. Expose collections as a `_count`/`_at` accessor
-pair instead of leaking arrays. Give one module one vocabulary: every public
-function shares the module's name prefix, so a call site names its owner. Open
-every header with an include guard derived from the header's own name; a guard
-that names a different file is a copy-paste bug waiting for its second
-inclusion. Thin platform wrappers are the exception for pairing and prefixes:
-they keep the platform's own names on purpose.
+## P101-MOD-002 — module owns too many functions
 
-Structure follows the same discipline. A source file includes its own header —
-first, in tool code — so the interface is proven to stand alone. A parser
-implies a printer: `_from_name` without `_name` leaves a vocabulary nothing can
-round-trip. `_init` pairs with `_deinit` and `_open` with `_close`, even when
-today's teardown is empty, so call sites never change when the struct grows an
-allocation. And names stay out of the implementation's namespace: leading
-underscores and the POSIX `_t` suffix belong to the platform, so a name the
-platform cannot take is a name that cannot break. clang-tidy owns the
-leading-underscore half of that rule
-(`bugprone-reserved-identifier`/`cert-dcl37-c`); the module map checks the `_t`
-suffix, which no tool does.
+Broken input:
 
-Ownership belongs in names. A function that hands you memory says so —
-`create`, `dup` — and a parameter that is merely borrowed is `const`. When a
-callee assumes ownership, say `take` or `adopt`; when the caller keeps it, the
-signature already says so. String producers take a caller-owned buffer and its
-size rather than returning hidden allocations. Keep functions reentrant by
-construction: no pointers to static storage, state threaded through parameters
-— the reason serious code retired `strtok`. Give stateful structs a private
-validity check and assert it at entry points; it turns representation bugs into
-early, local failures. And when control flow grows a second `switch` over the
-same enum, reach for a table: lib_fsm shows dispatch as data.
-
-The evidence layer now judges shape as well as structure, straight from the
-AST. The house signature reads env first, error second. A heap handle's
-`_destroy` takes the caller's pointer by address and nulls it. A predicate
-returns `bool`, because the type documents that there is no third answer; it
-should also read as a question — `is_`, `has_`, `can_`, `should_` — though only
-the return type is judged, because English has more ways to ask a question than
-a token list can hold. Allocations size the object, not the type:
-`malloc(sizeof(*p))` survives a retype.
-
-Two habits belong here but are checked elsewhere, so the module map stays quiet
-about them. Macro parameters wear parentheses and multi-statement macros wrap in
-`do { } while(0)`, because the caller may pass `a + b` and because inside an
-unbraced `if` only the first statement stays conditional — clang-tidy's
-`bugprone-macro-parentheses` and `bugprone-multiple-statement-macro` report
-both. And a signal handler calls only the async-signal-safe list and touches
-only `volatile sig_atomic_t`, because everything else can deadlock a process
-interrupted mid-operation — that is `bugprone-signal-handler`, also known as
-`cert-sig30-c`. One problem earns one diagnostic; when a general tool already
-finds it, the tool reports and the lesson explains.
-
-Cross-module field access is worth thinking about, but no tool judges it here. A
-record whose module hands out a lifecycle — `_create`, `_destroy`, `_init`,
-`_deinit` — is an object: the lifecycle establishes invariants, and reaching
-into its fields from another module goes around them, so prefer asking the
-owning module. A record with no lifecycle is plain data, and reading its fields
-across a module boundary is ordinary and correct; a shared model struct is a
-deliberate pattern here, not a smell. The line between the two is a judgement
-call often enough that it stays a habit to cultivate rather than a diagnostic to
-enforce — this workspace's own tools reach into shared model records by design.
-
-Verify with:
-
-```sh
-../programs/p101-audit/audit-modules src include
+```text
+one.c owns parsing, storage, networking, and reporting
 ```
 
-Library mode cannot decide whether an exported symbol is unused by external
-consumers. Use the workspace-wide audit before removing public APIs.
+Expected diagnostic:
+
+```text
+P101-MOD-002: module owns too many functions
+```
+
+Repaired input:
+
+```text
+Split one responsibility into a module with a narrow interface.
+```
+
+Expected clean result:
+
+```text
+No P101-MOD-002 finding is emitted for the repaired input.
+```
+
+<a id="P101-MOD-003"></a>
+
+## P101-MOD-003 — module exposes too much public API
+
+Broken input:
+
+```text
+helper functions are non-static and exported
+```
+
+Expected diagnostic:
+
+```text
+P101-MOD-003: module exposes too much public API
+```
+
+Repaired input:
+
+```text
+Make file-local helpers static and expose only consumer-required declarations.
+```
+
+Expected clean result:
+
+```text
+No P101-MOD-003 finding is emitted for the repaired input.
+```
+
+<a id="P101-MOD-004"></a>
+
+## P101-MOD-004 — entrypoint owns subsystem logic
+
+Broken input:
+
+```text
+main.c contains parsing, business logic, and persistence
+```
+
+Expected diagnostic:
+
+```text
+P101-MOD-004: entrypoint owns subsystem logic
+```
+
+Repaired input:
+
+```text
+Keep main responsible for wiring, top-level status, and cleanup.
+```
+
+Expected clean result:
+
+```text
+No P101-MOD-004 finding is emitted for the repaired input.
+```
+
+<a id="P101-MOD-006"></a>
+
+## P101-MOD-006 — private helper has external linkage
+
+Broken input:
+
+```text
+int helper(void) { return 0; }
+```
+
+Expected diagnostic:
+
+```text
+P101-MOD-006: private helper has external linkage
+```
+
+Repaired input:
+
+```text
+static int helper(void) { return 0; }
+```
+
+Expected clean result:
+
+```text
+No P101-MOD-006 finding is emitted for the repaired input.
+```
+
+<a id="P101-MOD-007"></a>
+
+## P101-MOD-007 — header declaration has no definition
+
+Broken input:
+
+```text
+int public_operation(void);
+```
+
+Expected diagnostic:
+
+```text
+P101-MOD-007: header declaration has no definition
+```
+
+Repaired input:
+
+```text
+Provide the matching non-static definition or remove the declaration.
+```
+
+Expected clean result:
+
+```text
+No P101-MOD-007 finding is emitted for the repaired input.
+```
+
+<a id="P101-MOD-008"></a>
+
+## P101-MOD-008 — declared interface is unused
+
+Broken input:
+
+```text
+public.h declares an operation no scanned consumer calls
+```
+
+Expected diagnostic:
+
+```text
+P101-MOD-008: declared interface is unused
+```
+
+Repaired input:
+
+```text
+Remove the unused interface or add the real admitted consumer.
+```
+
+Expected clean result:
+
+```text
+No P101-MOD-008 finding is emitted for the repaired input.
+```
+
+<a id="P101-MOD-009"></a>
+
+## P101-MOD-009 — public macro is unused
+
+Broken input:
+
+```text
+#define PROJECT_LIMIT 32
+```
+
+Expected diagnostic:
+
+```text
+P101-MOD-009: public macro is unused
+```
+
+Repaired input:
+
+```text
+Keep the macro private or use it through the public contract that needs it.
+```
+
+Expected clean result:
+
+```text
+No P101-MOD-009 finding is emitted for the repaired input.
+```
+
+<a id="P101-MOD-010"></a>
+
+## P101-MOD-010 — public type is unused
+
+Broken input:
+
+```text
+typedef struct project_unused project_unused;
+```
+
+Expected diagnostic:
+
+```text
+P101-MOD-010: public type is unused
+```
+
+Repaired input:
+
+```text
+Remove the public type or add the consumer that establishes its purpose.
+```
+
+Expected clean result:
+
+```text
+No P101-MOD-010 finding is emitted for the repaired input.
+```
+
+<a id="P101-MOD-011"></a>
+
+## P101-MOD-011 — local include graph contains a cycle
+
+Broken input:
+
+```text
+a.h includes b.h; b.h includes a.h
+```
+
+Expected diagnostic:
+
+```text
+P101-MOD-011: local include graph contains a cycle
+```
+
+Repaired input:
+
+```text
+Extract the shared declaration or invert one dependency.
+```
+
+Expected clean result:
+
+```text
+No P101-MOD-011 finding is emitted for the repaired input.
+```
+
+<a id="P101-MOD-012"></a>
+
+## P101-MOD-012 — local include target is missing
+
+Broken input:
+
+```text
+#include "missing.h"
+```
+
+Expected diagnostic:
+
+```text
+P101-MOD-012: local include target is missing
+```
+
+Repaired input:
+
+```text
+Include the owning module's existing public header.
+```
+
+Expected clean result:
+
+```text
+No P101-MOD-012 finding is emitted for the repaired input.
+```
+
+<a id="P101-MOD-013"></a>
+
+## P101-MOD-013 — include violates the declared layer graph
+
+Broken input:
+
+```text
+presentation includes storage internals directly
+```
+
+Expected diagnostic:
+
+```text
+P101-MOD-013: include violates the declared layer graph
+```
+
+Repaired input:
+
+```text
+Route the dependency through an allowed interface or update intentional policy.
+```
+
+Expected clean result:
+
+```text
+No P101-MOD-013 finding is emitted for the repaired input.
+```
+
+<a id="P101-MOD-014"></a>
+
+## P101-MOD-014 — create vocabulary lacks destroy pair
+
+Broken input:
+
+```text
+widget_create exists without widget_destroy
+```
+
+Expected diagnostic:
+
+```text
+P101-MOD-014: create vocabulary lacks destroy pair
+```
+
+Repaired input:
+
+```text
+Add the matching destroy operation and make ownership explicit.
+```
+
+Expected clean result:
+
+```text
+No P101-MOD-014 finding is emitted for the repaired input.
+```
+
+<a id="P101-MOD-015"></a>
+
+## P101-MOD-015 — collection accessor vocabulary is incomplete
+
+Broken input:
+
+```text
+widget_count exists without widget_at
+```
+
+Expected diagnostic:
+
+```text
+P101-MOD-015: collection accessor vocabulary is incomplete
+```
+
+Repaired input:
+
+```text
+Provide the count/at pair or remove the partial collection interface.
+```
+
+Expected clean result:
+
+```text
+No P101-MOD-015 finding is emitted for the repaired input.
+```
+
+<a id="P101-MOD-016"></a>
+
+## P101-MOD-016 — public function lacks its module prefix
+
+Broken input:
+
+```text
+int open_widget(void);
+```
+
+Expected diagnostic:
+
+```text
+P101-MOD-016: public function lacks its module prefix
+```
+
+Repaired input:
+
+```text
+int widget_open(void);
+```
+
+Expected clean result:
+
+```text
+No P101-MOD-016 finding is emitted for the repaired input.
+```
+
+<a id="P101-MOD-017"></a>
+
+## P101-MOD-017 — include guard names the wrong header
+
+Broken input:
+
+```text
+widget.h uses OTHER_H
+```
+
+Expected diagnostic:
+
+```text
+P101-MOD-017: include guard names the wrong header
+```
+
+Repaired input:
+
+```text
+widget.h uses P101_WIDGET_WIDGET_H
+```
+
+Expected clean result:
+
+```text
+No P101-MOD-017 finding is emitted for the repaired input.
+```
+
+<a id="P101-MOD-018"></a>
+
+## P101-MOD-018 — source does not include its own header first
+
+Broken input:
+
+```text
+source includes dependencies before widget.h
+```
+
+Expected diagnostic:
+
+```text
+P101-MOD-018: source does not include its own header first
+```
+
+Repaired input:
+
+```text
+Include widget.h first so the public interface proves it is self-contained.
+```
+
+Expected clean result:
+
+```text
+No P101-MOD-018 finding is emitted for the repaired input.
+```
+
+<a id="P101-MOD-019"></a>
+
+## P101-MOD-019 — lifecycle vocabulary lacks teardown
+
+Broken input:
+
+```text
+widget_init exists without widget_deinit
+```
+
+Expected diagnostic:
+
+```text
+P101-MOD-019: lifecycle vocabulary lacks teardown
+```
+
+Repaired input:
+
+```text
+Add the matching teardown operation, even when it is currently small.
+```
+
+Expected clean result:
+
+```text
+No P101-MOD-019 finding is emitted for the repaired input.
+```
+
+<a id="P101-MOD-020"></a>
+
+## P101-MOD-020 — name conversion is one-way
+
+Broken input:
+
+```text
+widget_from_name exists without widget_name
+```
+
+Expected diagnostic:
+
+```text
+P101-MOD-020: name conversion is one-way
+```
+
+Repaired input:
+
+```text
+Provide both parse and print directions for the public vocabulary.
+```
+
+Expected clean result:
+
+```text
+No P101-MOD-020 finding is emitted for the repaired input.
+```
+
+<a id="P101-MOD-021"></a>
+
+## P101-MOD-021 — public type uses a reserved suffix
+
+Broken input:
+
+```text
+typedef struct widget widget_t;
+```
+
+Expected diagnostic:
+
+```text
+P101-MOD-021: public type uses a reserved suffix
+```
+
+Repaired input:
+
+```text
+Use a project-owned name such as struct p101_widget.
+```
+
+Expected clean result:
+
+```text
+No P101-MOD-021 finding is emitted for the repaired input.
+```
+
+<a id="P101-MOD-022"></a>
+
+## P101-MOD-022 — environment and error parameters are out of contract order
+
+Broken input:
+
+```text
+operation(value, err, env)
+```
+
+Expected diagnostic:
+
+```text
+P101-MOD-022: environment and error parameters are out of contract order
+```
+
+Repaired input:
+
+```text
+operation(env, err, value)
+```
+
+Expected clean result:
+
+```text
+No P101-MOD-022 finding is emitted for the repaired input.
+```
+
+<a id="P101-MOD-027"></a>
+
+## P101-MOD-027 — allocation is sized by a repeated type
+
+Broken input:
+
+```text
+item = malloc(sizeof(struct item));
+```
+
+Expected diagnostic:
+
+```text
+P101-MOD-027: allocation is sized by a repeated type
+```
+
+Repaired input:
+
+```text
+item = p101_malloc(env, err, sizeof(*item));
+```
+
+Expected clean result:
+
+```text
+No P101-MOD-027 finding is emitted for the repaired input.
+```
+
+## Platform boundary
+
+Module findings use the declarations and definitions admitted for the current platform, while explicitly lexical rules remain limited to the source text they inspect.
+
+## Correct reference
+
+See the [small, prefixed `lib_transition` interface used from a separate program](https://github.com/programming101dev/lib_transition_examples/blob/main/table/main.c).
+
+## Verification boundary
+
+Run `programs/p101-audit/audit-modules <source-path>`. The example explains the repair; the owning tool suite proves the diagnostic behavior.
+A clean result is bounded by the files, events, manifests, and platform evidence admitted by that tool.

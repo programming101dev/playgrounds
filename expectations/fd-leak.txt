@@ -1,7 +1,0 @@
-p101-expectations-v1
-result=findings
-require=P101-FD-001
-require_call=p101_open
-require_resource=fd
-require_edge=call-caused-event
-min_nodes=2

@@ -1,8 +1,6 @@
 {
-  "schema": "p101-finding-lesson-catalog-v2",
+  "schema": "p101-finding-lesson-catalog-v3",
   "url_base": "https://github.com/programming101dev/playgrounds/blob/main/",
-  "case_glob": "../corpus/cases/*/expected.json",
-  "case_prerequisite_mode": "previous-in-track",
   "default_platforms": [
     "macos",
     "linux",
@@ -14,10 +12,6 @@
       "lesson_id": "P101-LESSON-WRAPPER-BOUNDARIES",
       "title": "Keep wrapper boundaries complete and observable",
       "path": "wrapper-boundaries.md",
-      "track": "tool-building",
-      "prerequisites": [
-        "P101-LAB-ORIENTATION"
-      ],
       "finding_ids": [
         "P101-WRAP-001",
         "P101-WRAP-002",
@@ -39,10 +33,6 @@
       "lesson_id": "P101-LESSON-ERROR-CONTRACTS",
       "title": "Make environment and error ownership explicit",
       "path": "error-contracts.md",
-      "track": "c",
-      "prerequisites": [
-        "P101-LAB-ORIENTATION"
-      ],
       "finding_ids": [
         "P101-ERR-001",
         "P101-ERR-002",
@@ -73,10 +63,6 @@
       "lesson_id": "P101-LESSON-MODULE-BOUNDARIES",
       "title": "Reduce module coupling and public API surface",
       "path": "module-boundaries.md",
-      "track": "tool-building",
-      "prerequisites": [
-        "P101-LESSON-ERROR-CONTRACTS"
-      ],
       "finding_ids": [
         "P101-MOD-002",
         "P101-MOD-003",
@@ -101,17 +87,19 @@
         "P101-MOD-027"
       ],
       "acceptance_profile": "module-map",
+      "reference_examples": [
+        {
+          "repository": "lib_transition_examples",
+          "path": "table/main.c",
+          "url": "https://github.com/programming101dev/lib_transition_examples/blob/main/table/main.c"
+        }
+      ],
       "verification": "programs/p101-audit/audit-modules <source-path>"
     },
     {
       "lesson_id": "P101-LESSON-GENERIC-RESOURCES",
       "title": "Model ownership for every resource class",
       "path": "generic-resources.md",
-      "track": "systems",
-      "prerequisites": [
-        "P101-LAB-101",
-        "P101-LAB-102"
-      ],
       "finding_ids": [
         "P101-ALLOC-001",
         "P101-ALLOC-002",
@@ -142,42 +130,44 @@
       "lesson_id": "P101-LESSON-SYNCHRONIZATION",
       "title": "Reason about lock, wait, and join graphs",
       "path": "synchronization.md",
-      "track": "systems",
-      "prerequisites": [
-        "P101-LAB-321"
-      ],
       "finding_ids": [
         "P101-SYNC-001",
         "P101-SYNC-002",
         "P101-SYNC-003"
       ],
       "acceptance_profile": "runtime-synchronization",
+      "reference_examples": [
+        {
+          "repository": "c-examples",
+          "path": "pthread-mutex/pthread_mutex_lock-pthread_mutex_unlock/main.c",
+          "url": "https://github.com/programming101dev/c-examples/blob/main/pthread-mutex/pthread_mutex_lock-pthread_mutex_unlock/main.c"
+        }
+      ],
       "verification": "scripts/runtime/student-workflow.sh -- <multithreaded-command>"
     },
     {
       "lesson_id": "P101-LESSON-TRACE-INTEGRITY",
       "title": "Keep call traces balanced and trustworthy",
       "path": "trace-integrity.md",
-      "track": "tool-building",
-      "prerequisites": [
-        "P101-LAB-ORIENTATION"
-      ],
       "finding_ids": [
         "P101-TRACE-001",
         "P101-TRACE-002",
         "P101-TRACE-003"
       ],
       "acceptance_profile": "runtime-trace",
+      "reference_examples": [
+        {
+          "repository": "lib_env_examples",
+          "path": "env/get_tracer/main.c",
+          "url": "https://github.com/programming101dev/lib_env_examples/blob/main/env/get_tracer/main.c"
+        }
+      ],
       "verification": "p101-inspect run -- <command>"
     },
     {
       "lesson_id": "P101-LESSON-SANITIZERS",
       "title": "Use compiler runtime evidence to find unwrapped defects",
       "path": "sanitizer-findings.md",
-      "track": "c",
-      "prerequisites": [
-        "P101-LAB-ORIENTATION"
-      ],
       "finding_ids": [
         "P101-SAN-001",
         "P101-SAN-002",
@@ -185,30 +175,36 @@
         "P101-SAN-004"
       ],
       "acceptance_profile": "runtime-sanitizers",
+      "reference_examples": [
+        {
+          "repository": "c-examples",
+          "path": "memory/malloc-free/main.c",
+          "url": "https://github.com/programming101dev/c-examples/blob/main/memory/malloc-free/main.c"
+        }
+      ],
       "verification": "p101-inspect run -- <sanitized-command>"
     },
     {
       "lesson_id": "P101-LESSON-MUTATION-STRENGTH",
       "title": "Measure whether tests reject wrong behavior",
       "path": "mutation-strength.md",
-      "track": "tool-building",
-      "prerequisites": [
-        "P101-LAB-322"
-      ],
       "finding_ids": [
         "P101-MUTATION-001"
       ],
       "acceptance_profile": "mutation-check",
+      "reference_examples": [
+        {
+          "repository": "lib_transition_examples",
+          "path": "table/main.c",
+          "url": "https://github.com/programming101dev/lib_transition_examples/blob/main/table/main.c"
+        }
+      ],
       "verification": "programs/p101-test/test-mutation --test-command '<test-command>' <source-path>"
     },
     {
       "lesson_id": "P101-LESSON-API-COMPATIBILITY",
       "title": "Review public API changes before consumers discover them",
       "path": "api-compatibility.md",
-      "track": "tool-building",
-      "prerequisites": [
-        "P101-LESSON-MODULE-BOUNDARIES"
-      ],
       "finding_ids": [
         "P101-API-001",
         "P101-API-002",
@@ -216,40 +212,63 @@
         "P101-API-004"
       ],
       "acceptance_profile": "api-diff",
-      "verification": "p101 api-diff <before-manifest> <after-manifest>"
+      "reference_examples": [
+        {
+          "repository": "lib_transition_examples",
+          "path": "table/main.c",
+          "url": "https://github.com/programming101dev/lib_transition_examples/blob/main/table/main.c"
+        }
+      ],
+      "verification": "scripts/tests/test-p101-api-diff.sh"
     },
     {
       "lesson_id": "P101-LESSON-POLICY-EXPECTATIONS",
       "title": "Turn observed behavior into an executable expectation",
       "path": "policy-expectations.md",
-      "track": "tool-building",
-      "prerequisites": [
-        "P101-LESSON-TRACE-INTEGRITY"
-      ],
       "finding_ids": [
         "P101-EXPECT-001",
         "P101-POLICY-RESOURCE-001",
         "P101-POLICY-RESOURCE-002",
-        "P101-POLICY-RESOURCE-003"
+        "P101-POLICY-RESOURCE-003",
+        "P101-POLICY-SYNC-001",
+        "P101-POLICY-SECURE-001",
+        "P101-POLICY-SECURE-002",
+        "P101-POLICY-SECURE-003",
+        "P101-POLICY-SECURE-004"
       ],
       "acceptance_profile": "policy-rules",
-      "verification": "p101-inspect model verify -e <expectations.txt> <analysis-directory>"
+      "reference_examples": [
+        {
+          "repository": "c-examples",
+          "path": "memory/malloc-free/main.c",
+          "url": "https://github.com/programming101dev/c-examples/blob/main/memory/malloc-free/main.c"
+        },
+        {
+          "repository": "c-examples",
+          "path": "pthread-mutex/pthread_mutex_lock-pthread_mutex_unlock/main.c",
+          "url": "https://github.com/programming101dev/c-examples/blob/main/pthread-mutex/pthread_mutex_lock-pthread_mutex_unlock/main.c"
+        }
+      ],
+      "verification": "p101-inspect model check <analysis-directory> --rules <rule-pack>"
     },
     {
       "lesson_id": "P101-LESSON-TEST-EVIDENCE",
       "title": "Keep test evidence complete and replayable",
       "path": "test-evidence.md",
-      "track": "tool-building",
-      "prerequisites": [
-        "P101-LAB-ORIENTATION"
-      ],
       "finding_ids": [
         "P101-TEST-CONFORMANCE-001",
         "P101-TEST-CONFORMANCE-002",
         "P101-TEST-RECEIPT-001"
       ],
       "acceptance_profile": "wrapper-conformance",
-      "verification": "programs/p101-test/test-conformance --help"
+      "reference_examples": [
+        {
+          "repository": "lib_transition_examples",
+          "path": "test/CMakeLists.txt",
+          "url": "https://github.com/programming101dev/lib_transition_examples/blob/main/test/CMakeLists.txt"
+        }
+      ],
+      "verification": "cmake --build <build-directory> --target p101-test_test_all"
     }
   ],
   "acceptance_profiles": [
@@ -265,7 +284,9 @@
         "P101-WRAP-900"
       ],
       "command": [
-        "../../templates/template-c/test.sh"
+        "test/test_cli.sh",
+        "${P101_AUDIT_WRAPPERS}",
+        "${P101_AUDIT_FACTS}"
       ],
       "cwd": "programs/p101-audit",
       "evidence_paths": [
@@ -295,7 +316,8 @@
         "P101-ERR-009"
       ],
       "command": [
-        "../../templates/template-c/test.sh"
+        "components/error-contract/test/test_cli.sh",
+        "${P101_AUDIT_ERRORS}"
       ],
       "cwd": "programs/p101-audit",
       "evidence_paths": [
@@ -338,7 +360,8 @@
         "P101-MOD-027"
       ],
       "command": [
-        "../../templates/template-c/test.sh"
+        "components/module-map/test/test_cli.sh",
+        "${P101_AUDIT_MODULES}"
       ],
       "cwd": "programs/p101-audit",
       "evidence_paths": [
@@ -372,7 +395,11 @@
         "P101-RESOURCE-004",
         "P101-RESOURCE-005"
       ],
-      "command": ["../../templates/template-c/test.sh"],
+      "command": [
+        "test/test_native_cli.sh",
+        "${P101_INSPECT}",
+        "../../libraries/lib_tool_event/test/fixtures"
+      ],
       "cwd": "programs/p101-inspect",
       "evidence_paths": [
         "programs/p101-inspect/test/test_native_cli.sh",
@@ -394,7 +421,11 @@
         "P101-SYNC-002",
         "P101-SYNC-003"
       ],
-      "command": ["../../templates/template-c/test.sh"],
+      "command": [
+        "test/test_native_cli.sh",
+        "${P101_INSPECT}",
+        "../../libraries/lib_tool_event/test/fixtures"
+      ],
       "cwd": "programs/p101-inspect",
       "evidence_paths": [
         "programs/p101-inspect/test/test_native_cli.sh",
@@ -416,7 +447,11 @@
         "P101-TRACE-002",
         "P101-TRACE-003"
       ],
-      "command": ["../../templates/template-c/test.sh"],
+      "command": [
+        "test/test_native_cli.sh",
+        "${P101_INSPECT}",
+        "../../libraries/lib_tool_event/test/fixtures"
+      ],
       "cwd": "programs/p101-inspect",
       "evidence_paths": [
         "programs/p101-inspect/test/test_native_cli.sh",
@@ -439,7 +474,11 @@
         "P101-SAN-003",
         "P101-SAN-004"
       ],
-      "command": ["../../templates/template-c/test.sh"],
+      "command": [
+        "test/test_native_cli.sh",
+        "${P101_INSPECT}",
+        "../../libraries/lib_tool_event/test/fixtures"
+      ],
       "cwd": "programs/p101-inspect",
       "evidence_paths": [
         "programs/p101-inspect/test/test_native_cli.sh",
@@ -460,7 +499,9 @@
         "P101-MUTATION-001"
       ],
       "command": [
-        "../../templates/template-c/test.sh"
+        "components/mutation/test/test_cli.sh",
+        "${P101_TEST_MUTATION}",
+        "cc"
       ],
       "cwd": "programs/p101-test",
       "evidence_paths": [
@@ -486,7 +527,8 @@
         "P101-API-004"
       ],
       "command": [
-        "scripts/tests/test-p101-api-diff.sh"
+        "scripts/tests/test-p101-api-diff.sh",
+        "${P101_AUDIT_API}"
       ],
       "cwd": ".",
       "evidence_paths": [
@@ -510,9 +552,11 @@
         "P101-TEST-RECEIPT-001"
       ],
       "command": [
-        "../../templates/template-c/test.sh"
+        "scripts/tests/test-wrapper-conformance-output.sh",
+        "${P101_TEST_WRAPPER_CONFORMANCE}",
+        "${P101_TEST_REPOSITORY_RECEIPT}"
       ],
-      "cwd": "programs/p101-test",
+      "cwd": ".",
       "evidence_paths": [
         "programs/p101-test/components/conformance/src/main.c",
         "programs/p101-test/components/repository-receipt/src/main.c",
@@ -533,12 +577,24 @@
         "P101-EXPECT-001",
         "P101-POLICY-RESOURCE-001",
         "P101-POLICY-RESOURCE-002",
-        "P101-POLICY-RESOURCE-003"
+        "P101-POLICY-RESOURCE-003",
+        "P101-POLICY-SYNC-001",
+        "P101-POLICY-SECURE-001",
+        "P101-POLICY-SECURE-002",
+        "P101-POLICY-SECURE-003",
+        "P101-POLICY-SECURE-004"
       ],
-      "command": ["../../templates/template-c/test.sh"],
+      "command": [
+        "test/test_native_cli.sh",
+        "${P101_INSPECT}",
+        "../../libraries/lib_tool_event/test/fixtures"
+      ],
       "cwd": "programs/p101-inspect",
       "evidence_paths": [
         "scripts/rules/resource-clean.json",
+        "scripts/rules/concurrency.json",
+        "scripts/rules/secure-c.json",
+        "programs/p101-inspect/src/rule_catalog.inc",
         "programs/p101-inspect/test/test_native_cli.sh"
       ],
       "platforms": [
@@ -548,5 +604,25 @@
       ],
       "quick": true
     }
-  ]
+  ],
+  "scope": {
+    "admitted_content": "Exactly one defect-and-repair example section for every registered diagnostic ID.",
+    "example_count": 76,
+    "supporting_responsibilities": [
+      {
+        "id": "lesson-routing",
+        "description": "Map stable diagnostic IDs to shared lesson locations used by native tool diagnostics."
+      },
+      {
+        "id": "native-acceptance",
+        "description": "Reference owning-tool suites that prove each diagnostic can be emitted and removed; executable policy remains outside the playground."
+      }
+    ],
+    "excluded_content": [
+      "course, week, assignment, project, quiz, and grading structure",
+      "canonical correct programs owned by examples repositories",
+      "general programming defects not emitted by a registered p101 diagnostic",
+      "tool orchestration, regression engines, and workspace build policy"
+    ]
+  }
 }

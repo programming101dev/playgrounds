@@ -1,62 +1,310 @@
 # Make environment and error ownership explicit
 
-Every fallible p101 call needs a visible environment and an error object whose
-owner is clear. Check an error before making another fallible call, because the
-second operation can obscure the first failure. Passing `NULL` is reserved for
-an explicitly documented best-effort boundary.
+These examples cover explicit environment, error, control-flow, and call-observability contracts.
+Each section gives a broken input, its expected diagnostic, a repaired input, and the expected clean result.
+Canonical correct programs remain in the corresponding example repository; native detection evidence remains in the owning tool suite.
 
-Create application and subsystem error/environment objects separately when
-their lifetimes or policies differ. Destroy each object in the file or owner
-that created it unless ownership is deliberately transferred.
+<a id="P101-ERR-001"></a>
 
-Process termination is also an ownership decision. A helper reports failure
-through its `p101_error` or return value; it does not call `exit`, `_Exit`,
-`abort`, or an equivalent terminating API. This lets callers finish cleanup
-and decide how to present the failure. Only `main` selects the application's
-final process status.
+## P101-ERR-001 — p101 operation has no visible environment contract
 
-Within each function, make cleanup and status selection converge on one final
-return. A `void` function can simply fall through its closing brace. Avoid
-branch-local early returns: record the outcome, run the shared cleanup path,
-and return once.
+Broken input:
 
-Keep every call visible as a separate operation. A call whose result is
-intentionally ignored may stand alone. When another operation consumes a
-result, the call must initialize or assign a named local before that value is
-tested, passed, returned, cast, or combined:
+```text
+value = p101_operation(err);
+```
 
-```c
-ready = is_ready();
+Expected diagnostic:
+
+```text
+P101-ERR-001: p101 operation has no visible environment contract
+```
+
+Repaired input:
+
+```text
+value = p101_operation(env, err);
+```
+
+Expected clean result:
+
+```text
+No P101-ERR-001 finding is emitted for the repaired input.
+```
+
+<a id="P101-ERR-002"></a>
+
+## P101-ERR-002 — fallible operation has no visible error contract
+
+Broken input:
+
+```text
+value = p101_operation(env);
+```
+
+Expected diagnostic:
+
+```text
+P101-ERR-002: fallible operation has no visible error contract
+```
+
+Repaired input:
+
+```text
+value = p101_operation(env, err);
+```
+
+Expected clean result:
+
+```text
+No P101-ERR-002 finding is emitted for the repaired input.
+```
+
+<a id="P101-ERR-003"></a>
+
+## P101-ERR-003 — fallible wrapper discards its error object
+
+Broken input:
+
+```text
+value = p101_operation(env, NULL);
+```
+
+Expected diagnostic:
+
+```text
+P101-ERR-003: fallible wrapper discards its error object
+```
+
+Repaired input:
+
+```text
+value = p101_operation(env, err);
+```
+
+Expected clean result:
+
+```text
+No P101-ERR-003 finding is emitted for the repaired input.
+```
+
+<a id="P101-ERR-004"></a>
+
+## P101-ERR-004 — second fallible call can obscure the first failure
+
+Broken input:
+
+```text
+first = p101_first(env, err);
+second = p101_second(env, err);
+```
+
+Expected diagnostic:
+
+```text
+P101-ERR-004: second fallible call can obscure the first failure
+```
+
+Repaired input:
+
+```text
+first = p101_first(env, err);
+failed = p101_error_has_error(err);
+if(!failed)
+{
+    second = p101_second(env, err);
+}
+```
+
+Expected clean result:
+
+```text
+No P101-ERR-004 finding is emitted for the repaired input.
+```
+
+<a id="P101-ERR-005"></a>
+
+## P101-ERR-005 — created error object is not destroyed
+
+Broken input:
+
+```text
+err = p101_error_create();
+return status;
+```
+
+Expected diagnostic:
+
+```text
+P101-ERR-005: created error object is not destroyed
+```
+
+Repaired input:
+
+```text
+err = p101_error_create();
+/* work */
+p101_error_destroy(&err);
+return status;
+```
+
+Expected clean result:
+
+```text
+No P101-ERR-005 finding is emitted for the repaired input.
+```
+
+<a id="P101-ERR-006"></a>
+
+## P101-ERR-006 — created environment is not destroyed
+
+Broken input:
+
+```text
+env = p101_env_create(err);
+return status;
+```
+
+Expected diagnostic:
+
+```text
+P101-ERR-006: created environment is not destroyed
+```
+
+Repaired input:
+
+```text
+env = p101_env_create(err);
+/* work */
+p101_env_destroy(&env);
+return status;
+```
+
+Expected clean result:
+
+```text
+No P101-ERR-006 finding is emitted for the repaired input.
+```
+
+<a id="P101-ERR-007"></a>
+
+## P101-ERR-007 — helper terminates the process
+
+Broken input:
+
+```text
+static void helper(void)
+{
+    exit(EXIT_FAILURE);
+}
+```
+
+Expected diagnostic:
+
+```text
+P101-ERR-007: helper terminates the process
+```
+
+Repaired input:
+
+```text
+static int helper(struct p101_error *err)
+{
+    int status = -1;
+    P101_ERROR_RAISE_USER(err, "helper failed", EINVAL);
+    return status;
+}
+```
+
+Expected clean result:
+
+```text
+No P101-ERR-007 finding is emitted for the repaired input.
+```
+
+<a id="P101-ERR-008"></a>
+
+## P101-ERR-008 — function has more than one exit point
+
+Broken input:
+
+```text
+if(failed)
+{
+    return -1;
+}
+return 0;
+```
+
+Expected diagnostic:
+
+```text
+P101-ERR-008: function has more than one exit point
+```
+
+Repaired input:
+
+```text
+status = 0;
+if(failed)
+{
+    status = -1;
+}
+return status;
+```
+
+Expected clean result:
+
+```text
+No P101-ERR-008 finding is emitted for the repaired input.
+```
+
+<a id="P101-ERR-009"></a>
+
+## P101-ERR-009 — call is embedded in a larger expression
+
+Broken input:
+
+```text
+if(p101_ready(env, err))
+{
+    use(p101_value(env, err));
+}
+```
+
+Expected diagnostic:
+
+```text
+P101-ERR-009: call is embedded in a larger expression
+```
+
+Repaired input:
+
+```text
+ready = p101_ready(env, err);
 if(ready)
 {
-    value = read_value();
-    result = transform(value);
+    value = p101_value(env, err);
+    use(value);
 }
-return result;
 ```
 
-Do not hide work inside `if(is_ready())`, `transform(read_value())`,
-`return transform(value)`, or `(void)transform(value)`. With a named local, a
-debugger can stop after each operation, a log can show the intermediate value,
-and the source makes evaluation order explicit. The compiler may optimize the
-local away, so this is an observability rule rather than a promise of faster
-machine code.
+Expected clean result:
 
-Verify with:
-
-```sh
-../programs/p101-audit/audit-doctor -s src -s include
+```text
+No P101-ERR-009 finding is emitted for the repaired input.
 ```
 
-The checker follows source-level contracts; it cannot prove that every runtime
-path handles an error correctly. Pair it with fault injection.
+## Platform boundary
 
-## Correct-use references
+These contracts are checked from each platform's parsed C declarations and definitions; absence of source for a platform is not evidence of compliance.
 
-The good path is owned outside the playground:
+## Correct references
 
-- [error lifecycle](https://github.com/programming101dev/lib_error_examples/blob/main/lifecycle/main.c)
-- [environment tracer access](https://github.com/programming101dev/lib_env_examples/blob/main/env/get_tracer/main.c)
+- [Create, use, and destroy a `p101_error`](https://github.com/programming101dev/lib_error_examples/blob/main/lifecycle/main.c).
+- [Create and destroy a `p101_env`](https://github.com/programming101dev/lib_env_examples/blob/main/env/get_tracer/main.c).
 
-Use these as API-shape references. The playground cases own the mistakes and
-repair oracles.
+## Verification boundary
+
+Run `programs/p101-audit/audit-doctor -s <source-path>`. The example explains the repair; the owning tool suite proves the diagnostic behavior.
+A clean result is bounded by the files, events, manifests, and platform evidence admitted by that tool.
