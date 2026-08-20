@@ -44,6 +44,6 @@ lesson.
 The track map comes from the library function graph:
 
 ```sh
-../../scripts/generators/analyze-lib-function-graph.py
-./sync-track-map.py
+../scripts/generators/analyze-lib-function-graph.py
+../scripts/generators/sync-playground-track-map.py
 ```

@@ -52,7 +52,7 @@ Refresh it after changing wrapper libraries or classification rules:
 
 ```sh
 ../scripts/generators/analyze-lib-function-graph.py
-./sync-track-map.py
+../scripts/generators/sync-playground-track-map.py
 ```
 
 ## Usage
@@ -160,10 +160,11 @@ syntax but have not yet practiced defensive systems programming:
 
 ## Full toolchain tour
 
-Run the one-command tour:
+The full-stack tour is instructor/CI orchestration owned by `scripts`, not a
+student-facing playground command. Run it from this repository with:
 
 ```sh
-./tour.sh
+../scripts/runtime/playground-tour.sh
 ```
 
 That writes a timestamped report directory under `/tmp` with strict checks,
@@ -171,7 +172,7 @@ tests, fuzzing, coverage, observed resource/call reports, correlated reports,
 and a fault-injected error-path walk. For quick runtime-only demos:
 
 ```sh
-./tour.sh --skip-quality --skip-coverage -n 5
+../scripts/runtime/playground-tour.sh --skip-quality --skip-coverage -n 5
 ```
 
 The clean tour and three defect scenarios also have executable causal-model

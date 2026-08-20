@@ -33,8 +33,8 @@ Quick reference for the playground and the tools it is meant to show.
 
 | Command | What it does |
 | --- | --- |
-| `./tour.sh` | One-command full playground artifact |
-| `./tour.sh --skip-quality --skip-coverage -n 5` | Fast runtime-only tour |
+| `../scripts/runtime/playground-tour.sh` | One-command full playground artifact |
+| `../scripts/runtime/playground-tour.sh --skip-quality --skip-coverage -n 5` | Fast runtime-only tour |
 | `./lesson.sh wrappers` | Focused wrapper-boundary lesson |
 | `./lesson.sh fd-leak` | Focused resource-leak lesson |
 | `./lesson.sh error-path` | Focused injected-error-path lesson |
